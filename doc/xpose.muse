@@ -1,0 +1,90 @@
+#title Xpose integration
+
+Emacs speaks NONMEM supports features that allow Xpose integration.  These
+features include:
+
+ - [[#xpfiles][Choosing "appropriate" file names for Xpose]]
+ - [[#tabs][Creating appropriate tables for Xpose]]
+ - [[#xpose-doc][Auto-generate Summary Script/RTF Documents]]
+
+
+
+#xpfiles
+* Xpose File Names
+
+[[http://xpose.sourceforge.net][Xpose]], by default assumes that the control stream is named =run#.mod= where =#= is a
+number indicating which run was completed.  Additionally the NONMEM output is
+assumed to be =run#.lst=.  Emacs Speaks NONMEM supports two different paradigms
+when naming files:
+
+ - Naming files according to Xpose assumptions
+ - Naming files without regard to Xpose's assumed control stream names or output
+   files.
+
+
+
+** Using Xpose conventions
+
+When using Xpose's naming conventions Emacs Speaks NONMEM automatically chooses
+the appropriate file names.  For example If you open a model, say =001.mod= in an
+Xpose directory, the first save changes the name of the file to =run001.mod=.  If
+there are multiple runs in the Xpose directory (say up to =run10.mod=), Emacs
+Speaks NONMEM renames your control stream to =run11.mod= upon save.  This options
+can be toggled under the Xpose menu.
+
+
+When using the file-names =runX.mod=, and Xpose support enabled, Emacs Speaks
+NONMEM assumes that Xpose is going to be run.  When the following is enabled, Emacs Speaks NONMEM automatically generates the appropriate tables for Xpose:
+
+
+- Xpose
+  - Generate Xpose Tables
+
+
+
+** Using Arbitrary Names
+
+When using Xpose's naming convention, Emacs Speaks NONMEM can still generate
+appropriate Xpose files.  This may be toggled on by:
+
+
+
+ - Xpose
+  - Only generate Xpose tables for files named runX.mod
+
+
+Without this option enabled, Xpose tables may be generated regardless of the
+name of the control stream.  The table names will be determined by the following
+process:
+
+
+ - Step 1, Determining a run-number.  This is the last number before the extension
+   =one-cmt-01.ctl= would have the run-number of 1.  If EsN can't determine the
+   run-number, it assumes =0=.
+ - Step 2, determine the extension for the table.  The extension is the
+   beginning of the file name before the determined run number.  For example
+   =one-cmt-01.ctl= would have an extension of =one-cmt=.
+ - Step 3, construct the table names.  For xpose tables, the xpose table name
+   (like =sdtab=), is concatenated with the  run-number and extension to
+   form a new file of the form =xpose-table-run-number-extension=.  In the case of
+   the standard table =sdtab=, and the control-stream name =one-cmt-01.ctl=, the final
+   table name will be =sdtab1one-cmt=.
+
+
+
+Note that if you just use a number =001.mod=, for instance, then the output files
+conform to the standard Xpose naming scheme, =sdtab1=.
+
+To input files from =one-cmt-01.ctl= into R, you could use the following
+code:
+
+
+<src lang="R">
+xdpbd1 <- xpose.data(1,tab.suffix="one-cmt");
+</src>
+
+#tab
+* Xpose tables
+
+#xpose-doc
+* Xpose Documentation

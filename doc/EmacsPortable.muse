@@ -1,0 +1,302 @@
+#title Emacs Portable
+
+
+* Emacs Portable
+You may also install Emacs Portable which contains:
+ - Emacs 23.2
+ - Optional Emacs Packages
+   - AucTeX
+   - Color-Theme
+   - Emacs Speaks Statistics
+   - Emacs Speaks NONMEM
+   - Emacs Muse
+   - nxhtml-mode
+   - Anything
+   - Vimpulse and Viper in more modes
+   - Icicles
+   - TinyTools
+   - Yasnippet
+     - Includes Rmate Snippets (http://r.789695.n4.nabble.com/Ann-RMate-a-bundle-for-TextMate-and-E-Texteditor-td892012.html)
+     - Includes Stata Snippets from http://bylr.net/3/2010/10/stata-bundle-for-textmate/
+   - ToDoChiKu
+   - Cursor-chg.el for Dynamic Cusor changing
+   - Unifed Folding interface
+     - Optional org-style tab folding
+   - Tabbar mode with similar appearance to Aquamacs (requires png support)
+   - Popup menu and toolbar
+   - Allows tabbar and ruler-mode to be used simultaneously.
+ - Hunspell (for spelling in Emacs; aspell was too unstable);  This was custom compiled to be more stable.
+   - English Dictionary (US)
+   - French Dictionary (France)
+   - German Dicationary (Germany)
+   - Spanish Dictionary (Mexico)
+ - GnuWin32 utilites
+   - Core Utils
+   - Libraries for Making Emacs Packages
+     - make
+     - texinfo
+   - Gnus Newsreader
+     - compface
+     - openssl
+   - Image Libraries
+     - giflib
+     - jpeg
+     - lippng
+     - tiff
+     - xpm
+     - zlib
+   - Searching Libraries
+     - findutils
+     - grep
+   - Compression Libraries
+     - arc
+     - bzip2
+     - gzip
+     - lhz
+     - tar
+     - unzip
+This takes care of many of the utilities needed to make Emacs function
+at its best and allows installation either on a portable thumb drive
+***or*** locally.  Specifically from the Emacs FAQ
+
+
+** GnuWin32
+GnuWin32[1] provides precompiled native Windows ports of a wide selection
+of Free software and libraries. Tools available here that are useful
+for Emacs include:
+
+ - **Arc**- used by archive-mode to edit .arc files.
+ - **Bzip2**- used by Emacs to automatically decompress .bz2 files.
+ - **CompFace**- used by gnus to display XFace headers in messages.
+ - **CoreUtils**- GNU file, shell and text utilities (also in MSYS)
+ - **DiffUtils**- for ediff and producing patches
+ - **FindUtils**- for grep-find and other file searches.
+ - **GifLib**- library to support GIF images.
+ - **Grep**- for searching through files with grep.
+ - **Gzip**- used by Emacs to automatically decompress .gz files.
+ - **Jpeg**- library to support JPEG images (also in GTK).
+ - **Lha**- used by archive-mode to edit .lzh files.
+ - **LibPng**- library to support PNG images (also in GTK).
+ - **LibTiff**- library to support TIFF images (also in GTK).
+ - **Make**- used by compile for building projects (also in MinGW)
+ - **OpenSSL**- used by gnus to talk to servers over SSL.
+ - **Patch**- used by ediff-patch-file and others to apply patches.
+ - **Tar**- used by tar-mode to edit tar files.
+ - **TexInfo**- used to build Emacs' manuals.
+ - **Unzip**- used by archive-mode for extracting zip files.
+ - **Xpm**- library to support XPM images (bundled with Emacs binaries)
+ - **Zip**- used by archive-mode for editing zip files.
+ - **Zlib**- required by LibPng (also in GTK).
+
+
+** AUCTeX
+
+AUCTeX[2] is an extensible package for writing and formatting TeX files
+in GNU Emacs and XEmacs. It supports many different TeX macro
+packages, including AMS-TeX, LaTeX, Texinfo, ConTeXt, and docTeX (dtx
+files).
+
+AUCTeX includes preview-latex which makes LaTeX a tightly integrated
+component of your editing workflow by visualizing selected source
+chunks (such as single formulas or graphics) directly as images in the
+source buffer.
+
+** Emacs Speaks Statistics
+
+Emacs Speaks Statistics (ESS)[3] is an add-on package for emacs-based
+text editors such as GNU Emacs and XEmacs. It is designed to support
+editing of scripts and interaction with various statistical analysis
+programs such S-Plus, R, SAS, Stata, and others. Although all users of
+these statistical analysis programs are welcome to apply ESS, advanced
+users or professionals who regularly work with text-based statistical
+analysis scripts, with various statistical languages/programs, or with
+different operating systems might benefit from it the most.
+
+** Emacs Muse
+
+Emacs Muse[4] is an authoring and publishing environment for Emacs. It
+simplifies the process of writings documents and publishing them to
+various output formats. Muse uses a very simple Wiki-like format as
+input.
+
+** Aspell
+
+Emacs has support for spell checking on demand[5]
+(ispell) and as your type (flyspell). Both packages depend on a copy
+of ispell 3.2 or a compatible spell-checking program. GNU Aspell is a
+popular choice these days, and is included in this package.
+
+
+Unfortunately, Aspell 0.50 is the older version of aspell and is known
+to have issues with emacs (see
+http://www.mail-archive.com/fink-users@lists.sourceforge.net/msg32003.html).
+Currently Aspell is only available as a binary for 0.50.  I have
+compiled a binary for Aspell 0.60.6 by following the README in the
+Aspell documentation with the following gotchas:
+ - Aspell file file_util.cpp needed namespace acommon to be changed
+   from:
+
+<src lang="c++">
+namespace acommon {
+
+  // Return false if file is already an absolute path and does not need
+  // a directory prepended.
+  bool need_dir(ParmString file) {
+    if (file[0] == '/' || (file[0] == '.' && file[1] == '/')
+#ifdef WIN32
+        || (asc_isalpha(file[0]) && file[1] == ':')
+        || file[0] == '\\' || (file[0] == '.' && file[1] == '\\')
+#endif
+      )
+      return false;
+    else
+      return true;
+  }
+</src>
+
+to:
+
+<src lagn="c++">
+namespace acommon {
+
+  // Return false if file is already an absolute path and does not need
+  // a directory prepended.
+  bool need_dir(ParmString file) {
+    if (file[0] == '/' || (file[0] == '.' && file[1] == '/')
+#ifdef WIN32
+        || ( (file[0] == 'a' ||
+              file[0] =='b' ||
+              file[0] =='c' ||
+              file[0] =='d' ||
+              file[0] =='e' ||
+              file[0] =='f' ||
+              file[0] =='g' ||
+              file[0] =='h' ||
+              file[0] =='i' ||
+              file[0] =='j' ||
+              file[0] =='k' ||
+              file[0] =='l' ||
+              file[0] =='m' ||
+              file[0] =='n' ||
+              file[0] =='o' ||
+              file[0] =='p' ||
+              file[0] =='q' ||
+              file[0] =='r' ||
+              file[0] =='s' ||
+              file[0] =='t' ||
+              file[0] =='u' ||
+              file[0] =='v' ||
+              file[0] =='w' ||
+              file[0] =='x' ||
+              file[0] =='y' ||
+              file[0] =='z' ||
+              file[0] =='A' ||
+              file[0] =='B' ||
+              file[0] =='C' ||
+              file[0] =='D' ||
+              file[0] =='E' ||
+              file[0] =='F' ||
+              file[0] =='G' ||
+              file[0] =='H' ||
+              file[0] =='I' ||
+              file[0] =='J' ||
+              file[0] =='K' ||
+              file[0] =='L' ||
+              file[0] =='M' ||
+              file[0] =='N' ||
+              file[0] =='O' ||
+              file[0] =='P' ||
+              file[0] =='Q' ||
+              file[0] =='R' ||
+              file[0] =='S' ||
+              file[0] =='T' ||
+              file[0] =='U' ||
+              file[0] =='V' ||
+              file[0] =='W' ||
+              file[0] =='X' ||
+              file[0] =='Y' ||
+              file[0] =='Z' )
+            && file[1] == ':')
+        || file[0] == '\\' || (file[0] == '.' && file[1] == '\\')
+#endif
+      )
+      return false;
+    else
+      return true;
+  }
+</src>
+
+
+ - Aspell needs to be compiled under cygwin with a mingw
+   cross-compiler
+ - I compiled without curses support since the README says that curses
+   breaks Emacs support.
+ - The configure options I used are:
+
+<src lang="sh">
+export PATH=/cygdrive/c/MinGW/bin:$PATH # Enable cross-compiler.
+./configure CFLAGS='-O2 -mno-cygwin' CXXFLAGS='-O2 -mno-cygwin' --enable-win32-relocatable --prefix=c:/aspell6
+make
+</src>
+
+Then you have to enter a MSYS prompt and change the directory to
+wherever you initially extracted aspell to, and then:
+
+<src lang="sh">
+make install
+</src>
+
+After building aspell, I moved aspell.exe to aspell-exe.exe and
+created the following batch-file:
+
+<src lang="dos">
+@%~dp0\aspell-exe.exe --data-dir=%~dp0/../lib/aspell-0.60 %*
+</src>
+
+which I named aspell.bat.  It should behave generally like the aspell
+that we need it to be.  I'm not sure what the "relocate" does, but it
+didn't allow the relocation of the data directory upon executing in
+different directories.  This allows aspell to be called from the
+command prompt under windows if it is in the =PATH= just as aspell
+should be called.  In EmacsPortable, the executable is used directly.
+
+<src lang="emacs-lisp">
+(when (getenv "ProgramFiles")
+  ;; Get Aspell
+  (if (file-exists-p "c:/Program Files/Aspell/bin/aspell.exe")
+      (progn
+        (setq ispell-program-name "c:/Program Files/Aspell/bin/aspell.exe")
+        (setq ispell-extra-args '("--sug-mode=ultra"))
+        )
+    (if (file-exists-p "../App/aspell/bin/aspell-exe.exe")
+        (progn 
+          (setq ispell-program-name (expand-file-name "../App/Aspell/bin/aspell-exe.exe"))
+          (setq ispell-extra-args (list "--sug-mode=ultra"
+                                    (concat "--data-dir="
+                                            (expand-file-name "../App/Aspell/lib/aspell-0.60/"))))
+          )
+      )
+    )
+  (global-set-key (quote [(mouse-3)]) (quote flyspell-correct-word))
+  )
+</src>
+
+It took me awhile to figure this out.  In theory, it will stop the
+random Emacs crashes due to aspell problems...
+
+In a recent update, I found it still to be unstable.  Checking around,
+I found that hunspell may work for Emacs spell-checking.
+
+
+
+Footnotes:
+[1]   From Emacs Windows FAQ (http://www.gnu.org/software/emacs/windows/Other-useful-ports.html)
+
+[2]  From AucTex Website (http://www.gnu.org/software/auctex/)
+
+[3]  From Emacs Speaks Statistics project website (http://ess.r-project.org/)
+
+[4]  From Emacs Muse Website (http://mwolson.org/projects/EmacsMuse.html)
+
+[5]  From Emacs FAQ (http://www.gnu.org/software/emacs/windows/Text-and-Utility-modes.html)
+

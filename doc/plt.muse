@@ -1,0 +1,71 @@
+#title PLT Tools
+
+* PLT Tools Support
+Requirements:
+ - To run from emacs, Emacs must be installed in a directory without spaces.
+
+Features not supported in PLT Tools-mode (PLT does not directly
+support these features):
+
+ - Splitting of variables into multiple runs to output over 20 or 50 =$PRED=
+   generated variables is not supported when using the PLT tools.
+   - When using the suggested =msfooutputfile=, PLT tools stores the =MSFO= in the
+     =MISCELLANEOUS/MSFO= directory as =msfo.TIMESTAMP=.  This would require some
+     way to get each =MSFO= file involved in the multiple-control stream run and
+     then merging the tables together.
+   - When specifying a different MSFO file, the =MSFO= file is retained in the
+     working directory.  At first glance this may seem like merging together
+     tables would be feasible.  However, when there are over 20 to 50 output
+     items, EsN modifies the control stream to output slightly different table
+     names.  Using PLT tools AllRecords and FirstRecords, files such as
+     =AllRecords.txt~0= and =FirstRecords.txt~0= should be stored in the
+     home-directory.  Therefore with multiple runs with over 20 or 50 items,
+     these files would be overwritten.  However one run could be merged back to
+     =AllRecords.txt= and =FirstRecords.txt=.  When this occurs, it would be in the
+     working directory, and would not be created in PLT tools, nor stored within
+     its system.  Therefore, all graphics of PLT tools would be unable to run,
+     and the =AllRecords.txt= or =FirstRecords.txt= would not be stored in PLT's
+     system automatically.
+ - Does not support multiple all sub-problems control streams.  This
+   is implied by having the same output file for every =$PROBLEM= in the
+   control stream.
+
+* Notes for Windows
+
+This has only been tested on Windows.  The most recent version of PLT tools does
+not launch correctly unless launched outside of Emacs.  One way to run PLT tools
+is to associate =plta= files with PLT tools.  Afterward you may have Emacs "open"
+the automation file instead of launching PLT tools and opening the file.  This
+option may be toggled under windows.  It requires [[http://www.emacswiki.org/emacs/w32-browser.el][w32-browser]] to be in the load
+path.  This should be included in [[EmacsPortable][EmacsPortable]].
+
+** Automatic Updating of AllRecords.txt and FirstRecords.txt
+
+*** Time Dependent Parameters
+The automatic updating of parameters assumes that each parameter is the same
+throughout the subject.  If there are time-varying covariates, or inter-occasion
+variability this does not hold true.  For these cases, manually move the
+variable from the =FirstRecords.txt= to the =AllRecords.txt=.  Emacs Speaks NONMEM
+will respect this, and not force the variable to be in =FirstRecords.txt= if the
+variable is already in =AllRecords.txt=.
+
+** Automatic PLT Tools Graphic Script Creation
+
+Based on information in the file, including input variable specifications, and
+variable labels, EsN generates a template graphic script that may be edited and
+changed in PLT tools.  It assumes that your input file is your covariate file,
+and fills out variable labels from the control stream.  Once saved in PLT tools,
+Emacs Speaks NONMEM will not edit the script again.
+
+** Commenting Records for Brief Summary document
+
+<include file="plt-comments.muse">
+
+This has been fixed in the most recent version of PLT tools.
+
+** Emacs Speaks NONMEM's UserDefinedScript.R
+
+** Links in PLT tools
+Links in PLT tools require =grep= to be installed on the system.  It is installed
+by default on max and unix systems.  It is also installed in the
+[[EmacsPortable][EmacsPortable]] distribution.

@@ -1,0 +1,69 @@
+#title Displaying 80 character limit
+
+In NONMEM versions before NONMEM 6.2, there was a 80 character limit per line.
+To cope with this, esn supports word-wrapping, and highlighting lines over 80
+characters.  There are two options when highlighting the lines: highlight the 80
+character cutoff and highlight only lines that go over the 80 character limit.
+
+* Only lines over 80 characters
+
+One of the ways the ESN supports earlier NONMEM control streams is to only
+highlight lines that are over 80 characters.  An example of this is follows:
+
+[[images/80-only.png][Highlight only 80 characters]]
+Therefore whenever the line exceeds 80 characters, the offending piece is
+highlighted.  This is also true with extended control streams, as discussed
+[[#extended][below.]]  This may be enabled or disabled by the following menu:
+
+ - Display
+   - Show lines over 80 characters
+
+* All lines except current
+
+Another method ESN supports earlier NONMEM control streams is to highlight lines
+that are 80 character and more, and also highlight the 80 character limit for
+all lines except the line that your current cursor resides.  This is shown below:
+
+[[images/80-all.png][Highlight 80 character bounary]]
+
+
+Therefore not only is the offending piece highlighted if the line is over 80
+characters, but the limit is shown.  Notice that with extended control streams,
+this limit is different for each line.  This option is computationally expensive
+(especially with windows), and is off by default.  It may be toggled by:
+
+
+ - Display
+   - Show lines over 80 characters
+
+
+
+#extended
+* Extended control stream support
+
+[[extended][Extended control streams]] translate parameter names to their corresponding =THETA=,
+=ETA=, and =EPS= representation.  With this change the final control stream line
+length changes, (up or down depending on the length of the parameter name) and
+the 80 character limit will change.  For example:
+
+<src lang="esn">
+$THETA (0 1) ; Cl
+$PK
+  TVCL = Cl
+</src>
+
+Renders as:
+<src lang="esn">
+$THETA (0 1); Cl
+$PK
+  TVCL = THETA(1)
+</src>
+
+Which gives a difference of 8 characters.  These 8 characters are considered
+when creating both the 80 character boundaries when the line is over 80 characters, as shown below:
+
+[[images/80-all-ctl.png][Highlight character bounary using extended control streams]]
+
+
+
+;  LocalWords:  NONMEM esn

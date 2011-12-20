@@ -1,0 +1,63 @@
+#title Hyperlinks
+* Document Hyperlinks
+When using Emacs Speaks NONMEM, Emacs can hyperlink input and output
+to the appropriate files.  Currently the possible options for linking
+are:
+ - Output Files
+ - Input Files
+ - MSFO Files
+
+Each of these features can be turned on or off.
+
+[[#plt][Linking for control streams under PLT tools]] requires =grep=
+to be installed.  Also under windows, if
+[[http://www.emacswiki.org/emacs/w32-browser.el][w32-browser]] is
+present the link will open up the associated program.[1] Therefore if
+your input file is a =csv= file, and =csv= files are associated with
+Microsoft Excel, clicking on the input file will open that file in
+Microsoft Excel.
+
+** Output Files
+
+Output files include =$TABLE= outputs, and FORTRAN OPEN(#,FILE='')
+statements.
+
+** Input Files
+
+Input files are the =$DATA= statements
+
+#msfo
+** MSFO Files
+
+=$ESTIMATE= records with an msfo file have a special link that:
+ - Creates a copy of your control string in an empty buffer
+ - Removes =$THETA=, =$OMEGA=, =$SIGMA=, and =$ESTIMATION= records.
+ - Inserts a =$MSFI= record based on your msfo file.  This allows you
+   create a control stream that:
+   - Predict other datasets
+   - Simulate other datasets
+   - Resumes the model
+   - etc.
+
+** Included Files
+Tools such as [[pirana][Pirana]], copy external files to the run directory using the
+following syntax:
+
+<src lang="esn">
+;INCLUDE=file_to_be_copied_1.ext, file2.ext, file3
+</src>
+
+Emacs Speaks NONMEM will link to these files if the option is enabled.
+
+** PLT tools
+#plt
+
+When =grep= is installed, and you are using PLT tools, clicking on the
+=AllRecords.txt=, =FirstRecords.txt=, and =ExtraRecords.txt= looks through
+the appropriate directories for files that match the current control
+stream and takes the most recent =csv= and links to that =csv=.
+
+Footnotes:
+[1]  I also added code to use Xemacs' =mswindows-shell-execute=.  I
+     really don't know if EsN runs on Xemacs still.
+

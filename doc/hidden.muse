@@ -1,0 +1,33 @@
+#title Invisible Corrections
+* File Coding System
+
+Earlier versions of NONMEM may have had issues when running control streams not
+created on the platform that NONMEM was run on.  For example, if you created a
+control stream on a windows machine, and ran it on a Linux cluster, NONMEM would
+not compile correctly.  While this has mostly been fixed with recent versions of
+NONMEM, Emacs Speaks NONMEM takes this into consideration when saving a file.
+Emacs Speaks NONMEM by default will not change the file coding system.  You may
+opt for a few other options:
+
+ - Change the file coding system to Windows if editing the file in windows, otherwise use UNIX encoding
+ - Change the file encoding to Windows on save
+ - Change the file encoding to Unix on save
+
+This allows a person to change the file codings system to mirror what is needed
+for your setup of NONMEM.  These options may be changed using the menu:
+ - Automation
+   - Changes on Save
+     - Change File Coding System
+
+* Tabs, Return at End of Control Stream
+
+In addition to changing to the appropriate file-coding system, on save Emacs Speaks NONMEM also:
+
+ - Translates Tab characters to spaces
+ - Adds a trailing return at the end of the file (if not already present)
+
+Depending on the version of NONMEM, these could cause NONMEM to not compile correctly.
+
+
+
+

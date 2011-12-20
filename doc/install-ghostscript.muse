@@ -1,0 +1,74 @@
+#title Install Ghostscript
+
+While not required, [[install-ghostscript#ghostscript][Ghostscript]] adds the following capabilities to
+Emacs Speaks NONMEM:
+ - Printing
+ - Integration with Xpose to create rtf documents
+
+Ghostscript is usually installed by default on Unix based machines,
+and can be installed on [[install-ghostscript#windows][windows]] machines as well as Mac OS X machines.
+
+[[install-ghostscript#gsview][GSView]] allows you to view postscript files on windows and other
+operating systems. On a Mac and UNIX machine, this utility is
+redundant: other utilities perform the same task.
+
+* Windows Install
+#windows
+** Ghostscript 
+#ghostscript
+
+By installing ghostscript, you alllow Emacs to print using its standard
+interface.  However, if you use EmacsW32 and enable quick-print this is not
+needed.
+
+If you choose to [[http://pages.cs.wisc.edu/~ghost/][download ghostscript]], the process for installation is as
+follows:
+
+Open the file:
+
+[[images/install-gs-start.png]]
+
+Click on setup, and accept or change the default locations:
+
+[[images/install-gs-loc.png]]
+
+To really harness the power of Ghostscript in Windows, it is useful to install
+[[install#gsview][GSView]] 
+
+** GSview
+#gsview
+
+Open the installer file:
+
+[[images/install-gsview-1.png]]
+
+After pressing setup, go through the next few screens:
+
+[[images/install-gsview-2.png]]
+[[images/install-gsview-3.png]]
+
+You may choose to associate gsview with postscript files (=.eps= and =.ps=) and even
+=.pdf= files.  However, by associating GSview with =.pdf= files, Acrobat and Acrobat
+reader will no longer open pdf files by default.
+
+[[images/install-gsview-4.png]]
+
+After selecting the associations made, select the default directory where GSview
+will be installed:
+
+[[images/install-gsview-5.png]]
+
+Describe where the installation's program files will be located.  Additionally
+choose if this is installed for all users or just the current user.
+
+[[images/install-gsview-6.png]]
+
+Then install:
+
+[[images/install-gsview-7.png]]
+
+* Mac OSX install
+
+
+This will allow viewing of postscript files and even conversion to pdf files.
+

@@ -1,0 +1,59 @@
+#title Pirana integration
+
+Pirana is a run manager.  For more information and downloads go
+[[http://pirana.sourceforge.net/index.php][to pirana's website]].
+
+* Emacs Speaks NONMEM Pirana Detection
+
+Emacs Speaks NONMEM detects if Pirana assumptions are in effect in the specified
+directory by:
+
+ - Checking if Emacs Speaks NONMEM is aware of a Pirana executable
+ - If PLT tools and PDx POP is not used
+ - If the control stream has extension =.mod=
+ - When either:
+   - =pirana.dir= exists (created by pirana in the current directory)
+   - Pirana support is enabled (Toggled under the "Use" menu)
+
+<include file="pirana-census-reference-models.muse">
+
+In addition the default header for Pirana includes the reference model line:
+
+<src lang="esn">
+;; Ref:
+</src>
+
+To allow user specification of the reference model.  It needs to be at the top
+so that Pirana will detect the reference model.
+
+* Putting covariance comments on off-diagonal blocks
+
+Emacs Speaks NONMEM can automatically put the =COV= comment on off-diagonal
+estimates when this option is specified.  Not only does EsN place it in the
+appropriate place, but it may also remove it when its not appropriate.  For
+example, the source:
+
+<src lang="esn">
+$OMEGA BLOCK(2)
+
+ 0 ; 2 - IIV Cl
+ 1 ; COV Cl~V
+ 2 ; 3 - IIV V
+</src>
+
+will change the covariance specification when adding the estimate 3 above the 0
+estimate (while preserving the rest of the variable label).  This results in:
+
+<src lang="esn">
+$OMEGA BLOCK(2)
+ 3
+ 0 ; COV IIV Cl
+ 1 ; 3 - Cl~V
+ 2 ; COV IIV V
+</src>
+
+This is enabled by default.
+
+* Included Files
+
+Included files are optionally linked

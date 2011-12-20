@@ -1,0 +1,5 @@
+#title Alignment and Wrapping
+
+An automatic feature of Emacs Speaks NONMEM is code-alignment and wrapping.
+
+<include file="align-shared.muse">

@@ -1,0 +1,131 @@
+#title PDx Pop
+* PDx Pop Support
+Emacs Speaks NONMEM supports the use of PDx Pop
+* Emacs Speaks NONMEM PDx Pop Detection
+Emacs Speaks NONMEM detects if PDx Pop assumptions are in effect in the
+specified directory by:
+
+ - Checking if Emacs Speaks NONMEM is aware of a PDx Pop Executable
+ - The file is a control stream ending in =.ctl=
+ - PDx support is enabled (Toggled under the "Use" menu)
+
+* PDx Pop integration with Emacs Speaks NONMEM
+
+** Putting Run# into the control stream.
+
+Emacs speaks NONMEM automatically puts the required =RUN#= into the control
+stream's problem statement.  This =RUN#= is the name of the file without the =.ctl=
+extension (i.e. for example =001.ctl= the run number is =001=).  By default, the
+Model description in the header is mirrored in the run statement.  Therefore
+
+<src lang="esn">
+;Model Desc: Base Model
+;Project Name: pheno
+;Project ID: GM00-0000
+$PROBLEM
+</src>
+
+would automatically be update to:
+
+<src lang="esn">
+;Model Desc: Base Model
+;Project Name: pheno
+;Project ID: GM00-0000
+$PROBLEM RUN# 001 -- Base Model
+</src>
+
+
+** Automatically assigning $OMEGA labels
+PDx pop uses the following labels for $OMEGA terms:
+
+|-------+-------------------------|
+| Label | Meaning                 |
+|-------+-------------------------|
+| =[A]=   | Additive Error          |
+| =[F]=   | Off-Diagonal Covariance |
+| =[P]=   | Proportional Error      |
+| =[N]=   | Not Defined             |
+|-------+-------------------------|
+
+
+When editing a control stream that Emacs Speaks NONMEM knows will be used for
+PDx pop, the semi-colon in PDx pop blocks fill in the label for the =ETA= value
+automatically:
+
+For example:
+
+<src lang="esn">
+$PK
+  TVCL = THETA(1)
+  CL   = TVCL+ETA(1)
+
+  TVV1 = THETA(2)
+  V1   = TVCL*DEXP(ETA(2))
+
+  TVV2 = THETA(3)
+  V2   = TVV2*(1+ETA(3))
+
+$OMEGA BLOCK(2)
+ 0.136 ; [A] 1 - Cl
+ 0.04  ; [F]
+ 0.053 ; [P] 2 - Vc
+$OMEGA 0.917 ;[P] 3 - Vp
+</src>
+
+** Automatic generation of tables
+
+In addition to supporting the automatic generation of Xpose tables, Emacs Speaks
+NONMEM will generate the following tables as well:
+ - A conglomerate table =file.tab=
+ - A table of eta-values =file.eta=
+ - A table of parameter-values =file.par=
+
+The =file.par= and =file.eta= are required for the Eta and parameter plots in PDx pop.
+
+
+For example the following control stream:
+<src lang="esn">
+$DATA ./one.csv
+;| Variables 7/20 |;
+$INPUT ID DV CMT CRCL WT AGE SEXF
+;C ----------------------------------------------------------------------------
+;C                                INPUT Variables
+;C ----------------------------------------------------------------------------
+;C ID:    NONMEM ID
+;C DV:    Dependent Variable
+;C ----------------------------------------------------------------------------
+$PK
+  TVCL = THETA(1)
+  CL   = TVCL+ETA(1)
+
+  TVV1 = THETA(2)
+  V1   = TVCL*DEXP(ETA(2))
+
+  TVV2 = THETA(3)
+  V2   = TVV2*(1+ETA(3))
+
+$OMEGA BLOCK(3)
+0.1   ; [A] 1 - Cl
+0.02  ; [F]
+0.003 ; [P] 2 - V1
+0.001 ; [F]
+0.002 ; [F]
+0.004 ; [P] 3 - V2
+
+$ESTIMATION METHOD=ZERO
+</src>
+
+When saved generates the following tables:
+
+<src lang="esn">
+;| Pred Variables 10/50 |;
+$TABLE V2 TVV2 V1 TVV1 CL TVCL ID NOPRINT ONEHEADER NOAPPEND FILE=test.par
+$TABLE ETA3 ETA2 ETA1 NOPRINT ONEHEADER NOAPPEND FILE=test.eta
+$TABLE MDV V2 TVV2 V1 TVV1 CL TVCL ETA3 ETA2 ETA1 ID AGE CRCL WT SEXF NOPRINT
+ONEHEADER FILE=test.tab
+$TABLE V2 TVV2 V1 TVV1 CL TVCL ETA3 ETA2 ETA1 ID NOPRINT ONEHEADER NOAPPEND
+FILE=patabtest
+$TABLE MDV ID NOPRINT ONEHEADER FILE=sdtabtest
+$TABLE ID SEXF NOPRINT ONEHEADER NOAPPEND FILE=catabtest
+$TABLE ID AGE CRCL WT NOPRINT ONEHEADER NOAPPEND FILE=cotabtest
+</src>

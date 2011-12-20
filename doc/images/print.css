@@ -1,0 +1,264 @@
+* {
+	 margin: 0; border: 0;
+}
+body {
+	margin: 0;
+	font: normal Garmond, Times, serif;
+	color: #000;
+	background: #000;
+	text-align: center;
+	font-size: 11pt;
+
+}
+a {
+	color: #000;
+	background-color: inherit;
+
+}
+a:hover {
+	color: #000;
+	background-color: inherit;
+	text-decoration: none;
+}
+
+/* headers */
+h1, h2, h3 {
+	font: normal 1.3em 'Trebuchet MS', Arial, Sans-serif;
+	color: #000;
+}
+h1 { font-size: 1.6em; }
+h2 { font-size: 1.4em; text-transform:uppercase; font-weight: bold;}
+h3 { font-size: 1.3em; font-weight: bold; }
+
+p, h1, h2, h3 {
+	margin: 0;
+}
+
+ul, ol {
+	margin: 10px 30px;
+	color: #000;
+}
+
+/* images */
+img {
+
+}
+img.no-border {
+	border: none;
+}
+img.float-right {
+  margin: 5px 0px 5px 15px;
+}
+img.float-left {
+  margin: 5px 15px 5px 0px;
+}
+a img {
+  border: 3px solid #555;
+}
+a:hover img {
+  border: 3px solid #CCC !important; /* IE fix*/
+  border: 3px solid #555;
+}
+
+code {
+  font: 500 1em/1.5em 'Lucida Console', 'courier new', monospace;
+}
+acronym {
+  cursor: help;
+  border-bottom: 1px solid #9E3C02;
+}
+blockquote {
+	margin: 15px;
+  	background: #f1c870;
+	font: bold 1.3em/1.5em 'Trebuchet MS', Sans-serif;
+	border: 1px solid #9E3C02;
+}
+/* form elements */
+form {
+	margin: 10px 15px;
+
+	background: #f1c870;
+}
+label {
+	display:block;
+	font-weight:bold;
+	margin:5px 0;
+}
+input {
+
+	border:1px solid #eee;
+	font: normal 1em Verdana, sans-serif;
+}
+textarea {
+	width: 250px;
+
+	font: normal 1em Verdana, sans-serif;
+	border:1px solid #eee;
+	height:100px;
+	display:block;
+}
+input.button {
+	margin: 0;
+	font: bold 1em Arial, Sans-serif;
+	border: 1px solid #CCC;
+	background: #ec9433;
+	color: #9E3C02;
+}
+
+
+
+/***********************
+	  LAYOUT
+************************/
+#wrap {
+	background: #f2ca73 url(bg.jpg) repeat-x 0 0;
+	margin: 20px auto 0 auto;
+	text-align: left;
+  	border-color: #444;
+	border-style: solid;
+	border-width: 1px 1px 5px 1px;
+}
+#wrap, #footer-wrap {
+	width: 84%;
+}
+
+/* header */
+#header {
+    display: none;
+}
+#header h2#title {
+    display: inline;
+    position: absolute;
+    top: 20px;  right: 20px;
+    font: bolder 50px 'Trebuchet MS', Airal, Sans-serif;
+    letter-spacing: -2px;
+    text-transform: lowercase;
+    color: #9E3C02;
+}
+
+/* content-wrap */
+#content-wrap {
+	clear: both;
+	margin: 0;
+}
+
+#main {
+}
+#main .box {
+	margin-left: 0;
+}
+
+/* sidebar */
+#sidebar {
+    display: none;
+}
+#navigation{
+    display: none;
+}
+#arrowsidemenu{
+    display: none;
+}
+#menuheaders {
+    display: none;
+}
+#menucontents {
+    display: none;
+}
+/* Footer */
+#footer-wrap {
+    display: none;
+}
+
+/* alignment classes */
+.float-left  { float: left; }
+.float-right {	float: right; }
+.align-left  {	text-align: left; }
+.align-right {	text-align: right; }
+
+/* additional classes */
+.clear {	clear: both; }
+.orange  {	 }
+.comments {
+	text-align: right;
+
+	margin: 20px 15px 15px 15px;
+	background: #f1c870;
+	border: 1px solid #9E3C02;
+}
+
+.arrowsidemenu{
+	width: 200px; /*width of menu*/
+	border-style: solid solid none solid;
+	border-color: #D76100;
+	border-size: 1px;
+	border-width: 1px;
+        margin:0; padding 0;
+}
+
+.arrowsidemenu div a{ /*header bar links*/
+	font: bold 12px Verdana, Arial, Helvetica, sans-serif;
+	display: block;
+	background: transparent url(menu.gif) 100% 0;
+  height: 24px; /*Set to height of bg image-padding within link (ie: 32px - 4px - 4px)*/
+
+	line-height: 24px; /*Set line-height of bg image-padding within link (ie: 32px - 4px - 4px)*/
+	text-decoration: none;
+        height: 24px;
+        color: 26370A;
+}
+
+.arrowsidemenu div a:link, .arrowsidemenu div a:visited{
+        color: #9E3C02;
+
+}
+
+.arrowsidemenu div a:hover{
+	background-position: 100% -32px;
+        color: #FFFFFF;
+
+}
+
+.arrowsidemenu div.unselected a{ /*header that's currently not selected*/
+}
+
+.arrowsidemenu div.selected a{ /*header that's currently selected*/
+   background-position: 100% -64px !important;
+}
+
+.arrowsidemenu ul{
+	list-style-type: none;
+	margin: 0;
+
+}
+
+.arrowsidemenu ul li{
+	border-bottom: 1px solid #A99071;
+}
+
+
+.arrowsidemenu ul li a{ /*sub menu links*/
+	display: block;
+	font: normal 12px Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: black;
+
+
+	border-left: 10px double #A99071;
+        margins: 0px;
+        background-color: white;
+}
+
+.arrowsidemenu ul li a:hover{
+	background: #d9cec0;
+}
+
+pre.src {
+    text-align: left;
+
+    margin-left: 20px;
+    font-family: "Lucida Sans Typewriter", Courier, monospaced;
+    font-size: 10pt;
+    background: #FFFFFF;
+    border: 3px solid #000000;
+}
+}

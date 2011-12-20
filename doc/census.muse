@@ -1,0 +1,33 @@
+#title Census support
+* Census Support
+Emacs Speaks NONMEM supports the use of Census.
+* Emacs Speaks NONMEM Census Detection
+
+Emacs Speaks NONMEM detects if Pirana assumptions are in effect in the specified
+directory by:
+
+ - Checking if Emacs Speaks NONMEM is aware of a Census executable
+ - If PLT tools, PDx POP, and Census is not used for this control stream
+ - Census support is enabled (Toggled under the "Use" menu)
+
+<include file="pirana-census-reference-models.muse">
+
+Census also includes a custom header that has the line:
+<src lang="esn">
+;;;;C Parent=
+</src>
+
+This allows the parent model to be scanned by Census.
+
+* Other control stream mark-up.
+
+Comments are coded with the double semi-colon =;;=, so the default header includes
+double semi-colons.
+
+Parameter labels are specified after the =$THETA=, =$OMEGA= and =$SIGMA= blocks.  For
+this reason parameter numbering for Census control streams is turned off by
+default.
+
+* Other features
+
+Emacs Speaks NONMEM can launch Census from the menu ("Tools") or from the tool-bar.

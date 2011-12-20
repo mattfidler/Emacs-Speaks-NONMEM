@@ -1,0 +1,58 @@
+Note that if you run PLT tools, and use the =;C= comment to include the =$THETA=,
+=$OMEGA= and =$SIGMA= labels, the final document may be little confusing.  For
+example, with:
+
+<src lang="esn">
+$THETA (0,150.,)  ;C THETA(1) - popE0
+$THETA (0,200.,)  ;C THETA2 - popEMAX
+$THETA (.001,10,) ;C THETA[3] - popEC50
+$OMEGA 0.5 ;C ETA(1) - etaE0
+$OMEGA 0.5 ;C  ETA(2) - etaEMAX
+$OMEGA 0.5 ;C OMEGA3 -  etaEC50
+$SIGMA 100 ;C SIGMA1 errSD
+</src>
+
+This would become:
+
+<src>
+ETA (0,150.,)  ;C THETA(1) - popE0
+ETA (0,200.,)  ;C THETA2 - popEMAX
+ETA (.001,10,) ;C THETA[3] - popEC50
+EGA 0.5 ;C ETA(1) - etaE0
+EGA 0.5 ;C  ETA(2) - etaEMAX
+EGA 0.5 ;C OMEGA3 -  etaEC50
+GMA 100 ;C SIGMA1 errSD
+</src>
+
+PLT tools 2.3.0 build 1589 takes drops the first 3 characters of the line
+recognized to be have comment text.  Therefore the =$THETA= blocks becomes =ETA=,
+though it does not code for =ETA= variables.  One way to overcome this is by
+having the code on each comment on a line without the record.  In this example,
+we would have:
+
+<src lang="esn">
+$THETA 
+       (0,150.,)  ;C THETA(1) - popE0
+       (0,200.,)  ;C THETA2 - popEMAX
+       (.001,10,) ;C THETA[3] - popEC50
+$OMEGA 
+       0.5 ;C ETA(1) - etaE0
+       0.5 ;C  ETA(2) - etaEMAX
+       0.5 ;C OMEGA3 -  etaEC50
+$SIGMA 
+       100 ;C SIGMA1 errSD
+</src>
+
+would result in unambiguous comments in the Brief Summary pdf:
+<src>
+    (0,150.,)  ;C THETA(1) - popE0
+    (0,200.,)  ;C THETA2 - popEMAX
+    (.001,10,) ;C THETA[3] - popEC50
+    0.5 ;C ETA(1) - etaE0
+    0.5 ;C  ETA(2) - etaEMAX
+    0.5 ;C OMEGA3 -  etaEC50
+    100 ;C SIGMA1 errSD
+</src>
+
+
+As of PLT tools 2.3.0 build 1589, this is no longer an issue (thanks Dennis!)

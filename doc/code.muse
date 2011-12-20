@@ -1,0 +1,161 @@
+#title Autogenerate Code
+
+One of the features of Emacs Speaks NONMEM is the automatic generation of
+certain pieces of code that may be useful for analysis, such as
+[[#cwres][conditional weighted residuals]], [[#large][splitting up control streams]] to bypass the 20
+(<NONMEM 6.2) or 50 variable =PRED= generated output variable limitation of
+NONMEM, and [[#secondary][automatically generating code secondary parameters]].  Some of the
+code is specific to the NONMEM version that is used.  For this reason a
+[[#version][discussion]] of how Emacs Speaks NONMEM determines the version is included.
+
+#cwres
+* Conditional Weighted Residuals
+
+Conditional Weighted Residuals were proposed for [[http://www.page-meeting.org/?abstract=1001][NONMEM by Andrew Hooker]].
+Instructions on what to do to generate the appropriate piece of code are found
+in [[http://xpose.sourceforge.net/generic_chm/compute.cwres.html][Xpose's website]].  Emacs Speaks NONMEM helps with the generation by allowing
+
+ - Appropriate Code to be generated depending on the version of NONMEM selected
+ - Code to be reflective of the estimation method using.  Currently, the default
+   method where conditional weighted residuals are generated is the first order
+   conditional estimation method.  Other methods may be specified through the
+   menu:
+   - Automation
+     - Options
+
+
+If you plan to use Perl Speaks NONMEM, you will need to select
+
+ - Automation
+   - Options
+     - PsN compatibility -- Use ../../ for .est files
+
+This allows the =.est= files required for the calculation of conditional weighted
+residuals to reside in the same directory as the rest of the files and the
+control stream.
+
+#large
+* Large Tables
+
+When there are over 20 =PRED= generated variables (or 50 in NONMEM VI.2 or
+greater), NONMEM can not output the variables using one control stream.  One
+solution is to output the model specification, and use the same model to output
+the missing variables.  Last the variables should be merged together.  Emacs
+Speaks NONMEM can do this automatically when you save, and open as if there were
+no limit to the number of variables that can be output.  When there are more
+variables output than can be interpreted by NONMEM, Emacs Speaks NONMEM modifies
+and splits the files as follows:
+ - The open control stream is stripped of variables over the 20/50 =PRED=
+   generated variable limit, and places comments at the end of the control
+   stream that allows NONMEM to know about these variables and open the base
+   control stream as if this translation did not occur.
+ - Change the table names in this file to have a trailing =~0= in the file name.
+   For example a table output of  =patab1= would be changed to =patab1~0=
+ - Create the appropriate number of control streams that read in the model
+   specification file and output variables that are missing from =patab1~0=.  For
+   example,
+   - For the first new control stream, =run1.mod=, create a new control stream
+     =run1~1.mod= that outputs tables where the variables are missing from the
+     table specified in =run1.mod=.  For a table =patab1=, this control stream would
+     output =patab1~1=.
+   - More control stream and table information are created if
+     necessary. (i.e. =run1~2.mod=, =patab1~2=, =run1~3.mod=, =patab1~3=, etc.
+   - To produce the final table, you will need to:
+     - Run the first control stream =run1.mod=.  Once this has been completed, run
+       all subsequent control streams =run1~2.mod=, =run1~3.mod=, etc.
+     - Merge the output datasets together to the final tables.
+
+Note that you will have to create a script to paste the tables together line-by-line.  An example of this using Xpose and R, is as follows:
+
+<lisp>
+(let (
+      (file (concat esn-path "esn-xpose-summary.R"))
+      (p1 nil)
+      (ret "")
+      )
+  (when (file-exists-p file)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (when (re-search-forward "^ *xpose.merge[ \t\n]*[<][-][ \t]*function" nil t)
+	(setq p1 (save-excursion (backward-char (length (match-string 0))) (point)))
+	(end-of-line)
+	(when (search-forward "function" nil t)
+	  (beginning-of-line)
+	  (setq ret (concat "<src lang=\"R\">\n" (buffer-substring p1 (point)) "</src>"))
+	  )
+	)
+      )
+    )
+  (symbol-value 'ret)
+  )
+</lisp>
+
+After loading this function, the tables can be merged with =xpose.merge(1)=.
+
+This automatic splitting and reassembling can be toggled by:
+
+ - Automation
+   - Create multiple control streams to output more generated
+     variables than NONMEM can handle
+
+#secondary
+* Secondary Parameters Output
+
+Another option that Emacs Speaks NONMEM allows is the generation of
+secondary parameters for specific PK ADVAN/TRANS combinations.  This
+creates a section of code that generates useful secondary parameters
+such as half-life when Emacs Speaks NONMEM can determine that the
+parameter calculation applies.
+
+For example, in a one-compartment model, Emacs Speaks NONMEM adds the following
+parameters:
+
+<src lang="esn">
+$PROBLEM test
+$SUBROUTINES ADVAN1 TRANS2
+$PK
+  CL   = THETA(1)*DEXP(ETA(1))
+  V    = THETA(2)*DEXP(ETA(2))
+
+  ;| Begin Secondary Parameters
+  IF (AMT.GT.0) THEN
+    ;; Fixed Amount Variable
+    DOSE = AMT
+    ;; Time After Dose Calculation
+    TDOS = TIME
+    TAD  = 0.0
+  ENDIF
+  IF(AMT.EQ.0) THEN
+    TAD  = TIME - TDOS
+  ENDIF
+
+  K    = CL/V
+  HLK  = -DLOG(0.5)/K
+  AUC  = DOSE/CL
+  CMAX = DOSE/V
+  AUMB = DOSE/(CL*KA)
+  VSS  = CL*MRT
+  ;| End Secondary Parameters
+</src>
+
+The code between =;| Begin Secondary Parameters= and =;| End Secondary Parameters=
+will be auto-generated based on the ADVAN/TRANS combination that is used.  This
+option may be toggled at:
+
+
+ - Automation
+   - On save, generate derived paramters like duration, AUC, etc., when
+     known.
+
+#version
+* Determining NONMEM version
+
+Emacs Speaks NONMEM determines the NONMEM version in the following way:
+
+ - The version of NONMEM is specified within the header (must be prompted for, and
+   setup appropriately; see [[customize-header][Configure header]]).
+ - If Emacs Speaks NONMEM cannot determine the version it
+   assumes the version  specified in the Use menu.
+
+

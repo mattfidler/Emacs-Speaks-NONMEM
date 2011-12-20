@@ -1,0 +1,17 @@
+#title MU variable referencing
+* Mu variable referencing
+NONMEM 7 introduces the Mu variable to help in the new estimation procedures.
+These mu variables inform NONMEM how =THETAs= are associated with =ETAs=.  This
+association, =PHI= must be of the form of:
+
+<src lang="esn">
+PHI_i=MU_i(theta)+ETA(i)
+</src>
+
+For the best results when using =MU_i= to help minimization, 
+ - =MU_i= must be defined in terms of =ETA_i=
+ - When a relationship is defined later in the text it must be explicitly
+   =MU_i= + =EPS(1)=
+ - Once a =MU= is defined, any =THETA= values relating to =MU= may not be used
+   again.
+

@@ -1,0 +1,11 @@
+* Reference Models
+Emacs Speaks NONMEM supports the reference models of Pirana and census.  Emacs
+Speaks NONMEM [[links][links]] to the reference files if the user puts one puts the
+following in the control stream:
+<src lang="esn">
+ ; Ref=001.mod
+ ; Parent: 001
+ ; etc
+</src>
+
+

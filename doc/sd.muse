@@ -1,0 +1,73 @@
+#title Displaying Symbols
+
+* Overview
+Emacs Speaks NONMEM can display variables, subscripts and other such
+things as symbols.  For example, a nonsensical code of =THETA=, =ETA=, and
+=EPS= values is usually displayed as:
+
+[[./images/ds-no-theta.png][Symbols are not displayed]]
+
+However, when using symbols, this same code is abbreviated using symbols:
+
+[[./images/ds-theta.png][Displaying Symbols]]
+
+* What is changed to a symbol
+ Code || Symbol/Abbreviation
+=THETA(1)= | <literal style="html">&theta;<sub>1</sub></literal><literal style="latex">$\theta_1$</literal>
+=ETA(1)= | <literal style="html">&eta;<sub>1</sub></literal><literal style="latex">$\eta_1$</literal>
+=EPS(1)= | <literal style="html">&epsilon;<sub>1</sub></literal><literal style="latex">$\varepsilon_1$</literal>
+=K_OUT= | <literal style="html">K<sub>OUT</sub></literal><literal style="latex">$K_{OUT}$</literal>
+=K12= | <literal style="html">K<sub>12</sub></literal><literal style="latex">$K_{12}$</literal>
+=A**(1+X)= | <literal style="html">A<sup>1+X</sup></literal><literal style="latex">$A^{1+X}$</literal>
+=A**2= | <literal style="html">A<sup>2</sup></literal><literal style="latex">$A^{2}$</literal>
+=A*B= | <literal style="html">A&times;B</literal><literal style="latex">$A\times B$</literal>
+
+* Options
+** THETA/ETA/EPS Options
+** Multiply Symbol
+** Fraction Symbols
+Emacs Speaks NONMEM allows =1/2=, =1/4=, and =3/4= to be represented as either a
+compressed fraction symbol, or a regular text.  If the option for a compressed
+fraction is used, the display is as follows:
+[[./images/ds-frac.png][Fractions Compressed]]
+
+If the option is not enabled, the display is as follows:
+
+[[./images/ds-nofrac.png][Fractions Regular Display]]
+*** Enabling/Disabling
+
+This option may be toggled with the following menu:
+
+ - NONMEM
+   - Display Options
+     - Symbol Options
+       - Use Fraction Symbol for 1/2, 1/4 and 3/4
+
+By default, this option is disabled. 
+
+** Specific Superscript symbols
+Emacs Speaks NONMEM allows =**1=, =**2=, and =**3= to be represented as either a
+compressed superscript, or a regular supersript.  If the option for a compressed
+superscript is used, the display is as follows:
+
+[[./images/ds-smallsuperscript.png][Comparessed/Small Superscript]]
+
+However, if the option is not enabled, the display is as follows:
+
+[[./images/ds-regsuperscript.png][Regular Superscript]]
+
+*** Enabling/Disabling
+
+This option may be toggled with the following menu:
+
+ - NONMEM
+   - Display Options
+     - Symbol Options
+       - Use the superscript symbol for for **1, **2, and **3
+
+By default, this option is disabled.
+
+
+* Operating System Differences
+* Enabling/Disabling
+

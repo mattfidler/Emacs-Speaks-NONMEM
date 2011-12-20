@@ -1,0 +1,28 @@
+#title Portable ESN (Windows)
+
+* Portable Emacs
+Emacs in and of itself may be portable with the right scripts.  
+
+* Portable Imagemagick
+There is a [[http://www.imagemagick.org/discourse-server/viewtopic.php?f=8&t=12926][portable version]] of Imagemagick that could be used with
+Emacs Speaks NONMEM.  It takes some configuring to work correctly;
+I have created a package that works with the portable-apps framework.
+
+* Portable R
+=R= is a basically portable install in Windows and may be put onto a
+thumb drive and used from there.  An thumb-drive installer may be
+[[http://www.stat.tamu.edu/~aredd/site/?q=node/2][found at Andrew Redd's website.]]  I have also packaged R 2.9.1 with
+useful pharmacometric utilites such as:
+
+ - MIfuns ([[http://metruminstitute.org/index.php?option=com_content&view=article&id=21:all-software&catid=3:downloads&Itemid=28][Metrum Institute R-functions]])
+ - SASxport ([[http://metruminstitute.org/index.php?option=com_content&view=article&id=21:all-software&catid=3:downloads&Itemid=28][Export a R-dataset to a xport file]])
+ - Xpose ([[http://xpose.sourceforge.net/][Graphics and Tools from Sweeden]])
+
+* Portable G77
+
+Using as a base [[http://metruminstitute.org/index.php?option=com_content&view=article&id=12&catid=3&Itemid=16][Metrum's redistribution of G77]], I have created a
+portable G77 application.
+
+* Portable Miktex
+
+Portable Miktex is in a beta release.

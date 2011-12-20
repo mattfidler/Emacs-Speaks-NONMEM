@@ -1,0 +1,33 @@
+#title Xmind Support
+Xmind has not been used frequently in pharmacometric analysis to date.  However,
+it provides a graphical way to organize the though-process associated with
+NONMEM modeling process. To use the Xmind support requires:
+
+ - R
+ - Either unix type zip/unzip or 7zip installed in its default location
+
+When creating a new run, the run is put into the =_project.xmind= file under the
+main topic.  This general run information is then linked to another xmind file
+that has information about the run. 
+
+
+When moving the run around in the Xmind file, an Xmind comment is updated to the "Path" of the run
+in the Xmind map,  For example:
+<src lang="esn">
+; Xmind: Project > One Compartment
+</src>
+will state that the current model is under the "One Compartment" node in the
+=_project.xmind= map.  When copying the control stream, or saving the control
+stream as another name, the new control stream is added in the same "One
+Compartment" node.  Each node is identified by the control stream name in a
+label.
+
+After a NONMEM run has been submitted, by running the R script associated with
+the run, the xmind files associated with that run are updated.  It will put
+information about the run and link graphics in both runs.
+
+
+
+
+
+

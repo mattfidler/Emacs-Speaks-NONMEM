@@ -1,0 +1,168 @@
+#align
+* Alignment
+
+Emacs Speaks NONMEM aligns records based on the record name, and record type
+
+** Record Indentation
+
+By default a record is a hanging indent with a variable number of spaces based
+on how many characters are record itself.  For example an =$INPUT= record may be
+aligned differently based on if the record specification is =$INPUT= or =$INP=. For
+=$INPUT= the hanging indent is 7 characters:
+
+<src lang="esn">
+$INPUT ID NUM DV TIME CMT CRCL WTKG RACE RIMP SEXF LBW IBW BSA SMOK TBIL ALT
+       AST
+</src>
+
+For =$INP= the hanging indent is 5 characters:
+
+<src lang="esn">
+$INP ID NUM DV TIME CMT CRCL WTKG RACE RIMP SEXF LBW IBW BSA SMOK TBIL ALT
+     AST
+</src>
+
+In addition there are records who do not follow this procedure (like =$PK=) -- they are
+automatically indented to 2 characters.  Which records are only indented to two
+characters may be customized in the Automation menu, under:
+
+ - Changes While Editing
+   - Alignment Options
+     - Customize records not indented to record-length
+
+There are also records that are not indented at all -- by default the =$TABLE=
+record.  Which records are not indented may be changed in the
+automation menu as well, under:
+
+ - Changes While Editing
+   - Alignment Options
+     - Customize records with no indentation
+
+Overall, this automatic record indentation may be toggled at:
+
+ - Automation
+   - Changes While Editing
+     - Automatically indent
+
+
+** $THETA/$OMEGA/$SIGMA alignment
+
+Another option that Emacs Speaks NONMEM supports is the alignment of =$THETA=,
+=$OMEGA=, and =$SIGMA= records.  In addition to the standard hanging indent, the
+estimates are aligned by commas and semi-colons add continuity to the display of
+the estimates.
+
+For example, the =$THETA= record may be aligned as:
+
+<src lang="esn">
+$THETA (0,    30)       ; 1 -  Cl (L/hr)
+       (0,    40)       ; 2 -  Vc (L)
+       (-200, 0.1, 200) ; 3 - Cov1 (L)
+</src>
+
+The numbers are aligned in a column-like fashion.  The estimates themselves are
+also aligned in a similar fashion.
+
+Estimates for =$OMEGA= and =$SIGMA= records, are aligned at the "." point whether
+present or assumed.  For example
+
+<src lang="esn">
+$OMEGA BLOCK(4)
+     0                 ; 1 - BSV_Var1
+      .0002 4          ; 2 - BSV_Var2
+ 20000    400.     3   ; 3 - BSV_Var3
+     2       .0003 4 5 ; 4 - BSV_var4
+</src>
+
+This may be toggled at:
+
+ - Automation
+   - Changes While Editing
+     - Align THETA,OMEGA & SIGMA
+
+** $PK/$DES/$AES alignment
+For code-based sections, indentation rules are automatically applied. The
+comments are aligned, the code itself is aligned at the = sign (for the current
+indentation level), and appropriate blocks (like =IF= ... =THEN=, =ENDIF=) are
+indented, all without much user intervention.  An example of this is the $PK
+block:
+
+<src lang="esn">
+$PK
+  TVCL = THETA(1)          ; Clearance (Population)
+  IF (RACE.EQ.1) THEN
+    TVCL = TVCL + THETA(2) ; Shift for Race 1.
+  ENDIF
+  CL   = TVCL*DEXP(ETA(1)) ; Individual Clearance
+</src>
+
+Note that the alignment is based on the level of the variable, with the
+exception of =IF= statements, for example:
+
+<src lang="esn">
+$PK
+  TVCL = THETA(1)                       ; Clearance (Population)
+  IF (RACE.EQ.1) TVCL = TVCL + THETA(2) ; Shift for Race 1.
+  CL   = TVCL*DEXP(ETA(1))              ; Individual Clearance
+</src>
+
+Does not change the alignment, but a long variable changes the alignment:
+
+<src lang="esn">
+$PK
+  TVCL       = THETA(1)
+  THISISLONG = THETA(2)
+  CL         = TVCL*DEXP(ETA(1))
+</src>
+
+This automatic alignment of equal signs and alignments may be toggled with the
+menu:
+
+
+ - Automation
+   - Changes While Editing
+     - Align Code at = and comments
+
+When disabled, Emacs Speaks NONMEM only indents the blocks of code.
+
+* Wrapping
+
+One of the possible features of NONMEM is to automatically wrap NONMEM code at
+the 80 character mark.  As an example the following =$INPUT= record has been typed.
+
+<src lang="esn">
+$INPUT ID NUM DV TIME CMT CRCL WTKG RACE RIMP SEXF LBW IBW BSA SMOK TBIL ALT
+</src>
+
+When automatic indentation is enabled, typing =AST= at the of the =$INPUT= field
+gives the following automatic wrapping and indentation:
+
+<src lang="esn">
+$INPUT ID NUM DV TIME CMT CRCL WTKG RACE RIMP SEXF LBW IBW BSA SMOK TBIL ALT
+       AST
+</src>
+
+When automatic indentation is disabled, typing =AST= at the end of the =$INPUT=
+field wraps, but does not indent, as follows:
+
+<src lang="esn">
+$INPUT ID NUM DV TIME CMT CRCL WTKG RACE RIMP SEXF LBW IBW BSA SMOK TBIL ALT
+AST
+</src>
+
+Wrapping may be toggled at:
+ - Automation
+   - Changes While Editing
+     - Automatic Wrapping of Records
+
+
+
+Some records are not wrapped by default (for example the =$PK= record).  Which
+records may be customized in Emacs speaks NONMEM by the following menu:
+
+
+ - Automation
+   - Changes While Editing
+     - Customize records not wrapped
+
+

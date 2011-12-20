@@ -1,0 +1,11 @@
+#title Changes while Saving
+
+There are a few changes that may automatically occur while saving, including
+
+ - [[#tabs][Update table names on copy/save-as]]
+ - Update table variables and create tables upon save
+
+#tab
+* Update table names on copy/save-as
+
+

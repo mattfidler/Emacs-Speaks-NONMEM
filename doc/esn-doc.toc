@@ -1,0 +1,184 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Overview}{6}{section.1}
+\contentsline {subsection}{\numberline {1.1}Emacs Speaks NONMEM}{6}{subsection.1.1}
+\contentsline {section}{\numberline {2}Download}{7}{section.2}
+\contentsline {subsection}{\numberline {2.1}Download}{7}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Version 0.1}{7}{subsection.2.2}
+\contentsline {section}{\numberline {3}Install}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Ghostscript/GSView}{7}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Windows Install}{8}{subsubsection.3.1.1}
+\contentsline {subsection}{\numberline {3.2}Ghostscript}{8}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}GSview}{9}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Mac OSX install}{11}{subsubsection.3.3.1}
+\contentsline {subsection}{\numberline {3.4}Tortoise Hg/Mercurial}{11}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Tortoise Hg (optional)}{11}{subsubsection.3.4.1}
+\contentsline {subsection}{\numberline {3.5}ImageMagick}{16}{subsection.3.5}
+\contentsline {subsubsection}{\numberline {3.5.1}ImageMagick (optional)}{16}{subsubsection.3.5.1}
+\contentsline {subsection}{\numberline {3.6}Emacs}{21}{subsection.3.6}
+\contentsline {subsubsection}{\numberline {3.6.1}Windows Install}{21}{subsubsection.3.6.1}
+\contentsline {subsection}{\numberline {3.7}EmacsW32 (Installer)}{21}{subsection.3.7}
+\contentsline {subsubsection}{\numberline {3.7.1}Install Emacs W32}{21}{subsubsection.3.7.1}
+\contentsline {subsection}{\numberline {3.8}Official binaries}{31}{subsection.3.8}
+\contentsline {subsubsection}{\numberline {3.8.1}Mac Install}{33}{subsubsection.3.8.1}
+\contentsline {subsection}{\numberline {3.9}\href {EmacsPortable.pdf}{EmacsPortable}\let \reserved@d =[\def \par }{33}{subsection.3.9}
+\contentsline {subsubsection}{\numberline {3.9.1}Emacs Portable}{33}{subsubsection.3.9.1}
+\contentsline {subsection}{\numberline {3.10}GnuWin32}{34}{subsection.3.10}
+\contentsline {subsection}{\numberline {3.11}AUCTeX}{35}{subsection.3.11}
+\contentsline {subsection}{\numberline {3.12}Emacs Speaks Statistics}{36}{subsection.3.12}
+\contentsline {subsection}{\numberline {3.13}Emacs Muse}{36}{subsection.3.13}
+\contentsline {subsection}{\numberline {3.14}Aspell}{36}{subsection.3.14}
+\contentsline {subsection}{\numberline {3.15}Emacs Speaks NONMEM}{36}{subsection.3.15}
+\contentsline {subsection}{\numberline {3.16}Support programs}{36}{subsection.3.16}
+\contentsline {subsubsection}{\numberline {3.16.1}Installing Emacs Speaks NONMEM without \href {EmacsPortable.pdf}{EmacsPortable}\let \reserved@d =[\def \par }{37}{subsubsection.3.16.1}
+\contentsline {section}{\numberline {4}Configuration}{37}{section.4}
+\contentsline {subsection}{\numberline {4.1}Configure Header}{37}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Customize Keys}{37}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Emacs Customizations}{37}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Using Different Keyboards}{37}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}QWERTY Keyboard}{38}{subsubsection.4.2.3}
+\contentsline {subsection}{\numberline {4.3}Swapping Control and alt}{38}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Swap Caps Lock and Control}{39}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Set Caps Lock Equal to Control}{39}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Swap Control and Alt, CapsLock = Control}{39}{subsection.4.6}
+\contentsline {subsubsection}{\numberline {4.6.1}Colemak Keyboard}{40}{subsubsection.4.6.1}
+\contentsline {subsection}{\numberline {4.7}Colemak Keyboard}{40}{subsection.4.7}
+\contentsline {subsection}{\numberline {4.8}Colemak Keyboard, Swap Control and Alt}{42}{subsection.4.8}
+\contentsline {subsubsection}{\numberline {4.8.1}Dvorak Keyboard}{43}{subsubsection.4.8.1}
+\contentsline {subsection}{\numberline {4.9}Dvorak Keyboard}{43}{subsection.4.9}
+\contentsline {subsection}{\numberline {4.10}Dvorak Keyboard, Swap Control and Alt}{45}{subsection.4.10}
+\contentsline {subsection}{\numberline {4.11}Dvorak Keyboard, Swap Capslock and Control}{46}{subsection.4.11}
+\contentsline {subsection}{\numberline {4.12}Dvorak Keyboard, CapsLock = Control}{47}{subsection.4.12}
+\contentsline {subsection}{\numberline {4.13}Dvorak Keyboard, Swap Control and Alt, CapsLock = Control}{49}{subsection.4.13}
+\contentsline {subsubsection}{\numberline {4.13.1}Dvorak-QWERTY Command Keyboard}{50}{subsubsection.4.13.1}
+\contentsline {subsection}{\numberline {4.14}Dvorak-QWERTY Command Keyboard}{50}{subsection.4.14}
+\contentsline {subsection}{\numberline {4.15}Dvorak-QWERTY, Swap Control and Alt}{51}{subsection.4.15}
+\contentsline {subsection}{\numberline {4.16}Dvorak-QWERTY, Swap CapsLock and Control}{54}{subsection.4.16}
+\contentsline {subsection}{\numberline {4.17}Dvorak-QWERTY, CapsLock = Control}{54}{subsection.4.17}
+\contentsline {subsection}{\numberline {4.18}Dvorak-QWERTY, Swap Control and Alt, CapsLock = Control}{56}{subsection.4.18}
+\contentsline {section}{\numberline {5}Automation}{59}{section.5}
+\contentsline {subsection}{\numberline {5.1}While Editing}{59}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Automatic Capitalization}{59}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.2}Count of Input/Output items}{60}{subsubsection.5.1.2}
+\contentsline {subsubsection}{\numberline {5.1.3}Tab completion}{61}{subsubsection.5.1.3}
+\contentsline {subsection}{\numberline {5.2}General Tab completion}{61}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}File Completion}{63}{subsection.5.3}
+\contentsline {subsection}{\numberline {5.4}Completing the \$INPUT record}{64}{subsection.5.4}
+\contentsline {subsection}{\numberline {5.5}Completing the Scaling parameter}{66}{subsection.5.5}
+\contentsline {subsubsection}{\numberline {5.5.1}Seed Generation}{67}{subsubsection.5.5.1}
+\contentsline {subsection}{\numberline {5.6}Record Indentation}{67}{subsection.5.6}
+\contentsline {subsection}{\numberline {5.7}\$THETA/\$OMEGA/\$SIGMA alignment}{68}{subsection.5.7}
+\contentsline {subsection}{\numberline {5.8}\$PK/\$DES/\$AES alignment}{69}{subsection.5.8}
+\contentsline {section}{\numberline {6}Wrapping}{70}{section.6}
+\contentsline {subsubsection}{\numberline {6.0.1}Numbering of Estimates}{70}{subsubsection.6.0.1}
+\contentsline {subsubsection}{\numberline {6.0.2}Updating BLOCK statements}{73}{subsubsection.6.0.2}
+\contentsline {subsubsection}{\numberline {6.0.3}Updating ADVAN/TRANS descriptions}{73}{subsubsection.6.0.3}
+\contentsline {subsection}{\numberline {6.1}Autogenerate Code}{75}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Conditional Weighted Residuals}{75}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}Large Tables}{76}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Secondary Parameters Output}{77}{subsubsection.6.1.3}
+\contentsline {subsubsection}{\numberline {6.1.4}Determining NONMEM version}{78}{subsubsection.6.1.4}
+\contentsline {subsection}{\numberline {6.2}Invisible Corrections}{79}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}File Coding System}{79}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Tabs, Return at End of Control Stream}{79}{subsubsection.6.2.2}
+\contentsline {subsection}{\numberline {6.3}Between Subject Variability Exploration}{79}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}Between Subject Variability}{79}{subsubsection.6.3.1}
+\contentsline {section}{\numberline {7}Outside Integration}{81}{section.7}
+\contentsline {subsection}{\numberline {7.1}Census Integration}{81}{subsection.7.1}
+\contentsline {subsubsection}{\numberline {7.1.1}Census Support}{81}{subsubsection.7.1.1}
+\contentsline {subsubsection}{\numberline {7.1.2}Emacs Speaks NONMEM Census Detection}{81}{subsubsection.7.1.2}
+\contentsline {section}{\numberline {8}Reference Models}{81}{section.8}
+\contentsline {subsubsection}{\numberline {8.0.3}Other control stream mark-up.}{82}{subsubsection.8.0.3}
+\contentsline {subsubsection}{\numberline {8.0.4}Other features}{82}{subsubsection.8.0.4}
+\contentsline {subsection}{\numberline {8.1}NMQual Integration}{82}{subsection.8.1}
+\contentsline {subsubsection}{\numberline {8.1.1}NMQual Integration}{82}{subsubsection.8.1.1}
+\contentsline {subsection}{\numberline {8.2}PDx Pop Integration}{82}{subsection.8.2}
+\contentsline {subsection}{\numberline {8.3}Pirana Integration}{82}{subsection.8.3}
+\contentsline {subsubsection}{\numberline {8.3.1}Emacs Speaks NONMEM Pirana Detection}{82}{subsubsection.8.3.1}
+\contentsline {section}{\numberline {9}Reference Models}{82}{section.9}
+\contentsline {subsubsection}{\numberline {9.0.2}Putting covariance comments on off-diagonal blocks}{83}{subsubsection.9.0.2}
+\contentsline {subsubsection}{\numberline {9.0.3}Included Files}{83}{subsubsection.9.0.3}
+\contentsline {subsection}{\numberline {9.1}PLT Tools Integration}{83}{subsection.9.1}
+\contentsline {subsubsection}{\numberline {9.1.1}PLT Tools Support}{83}{subsubsection.9.1.1}
+\contentsline {subsubsection}{\numberline {9.1.2}Notes for Windows}{84}{subsubsection.9.1.2}
+\contentsline {subsection}{\numberline {9.2}Automatic Updating of AllRecords.txt and FirstRecords.txt}{84}{subsection.9.2}
+\contentsline {subsubsection}{\numberline {9.2.1}Time Dependent Parameters}{84}{subsubsection.9.2.1}
+\contentsline {subsection}{\numberline {9.3}Automatic PLT Tools Graphic Script Creation}{85}{subsection.9.3}
+\contentsline {subsection}{\numberline {9.4}Commenting Records for Brief Summary document}{85}{subsection.9.4}
+\contentsline {subsection}{\numberline {9.5}Emacs Speaks NONMEM's UserDefinedScript.R}{86}{subsection.9.5}
+\contentsline {subsection}{\numberline {9.6}Links in PLT tools}{86}{subsection.9.6}
+\contentsline {subsection}{\numberline {9.7}PsN Integration}{86}{subsection.9.7}
+\contentsline {subsubsection}{\numberline {9.7.1}Perl Speaks NONMEM integration}{86}{subsubsection.9.7.1}
+\contentsline {subsection}{\numberline {9.8}Wings for NONMEM Integration}{87}{subsection.9.8}
+\contentsline {subsubsection}{\numberline {9.8.1}Wings for NONMEM integration}{87}{subsubsection.9.8.1}
+\contentsline {subsection}{\numberline {9.9}Xpose Integration}{88}{subsection.9.9}
+\contentsline {subsubsection}{\numberline {9.9.1}Xpose File Names}{88}{subsubsection.9.9.1}
+\contentsline {subsection}{\numberline {9.10}Using Xpose conventions}{89}{subsection.9.10}
+\contentsline {subsection}{\numberline {9.11}Using Arbitrary Names}{89}{subsection.9.11}
+\contentsline {subsubsection}{\numberline {9.11.1}Xpose tables}{90}{subsubsection.9.11.1}
+\contentsline {subsubsection}{\numberline {9.11.2}Xpose Documentation}{90}{subsubsection.9.11.2}
+\contentsline {section}{\numberline {10}Display}{90}{section.10}
+\contentsline {subsection}{\numberline {10.1}80 Character Limit}{90}{subsection.10.1}
+\contentsline {subsubsection}{\numberline {10.1.1}Only lines over 80 characters}{90}{subsubsection.10.1.1}
+\contentsline {subsubsection}{\numberline {10.1.2}All lines except current}{90}{subsubsection.10.1.2}
+\contentsline {subsubsection}{\numberline {10.1.3}Extended control stream support}{91}{subsubsection.10.1.3}
+\contentsline {subsection}{\numberline {10.2}Code Highlighting}{91}{subsection.10.2}
+\contentsline {subsubsection}{\numberline {10.2.1}Overview}{91}{subsubsection.10.2.1}
+\contentsline {subsubsection}{\numberline {10.2.2}Options}{92}{subsubsection.10.2.2}
+\contentsline {subsection}{\numberline {10.3}Context Sensitive Highlighting}{92}{subsection.10.3}
+\contentsline {subsubsection}{\numberline {10.3.1}Example}{92}{subsubsection.10.3.1}
+\contentsline {subsection}{\numberline {10.4}Parameter Name Highlighting}{93}{subsection.10.4}
+\contentsline {subsection}{\numberline {10.5}Displaying Symbols}{94}{subsection.10.5}
+\contentsline {subsubsection}{\numberline {10.5.1}Overview}{94}{subsubsection.10.5.1}
+\contentsline {subsubsection}{\numberline {10.5.2}What is changed to a symbol}{95}{subsubsection.10.5.2}
+\contentsline {subsubsection}{\numberline {10.5.3}Options}{95}{subsubsection.10.5.3}
+\contentsline {subsection}{\numberline {10.6}THETA/ETA/EPS Options}{95}{subsection.10.6}
+\contentsline {subsection}{\numberline {10.7}Multiply Symbol}{95}{subsection.10.7}
+\contentsline {subsection}{\numberline {10.8}Fraction Symbols}{95}{subsection.10.8}
+\contentsline {subsubsection}{\numberline {10.8.1}Enabling/Disabling}{96}{subsubsection.10.8.1}
+\contentsline {subsection}{\numberline {10.9}Specific Superscript symbols}{97}{subsection.10.9}
+\contentsline {subsubsection}{\numberline {10.9.1}Enabling/Disabling}{98}{subsubsection.10.9.1}
+\contentsline {subsubsection}{\numberline {10.9.2}Enabling/Disabling}{98}{subsubsection.10.9.2}
+\contentsline {subsection}{\numberline {10.10}Read-Only/Hidden Text}{98}{subsection.10.10}
+\contentsline {subsubsection}{\numberline {10.10.1}Header}{98}{subsubsection.10.10.1}
+\contentsline {subsection}{\numberline {10.11}Read only portions}{99}{subsection.10.11}
+\contentsline {subsection}{\numberline {10.12}Hidden portions}{99}{subsection.10.12}
+\contentsline {subsection}{\numberline {10.13}Portions where this may apply}{99}{subsection.10.13}
+\contentsline {section}{\numberline {11}Control Stream Features}{100}{section.11}
+\contentsline {subsection}{\numberline {11.1}Extended Control Streams}{100}{subsection.11.1}
+\contentsline {subsubsection}{\numberline {11.1.1}Overview}{100}{subsubsection.11.1.1}
+\contentsline {subsubsection}{\numberline {11.1.2}Key Definitions}{100}{subsubsection.11.1.2}
+\contentsline {subsection}{\numberline {11.2}Parameter Names}{100}{subsection.11.2}
+\contentsline {subsubsection}{\numberline {11.2.1}Extended Control Stream}{101}{subsubsection.11.2.1}
+\contentsline {subsection}{\numberline {11.3}Example: Standard Control Stream}{101}{subsection.11.3}
+\contentsline {subsection}{\numberline {11.4}Example: Extended Control Stream}{102}{subsection.11.4}
+\contentsline {subsubsection}{\numberline {11.4.1}Using ESN's extended control streams}{103}{subsubsection.11.4.1}
+\contentsline {subsubsection}{\numberline {11.4.2}Emacs Speaks NONMEM differences/options}{103}{subsubsection.11.4.2}
+\contentsline {subsection}{\numberline {11.5}Mu variable referencing (not implemented in WFN)}{103}{subsection.11.5}
+\contentsline {subsection}{\numberline {11.6}Optional Skipping of variable names}{105}{subsection.11.6}
+\contentsline {subsection}{\numberline {11.7}Parameter Names that are not allowed}{109}{subsection.11.7}
+\contentsline {subsection}{\numberline {11.8}Parameter Names in the ZERO option}{109}{subsection.11.8}
+\contentsline {subsection}{\numberline {11.9}Changing Parameter Names}{110}{subsection.11.9}
+\contentsline {subsection}{\numberline {11.10}Parameter Name Highlighting}{110}{subsection.11.10}
+\contentsline {subsection}{\numberline {11.11}Lower case preference}{110}{subsection.11.11}
+\contentsline {subsection}{\numberline {11.12}Links}{110}{subsection.11.12}
+\contentsline {subsubsection}{\numberline {11.12.1}Document Hyperlinks}{110}{subsubsection.11.12.1}
+\contentsline {subsection}{\numberline {11.13}Output Files}{111}{subsection.11.13}
+\contentsline {subsection}{\numberline {11.14}Input Files}{111}{subsection.11.14}
+\contentsline {subsection}{\numberline {11.15}MSFO Files}{111}{subsection.11.15}
+\contentsline {subsection}{\numberline {11.16}Included Files}{111}{subsection.11.16}
+\contentsline {subsection}{\numberline {11.17}PLT tools}{111}{subsection.11.17}
+\contentsline {section}{\numberline {12}Bugs}{112}{section.12}
+\contentsline {subsection}{\numberline {12.1}Bugs}{112}{subsection.12.1}
+\contentsline {subsection}{\numberline {12.2}Unresolved Bugs}{112}{subsection.12.2}
+\contentsline {subsection}{\numberline {12.3}Resolved Bugs}{112}{subsection.12.3}
+\contentsline {subsection}{\numberline {12.4}0.13}{112}{subsection.12.4}
+\contentsline {subsection}{\numberline {12.5}0.12}{112}{subsection.12.5}
+\contentsline {subsubsection}{\numberline {12.5.1}0.11}{113}{subsubsection.12.5.1}
+\contentsline {subsection}{\numberline {12.6}Changes}{113}{subsection.12.6}
+\contentsline {subsection}{\numberline {12.7}0.13}{113}{subsection.12.7}
+\contentsline {subsection}{\numberline {12.8}0.12}{114}{subsection.12.8}
+\contentsline {subsection}{\numberline {12.9}0.11}{114}{subsection.12.9}
+\contentsline {subsection}{\numberline {12.10}To Do}{116}{subsection.12.10}
+\contentsline {section}{\numberline {13}FAQ}{116}{section.13}
+\contentsline {subsection}{\numberline {13.1}Questions about Automatic Changes}{116}{subsection.13.1}
+\contentsline {subsection}{\numberline {13.2}BLOCK statements}{116}{subsection.13.2}

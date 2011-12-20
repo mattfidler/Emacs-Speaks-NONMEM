@@ -1,0 +1,28 @@
+#title Emacs Speaks NONMEM
+* Emacs Speaks NONMEM
+Emacs Speaks NONMEM(R) is an Emacs extension that makes editing NONMEM
+control streams easier.  Among other things, Emacs Speak NONMEM supports:
+
+ - [[ch][Code Highlighting]]
+ - [[while-editing#caps][Automatic Capitalization]]
+ - [[while-editing#count][Count number of input items]]
+ - [[while-editing#count][Count number of output items]] & [[code#large][Spit into multiple files if necessary]]
+ - Display of [[80][80 characters on line]], and also automatic [[while-editing#align][alignment and "wrapping"]]
+   of records
+ - [[extended][Extended Control Stream Support]]
+ - [[while-editing#tab][Tab Completion]]
+ - [[while-saving#tab][Updating table names on copy or save-as]]
+ - Ensuring a different purpose for each copy of the file.
+
+Emacs Speaks NONMEM also integrates with the following programs:
+
+ - [[census][Census]]
+ - [[nmqual][NMQual (submitting jobs only)]]
+ - [[plt][PLT Tools]]
+ - [[psn][Perl Speaks NONMEM (psn)]]
+ - [[pirana][Pirana]]
+ - [[wfn][Wings for NONMEM]]
+ - [[xpose][Xpose]]
+
+You could [[download][download]] the package, and install by hand, or use EmacsPortable to
+install.

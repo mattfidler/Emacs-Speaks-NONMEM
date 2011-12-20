@@ -1,0 +1,25 @@
+** Parameter Name Highlighting
+
+Extended control stream parameter names may be optionally highlighted using
+Emacs for NONMEM.  When this option is active, Emacs Speaks NONMEM only
+highlights the appropriate variables, for example:
+
+[[images/extended-ch-1.png][Parameter Names Higlighted]]
+
+Note that the second instance of =CL= is not highlighted since it was already
+assigned to a NONMEM variable.  When this option is disabled, no highlighting of
+the parameter name occurs
+
+
+[[images/extended-ch-2.png][Parameter Names Not Higlighted]]
+
+The highlighting may be changed by the following menu:
+
+ - Extended
+   - Highlight extended control stream Parameter Names
+
+
+***Note:*** Changing this option will not take immediate effect, you have to either
+close out of Emacs or close the file and reopen the file to have the
+highlighting changed.
+

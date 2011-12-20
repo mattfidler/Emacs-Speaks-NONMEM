@@ -1,0 +1,77 @@
+#title Read Only/Hidden Text
+* Header
+
+Some of the auto-generated text such as the Header and Code sections are
+automatically generated.  For example the default header added to control streams:
+
+<src lang="esn">
+$PROBLEM tmp
+ ; ------------------------------------------------------------------------------
+ ; Model:
+ ; Purpose:
+ ; (c)
+ ; Completed
+ ; ------------------------------------------------------------------------------
+ ; Input Files:
+ ; ------------------------------------------------------------------------------
+ ; Output Files:
+ ; ------------------------------------------------------------------------------
+ ; Modification Log:
+ ; ------------------------------------------------------------------------------
+</src>
+
+There are options to protect the auto-generated regions of the header.  By
+protecting these regions the following benefits are realized:
+
+ - User may not inadvertently edit items generated from other users (such as the
+   modification log).[1]
+ - When editing the file the portions of the header that are searched for during
+   update are not changed; Therefore, another header will not be inadvertently added.[1]
+
+This protection may be done by hiding and/or making portions of the buffer
+read-only.  Otherwise the protection may be turned off completely.
+
+** Read only portions
+
+The first way to protect the header is to make the generated portions read-only.
+This is accomplished by toggling on the option:
+
+ - Display
+   - Make generated portions read-only
+
+When this option is enabled, only sections that should be edited are allowed to
+be edited.  In the case of the default header this is the =Purpose:= section.
+
+** Hidden portions
+
+If generated portions are read-only, a further method of ensuring the
+auto-generated portions of the header are not inadvertently changed is to hide
+part of the header from the user.  In this example, the header would reduce to:
+
+<src lang="esn">
+$PROBLEM tmp
+ ; Purpose:
+</src>
+
+All of the auto-generated content is still present, but not viewable to the user.  This may be toggled by:
+
+ - Display
+   - Hide generated portions (requires uneditable regions to be read-only)
+
+** Portions where this may apply
+
+These options may apply to the header (as shown in example above), or
+automatically generated code for conditional weighted residuals.  For the header
+this may be toggled at:
+
+ - Display
+  - Portions hidden or read only
+
+For conditional weighted residual code, this may be toggled at:
+
+ - Display
+       - Hide CWRES generated code
+
+Footnotes:
+[1]  This may be circumvented by using another editor other than emacs with Emacs Speaks NONMEM.
+

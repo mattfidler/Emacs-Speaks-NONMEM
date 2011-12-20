@@ -1,0 +1,211 @@
+/* XPM */
+static char * psn_xpm[] = {
+"24 24 184 2",
+"  	c None",
+". 	c #C3C6C6",
+"+ 	c #AB4242",
+"@ 	c #9C1212",
+"# 	c #9D2222",
+"$ 	c #9F2D2D",
+"% 	c #9F2C2C",
+"& 	c #9E2A2A",
+"* 	c #9D2525",
+"= 	c #9E2828",
+"- 	c #9E2929",
+"; 	c #9D2626",
+"> 	c #9D2424",
+", 	c #9E2727",
+"' 	c #9E2020",
+") 	c #AA4545",
+"! 	c #B05959",
+"~ 	c #9C1616",
+"{ 	c #AC8686",
+"] 	c #B2B2B2",
+"^ 	c #B2B6B6",
+"/ 	c #B8D0D0",
+"( 	c #B7BABA",
+"_ 	c #B2A7A7",
+": 	c #AE9999",
+"< 	c #AE9696",
+"[ 	c #B0A2A2",
+"} 	c #B3B0B0",
+"| 	c #B6C3C3",
+"1 	c #B2B4B4",
+"2 	c #A76666",
+"3 	c #9A0D0D",
+"4 	c #A43E3E",
+"5 	c #A11717",
+"6 	c #AA7979",
+"7 	c #B6D2D2",
+"8 	c #9D0B0B",
+"9 	c #9E1111",
+"0 	c #9B0A0A",
+"a 	c #9B0B0B",
+"b 	c #9B0E0E",
+"c 	c #9D1818",
+"d 	c #9E1D1D",
+"e 	c #9E1919",
+"f 	c #9E0F0F",
+"g 	c #9F2424",
+"h 	c #9C1919",
+"i 	c #A83333",
+"j 	c #9D0E0E",
+"k 	c #9B0707",
+"l 	c #990101",
+"m 	c #970000",
+"n 	c #960000",
+"o 	c #9A0606",
+"p 	c #9A0707",
+"q 	c #9F1D1D",
+"r 	c #9B0909",
+"s 	c #9D1E1E",
+"t 	c #AE9191",
+"u 	c #A72D2D",
+"v 	c #980000",
+"w 	c #990000",
+"x 	c #9D1515",
+"y 	c #9C0B0B",
+"z 	c #9D2020",
+"A 	c #AD8F8F",
+"B 	c #9A0404",
+"C 	c #990202",
+"D 	c #A25454",
+"E 	c #9C0C0C",
+"F 	c #AD8D8D",
+"G 	c #A12121",
+"H 	c #9E7979",
+"I 	c #AD8B8B",
+"J 	c #A02E2E",
+"K 	c #9A1010",
+"L 	c #9A0000",
+"M 	c #935E5E",
+"N 	c #A1ADAD",
+"O 	c #AE8B8B",
+"P 	c #991E1E",
+"Q 	c #991515",
+"R 	c #981D1D",
+"S 	c #960B0B",
+"T 	c #970303",
+"U 	c #950A0A",
+"V 	c #941C1C",
+"W 	c #923A3A",
+"X 	c #964A4A",
+"Y 	c #971D1D",
+"Z 	c #9D7373",
+"` 	c #AE9393",
+" .	c #997676",
+"..	c #967575",
+"+.	c #946E6E",
+"@.	c #957575",
+"#.	c #9D8282",
+"$.	c #A29797",
+"%.	c #A5A6A6",
+"&.	c #ABB0B0",
+"*.	c #A98181",
+"=.	c #A96464",
+"-.	c #9C1818",
+";.	c #A68989",
+">.	c #AD7C7C",
+",.	c #AD6060",
+"'.	c #A01818",
+").	c #9D0C0C",
+"!.	c #A85252",
+"~.	c #9C0D0D",
+"{.	c #9A0C0C",
+"].	c #9D2828",
+"^.	c #980202",
+"/.	c #9A1515",
+"(.	c #9F0E0E",
+"_.	c #9A0909",
+":.	c #9D1111",
+"<.	c #A01919",
+"[.	c #9D2121",
+"}.	c #A32626",
+"|.	c #9C1A1A",
+"1.	c #A96D6D",
+"2.	c #A13737",
+"3.	c #A01C1C",
+"4.	c #993535",
+"5.	c #A28D8D",
+"6.	c #9C0808",
+"7.	c #A13F3F",
+"8.	c #925757",
+"9.	c #957C7C",
+"0.	c #9E6464",
+"a.	c #A88B8B",
+"b.	c #9A0202",
+"c.	c #9A0E0E",
+"d.	c #A45555",
+"e.	c #935555",
+"f.	c #9AA0A0",
+"g.	c #9A0F0F",
+"h.	c #9E1212",
+"i.	c #961616",
+"j.	c #969A9A",
+"k.	c #AA5C5C",
+"l.	c #A63131",
+"m.	c #924141",
+"n.	c #93A6A6",
+"o.	c #960202",
+"p.	c #937979",
+"q.	c #8D4545",
+"r.	c #93A1A1",
+"s.	c #9C0A0A",
+"t.	c #8F3434",
+"u.	c #8B8787",
+"v.	c #A83838",
+"w.	c #961919",
+"x.	c #915D5D",
+"y.	c #8FACAC",
+"z.	c #A72525",
+"A.	c #9D3535",
+"B.	c #981212",
+"C.	c #941414",
+"D.	c #914A4A",
+"E.	c #9B6F6F",
+"F.	c #AA5151",
+"G.	c #B24848",
+"H.	c #B04F4F",
+"I.	c #B14E4E",
+"J.	c #B25252",
+"K.	c #AD4545",
+"L.	c #A42222",
+"M.	c #A58A8A",
+"N.	c #9D4747",
+"O.	c #971B1B",
+"P.	c #921717",
+"Q.	c #951919",
+"R.	c #971C1C",
+"S.	c #961C1C",
+"T.	c #962626",
+"U.	c #9A2525",
+"V.	c #9E2323",
+"W.	c #A03030",
+"X.	c #A33434",
+"Y.	c #A23333",
+"Z.	c #A13333",
+"`.	c #A23232",
+". + @ # $ % $ & * = - = ; > ; % % % % $ , ' )   ",
+"! ~ { ] ^     / ( _ : < [ } |     1 ] 1 ] 2 3 4 ",
+"5 6 7         8 9 0 a b c d e f               g ",
+"h <     i j k l m m m m m n m o p q           r ",
+"s t   u l v v v w v v v v w v v v v x         y ",
+"z A   B m w v v v v v v v v v w v C m D       E ",
+"z F   G v v w w w w w w w w w v w w n H       E ",
+"z I     J K v v w w w w w w w L w m M N       E ",
+"z O         P Q R S m m T U V W X Y Z         E ",
+"z `                ...+.@.#.$.%.&.*.=.        E ",
+"-.;.>.,.                      '.).!.          ~.",
+"{.].^.v /.                  (.m m m _.:.<.    0 ",
+"v v v w v [.                }.m w w v v m |.1.L ",
+"w l w w v C 2.              3.v w v w v m 4.5.6.",
+"v v w v w v l 7.            w v v w v 8.9.0.a.b.",
+"v v w v v w v c.d.        i w v w m e.f.      ~.",
+"v v v v v v w v g.        h.v v w i.j.        E ",
+"v v w v v v w w v z k.l.B v v w w m.n.        E ",
+"v w v v v v v w v v v v v v v w o.p.          E ",
+"v w v v v v w w v w w w v v w w q.r.          s.",
+"B v w v w v w w v w w v w L v t.u.            8 ",
+"v.m C v v v v v v v v w w w.x.y.            z.A.",
+"  B.v w w w w w w w w v C.D.E.F.G.H.I.J.K.L.x   ",
+"  M.N.Y w.O.P.Q.R.O.O.S.T.U.V.W.X.X.Y.Z.`.a     "};

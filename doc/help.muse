@@ -1,0 +1,21 @@
+#title Accessing NONMEM help
+
+After specifying the NONMEM help directory, you may press F1 anywhere to get
+context sensitive help  For example with the following block
+
+<src lang="esn">
+$INPUT ID AMT DV ADDL
+</src>
+
+pressing F1 when your cursor is after =$INPUT= but before ID, you will get help on
+=$INPUT=.  When your cursor is in or after =AMT= you will get help on the AMT =data=
+item.  In addition to F1, the ? key works as well.  However, the question-mark
+will actually insert a question-mark instead of giving help under the following
+circumstances:
+
+ - You are in a comment
+ - You are in a quoted line, like the ="FIRST= line:
+<src lang="esn">
+"FIRST
+</src>
+  - The help via ? has been disabled.

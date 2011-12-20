@@ -1,0 +1,35 @@
+#title Wings for NONMEM (wfn)
+* Wings for NONMEM integration
+In addition to the [[extended][extended]] control stream integration, Emacs Speaks NONMEM
+allows you to run the following wings for NONMEM programs from within Emacs
+ - Boostrapping (nmbs)
+ - Randomization Test
+
+Things still to add:
+ - Display sorted list of run summary objective function lines (nmobj)
+ - Create a tab-delimited file with one-record per subject (nmone)
+ - Non-Compartmental Functions:
+   - Calculate Cmax, Tmax, AUC(0-infty), AUC(0-t), and time to reach target
+     concentration for a simulation (ncasim)
+   - Calculate Cmax, Tmax, AUC(0-infty), AUC(0-t), and time to reach target
+     concentration for a bootstrap (ncabs)
+ - Create a Model building table  with all parameter estimates merged into a
+   tab-delimited table file (nmmbt)
+ - Log-Likelihood Profiling (nmllp)
+ - List of Run Summaries (nmlst)
+ - Unreliable Simulation/Estimation step workaround (nmgosim)
+ - Display Condition Number & extreme eigen values (nmeigen)
+ - Display the number of failed bootstraps (nmbssxs)
+
+Things that may be added:
+ - Take final parameter estimates and puts them in the original control stream
+   (nmctl).  This is done in emacs speaks nonmem as well (but it doesn't support
+   NONMEM 7 yet...)
+ - Create CrossGraphics files (nmcg)
+
+Things that will not be added:
+ - Creating a control stream based on a model specification file (nmmsf)
+   - Already supported with [[links#msfo][MSFO hyperlinks]].
+ - Display intermediate THETA values during NONMEM estimation (nmint)
+
+These are all described on the [[http://wfn.sourceforge.net][Wings For NONMEM website]].

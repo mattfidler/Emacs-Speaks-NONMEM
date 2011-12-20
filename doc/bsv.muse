@@ -1,0 +1,41 @@
+#title Automating BSV
+
+* Between Subject Variability
+
+Emacs Speaks NONMEM generates control streams exploring different types of
+between subject variabilities automatically.  The process for creating many
+control streams that code for between subject variability is:
+
+ - Code a model
+ - Click on Tools -> Generate Between Subject Variability Exploration Control
+   Streams
+
+The following screen is shown:
+
+[[images/e-bsv.png][Between Subject Variability]]
+
+where the variables to explore are inferred from the control stream.
+
+ - Select the population variables which you wish to explore between subject variability
+ - Select the types of variability to explore
+ - Select "Create models"
+
+The models will be created using the following naming convention:
+
+Adding "bsv_" and the between subject variability being explored, summarized by
+the
+
+ - Variable Name
+ - Between Subject variability type:
+   - a - Additive
+   - e - Exponential/Lognormal
+   - c - Constant Coefficient of Variation/Proportional
+
+Therefore a model with additive between subject variability on Cl and
+exponential between subject variability on V would have the following inserted
+into the file-name:
+ - "bsv_Cla_Ve"
+
+Note, that if you are using [[xmind][Xmind]] to track control stream generation, it will
+create a subtree as shown  in [[./images/bsv.xmind][this mindmap]], exported to HTML [[./images/Project.html][here]].
+

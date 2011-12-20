@@ -1,0 +1,457 @@
+/* XPM */
+static char * xmind_xpm[] = {
+"24 24 430 2",
+"  	c None",
+". 	c #EACDCF",
+"+ 	c #F0D4D6",
+"@ 	c #EFCED1",
+"# 	c #EEC9CB",
+"$ 	c #EEC1C5",
+"% 	c #EEBBBF",
+"& 	c #EDB5B9",
+"* 	c #ECADB2",
+"= 	c #E8A3A9",
+"- 	c #E59BA0",
+"; 	c #E2959B",
+"> 	c #E29298",
+", 	c #DF8E95",
+"' 	c #D8848A",
+") 	c #D37A80",
+"! 	c #CC6E74",
+"~ 	c #C76169",
+"{ 	c #B15258",
+"] 	c #EBD8D9",
+"^ 	c #FAEBED",
+"/ 	c #FCE9EC",
+"( 	c #FDE1E5",
+"_ 	c #FBD8DD",
+": 	c #FAD1D5",
+"< 	c #F9C9CE",
+"[ 	c #F7C2C7",
+"} 	c #F6B9C0",
+"| 	c #F3ADB4",
+"1 	c #EFA0A8",
+"2 	c #ED99A0",
+"3 	c #E99097",
+"4 	c #E58790",
+"5 	c #E07D85",
+"6 	c #DA7078",
+"7 	c #D2646C",
+"8 	c #CA5B62",
+"9 	c #C7565E",
+"0 	c #B14D54",
+"a 	c #F1DFE0",
+"b 	c #FFF5F7",
+"c 	c #FFEBED",
+"d 	c #FBD5DB",
+"e 	c #FAD2D7",
+"f 	c #FACED2",
+"g 	c #F8BCC2",
+"h 	c #F5A7AE",
+"i 	c #F1939C",
+"j 	c #ED808A",
+"k 	c #EB747E",
+"l 	c #E86D76",
+"m 	c #E4636D",
+"n 	c #DE5C66",
+"o 	c #D95861",
+"p 	c #D4545E",
+"q 	c #CF535B",
+"r 	c #CA525A",
+"s 	c #C75259",
+"t 	c #B24C53",
+"u 	c #E9D0D2",
+"v 	c #FFF3F5",
+"w 	c #FFE8EB",
+"x 	c #FCDCE0",
+"y 	c #FBD2D7",
+"z 	c #FCCDD2",
+"A 	c #F8B6BC",
+"B 	c #F28A92",
+"C 	c #EE6C76",
+"D 	c #EC646F",
+"E 	c #EC5D68",
+"F 	c #ED5B66",
+"G 	c #EC5B65",
+"H 	c #E95A64",
+"I 	c #E75963",
+"J 	c #E35862",
+"K 	c #DE5860",
+"L 	c #D8555E",
+"M 	c #D3535C",
+"N 	c #CD5159",
+"O 	c #C84F57",
+"P 	c #B44C52",
+"Q 	c #F3E0E2",
+"R 	c #FFEBEE",
+"S 	c #FCDDE1",
+"T 	c #FAD8DD",
+"U 	c #FAD7DB",
+"V 	c #F0B3B9",
+"W 	c #E57A83",
+"X 	c #E67079",
+"Y 	c #EE646E",
+"Z 	c #F45F6A",
+"` 	c #F5616D",
+" .	c #F5606B",
+"..	c #F45E69",
+"+.	c #F25C66",
+"@.	c #EE5A64",
+"#.	c #E95861",
+"$.	c #E3565F",
+"%.	c #DD525C",
+"&.	c #D6515A",
+"*.	c #CF4D56",
+"=.	c #CB4C54",
+"-.	c #B74E54",
+";.	c #F7DFE1",
+">.	c #FEDCE1",
+",.	c #FCF8F8",
+"'.	c #FEFEFE",
+").	c #F8F4F4",
+"!.	c #F7F6F6",
+"~.	c #F8FFFF",
+"{.	c #F8BEC2",
+"].	c #F5505C",
+"^.	c #F55E69",
+"/.	c #F55B65",
+"(.	c #F55963",
+"_.	c #F55862",
+":.	c #F74F59",
+"<.	c #F24A54",
+"[.	c #EC4852",
+"}.	c #E3444F",
+"|.	c #DB434C",
+"1.	c #D34952",
+"2.	c #CE4C54",
+"3.	c #B03F44",
+"4.	c #F6D6DA",
+"5.	c #FCD2D6",
+"6.	c #F8C8CE",
+"7.	c #FDFAFB",
+"8.	c #FFFFFF",
+"9.	c #FCDDDF",
+"0.	c #F3515D",
+"a.	c #F45560",
+"b.	c #F45862",
+"c.	c #F4545E",
+"d.	c #E96770",
+"e.	c #EA6F77",
+"f.	c #E66971",
+"g.	c #DF6970",
+"h.	c #DB6169",
+"i.	c #D94E58",
+"j.	c #C33036",
+"k.	c #A32327",
+"l.	c #F5CED1",
+"m.	c #FACBD0",
+"n.	c #F7B8BF",
+"o.	c #EEB4B9",
+"p.	c #FAFEFD",
+"q.	c #FFFEFE",
+"r.	c #FDFDFD",
+"s.	c #F57E86",
+"t.	c #F33C49",
+"u.	c #F44F5A",
+"v.	c #F74D58",
+"w.	c #F0434E",
+"x.	c #DFC3C5",
+"y.	c #F8FAFA",
+"z.	c #F5EFF0",
+"A.	c #F5EFEF",
+"B.	c #F9FCFC",
+"C.	c #D85B60",
+"D.	c #B50106",
+"E.	c #A9282D",
+"F.	c #F2C2C6",
+"G.	c #F3ABB2",
+"H.	c #E34E58",
+"I.	c #EC8E94",
+"J.	c #FBFAFB",
+"K.	c #FEFBFB",
+"L.	c #FBECED",
+"M.	c #F0737B",
+"N.	c #F03F4A",
+"O.	c #F53D49",
+"P.	c #E53F49",
+"Q.	c #E3D2D3",
+"R.	c #D23F44",
+"S.	c #BA0308",
+"T.	c #AE2D31",
+"U.	c #F0B9BD",
+"V.	c #F5B9BE",
+"W.	c #EC8D95",
+"X.	c #E34B55",
+"Y.	c #ED4450",
+"Z.	c #F26D76",
+"`.	c #F5C7CB",
+" +	c #FCFFFF",
+".+	c #FBFBFA",
+"++	c #F8F9F8",
+"@+	c #ECBFC2",
+"#+	c #E6A7AB",
+"$+	c #E1C1C3",
+"%+	c #F5FBFB",
+"&+	c #FBFFFF",
+"*+	c #EA898E",
+"=+	c #CD1117",
+"-+	c #BF1117",
+";+	c #AF2F33",
+">+	c #EDAFB4",
+",+	c #F1ACB2",
+"'+	c #E6737A",
+")+	c #E4444E",
+"!+	c #F24954",
+"~+	c #F73844",
+"{+	c #EF3440",
+"]+	c #E29CA1",
+"^+	c #F6FFFF",
+"/+	c #F7FDFE",
+"(+	c #F6FBFC",
+"_+	c #F5FFFF",
+":+	c #F3FFFF",
+"<+	c #F5F5F6",
+"[+	c #ED8085",
+"}+	c #F0565C",
+"|+	c #EC4047",
+"1+	c #DC1119",
+"2+	c #CE151B",
+"3+	c #C0161C",
+"4+	c #B13035",
+"5+	c #E8A2A8",
+"6+	c #EB9AA0",
+"7+	c #E2545D",
+"8+	c #DD424C",
+"9+	c #DE6D74",
+"0+	c #DE999E",
+"a+	c #DEB1B5",
+"b+	c #E3E1E2",
+"c+	c #EEFBFB",
+"d+	c #ECF1F2",
+"e+	c #EBFEFE",
+"f+	c #EFFFFF",
+"g+	c #F0EFEF",
+"h+	c #EFF1F1",
+"i+	c #F0F7F7",
+"j+	c #E6A8AC",
+"k+	c #E61C24",
+"l+	c #EB0000",
+"m+	c #DD161D",
+"n+	c #CD181F",
+"o+	c #BF151B",
+"p+	c #B03337",
+"q+	c #E3959B",
+"r+	c #E67C83",
+"s+	c #CD636A",
+"t+	c #D4BDBF",
+"u+	c #E5F0F0",
+"v+	c #EEFCFC",
+"w+	c #F0FFFF",
+"x+	c #ECC0C3",
+"y+	c #EA474E",
+"z+	c #EB4048",
+"A+	c #EB666B",
+"B+	c #E6C0C3",
+"C+	c #EAFFFF",
+"D+	c #EEF1F2",
+"E+	c #EEEAEB",
+"F+	c #E9EFF0",
+"G+	c #E15F65",
+"H+	c #D7030B",
+"I+	c #CB151B",
+"J+	c #BD161C",
+"K+	c #B03438",
+"L+	c #E08489",
+"M+	c #D77E84",
+"N+	c #D6DADB",
+"O+	c #F1FFFF",
+"P+	c #F1F3F4",
+"Q+	c #EBFBFB",
+"R+	c #E2D5D7",
+"S+	c #EA1D25",
+"T+	c #EE0009",
+"U+	c #ED0D16",
+"V+	c #ED060F",
+"W+	c #EC1019",
+"X+	c #DE7C80",
+"Y+	c #E7FCFC",
+"Z+	c #EEF3F3",
+"`+	c #EDE9E9",
+" @	c #F1FAFA",
+".@	c #EEFFFF",
+"+@	c #DB757A",
+"@@	c #C40309",
+"#@	c #B91217",
+"$@	c #AE363A",
+"%@	c #D87479",
+"&@	c #D59B9F",
+"*@	c #EAFAFB",
+"=@	c #EBEBED",
+"-@	c #E6EBEB",
+";@	c #DFFAFA",
+">@	c #E5878C",
+",@	c #EF050E",
+"'@	c #ED1A22",
+")@	c #EC1D25",
+"!@	c #EC1C24",
+"~@	c #EE141D",
+"{@	c #EC0005",
+"]@	c #D5898D",
+"^@	c #EBFFFF",
+"/@	c #EDEDEE",
+"(@	c #EEEBEC",
+"_@	c #F1F8F8",
+":@	c #CC4F54",
+"<@	c #B20107",
+"[@	c #AC373C",
+"}@	c #D4787D",
+"|@	c #D16A70",
+"1@	c #CE5E65",
+"2@	c #D45D64",
+"3@	c #CF4348",
+"4@	c #D64045",
+"5@	c #E2232B",
+"6@	c #EC1921",
+"7@	c #EE1C24",
+"8@	c #ED1C24",
+"9@	c #EB1D25",
+"0@	c #F31018",
+"a@	c #DB2830",
+"b@	c #DCEEEE",
+"c@	c #F2FCFC",
+"d@	c #EFF3F4",
+"e@	c #F1F2F3",
+"f@	c #E6C1C3",
+"g@	c #AC050B",
+"h@	c #A83539",
+"i@	c #CE7479",
+"j@	c #C54C53",
+"k@	c #BF2B32",
+"l@	c #C01D25",
+"m@	c #BE050B",
+"n@	c #CD0A10",
+"o@	c #D6141B",
+"p@	c #DE1B22",
+"q@	c #E71B22",
+"r@	c #EC1B23",
+"s@	c #ED1B23",
+"t@	c #EC1C23",
+"u@	c #EF1820",
+"v@	c #E0131A",
+"w@	c #D4C5C7",
+"x@	c #F1F7F8",
+"y@	c #F4F9FA",
+"z@	c #F1E1E2",
+"A@	c #A91216",
+"B@	c #A43638",
+"C@	c #C5676C",
+"D@	c #BA4248",
+"E@	c #B73137",
+"F@	c #AF181D",
+"G@	c #B51419",
+"H@	c #C1181E",
+"I@	c #C8181E",
+"J@	c #CF181F",
+"K@	c #D61920",
+"L@	c #DC1920",
+"M@	c #DF1921",
+"N@	c #DE1A21",
+"O@	c #DA171D",
+"P@	c #D42C33",
+"Q@	c #D23E44",
+"R@	c #CC3A40",
+"S@	c #C4393F",
+"T@	c #BE3B3F",
+"U@	c #B32E33",
+"V@	c #A3161A",
+"W@	c #A24E50",
+"X@	c #BA595E",
+"Y@	c #AF373D",
+"Z@	c #AB252A",
+"`@	c #A41015",
+" #	c #AD1519",
+".#	c #B6151A",
+"+#	c #C4171C",
+"@#	c #C9171E",
+"##	c #CD181E",
+"$#	c #CF181E",
+"%#	c #CE181F",
+"&#	c #CC191F",
+"*#	c #C70E15",
+"=#	c #C0080E",
+"-#	c #B9090F",
+";#	c #AF070D",
+">#	c #A7060B",
+",#	c #9A0000",
+"'#	c #A73437",
+")#	c #9C6567",
+"!#	c #AD494D",
+"~#	c #A42E32",
+"{#	c #9A161A",
+"]#	c #9C0F13",
+"^#	c #A51317",
+"/#	c #AC1217",
+"(#	c #B21318",
+"_#	c #B71318",
+":#	c #BC1319",
+"<#	c #BF1419",
+"[#	c #C11419",
+"}#	c #C21319",
+"|#	c #C01319",
+"1#	c #BE1318",
+"2#	c #B91318",
+"3#	c #B51218",
+"4#	c #AE1217",
+"5#	c #A70F14",
+"6#	c #9F0B10",
+"7#	c #A82E31",
+"8#	c #A15E60",
+"9#	c #9B3439",
+"0#	c #8D181C",
+"a#	c #8B0F12",
+"b#	c #931418",
+"c#	c #9A171B",
+"d#	c #A11B1F",
+"e#	c #A61C20",
+"f#	c #AB1E22",
+"g#	c #AE1F24",
+"h#	c #B12025",
+"i#	c #B32126",
+"j#	c #B32227",
+"k#	c #B32228",
+"l#	c #B12327",
+"m#	c #AF2428",
+"n#	c #AB2428",
+"o#	c #A82428",
+"p#	c #A52D30",
+"q#	c #A64547",
+"r#	c #9C6061",
+"s#	c #7A1D20",
+"t#	c #711214",
+"u#	c #7B1D1E",
+"v#	c #832325",
+"w#	c #83272A",
+"                                                ",
+"          . + @ # $ % & * = - ; > , ' ) ! ~ {   ",
+"      ] ^ / ( _ : < [ } | 1 2 3 4 5 6 7 8 9 0   ",
+"    a b c ( d e f g h i j k l m n o p q r s t   ",
+"  u v w x y z A B C D E F G H I J K L M N O P   ",
+"  Q R S T U V W X Y Z `  ...+.@.#.$.%.&.*.=.-.  ",
+"  ;.>.U ,.'.).!.~.{.].^./.(._.:.<.[.}.|.1.2.3.  ",
+"  4.5.6.7.8.8.8.8.9.0.a.b.a.c.d.e.f.g.h.i.j.k.  ",
+"  l.m.n.o.p.8.q.8.r.s.t.u.v.w.x.y.z.A.B.C.D.E.  ",
+"  F.[ G.H.I.J.8.K.8.L.M.N.O.P.Q.8.8.8.8.R.S.T.  ",
+"  U.V.W.X.Y.Z.`. +.+ +++@+#+$+%+&+~.B.*+=+-+;+  ",
+"  >+,+'+)+!+~+{+]+^+/+(+_+:+^+<+[+}+|+1+2+3+4+  ",
+"  5+6+7+8+9+0+a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+  ",
+"  q+r+s+t+u+v+w+x+y+z+A+B+C+D+E+w+F+G+H+I+J+K+  ",
+"  L+M+N+O+P+Q+R+S+T+U+V+W+X+Y+Z+`+ @.@+@@@#@$@  ",
+"  %@&@*@=@-@;@>@,@'@)@!@~@{@]@^@/@(@_@_+:@<@[@  ",
+"  }@|@1@2@3@4@5@6@7@7@8@9@0@a@b@c@d@e@&+f@g@h@  ",
+"  i@j@k@l@m@n@o@p@q@r@s@t@u@v@w@^+x@y@ +z@A@B@  ",
+"  C@D@E@F@G@H@I@J@K@L@M@M@N@O@P@Q@R@S@T@U@V@W@  ",
+"  X@Y@Z@`@ #.#J++#@###J@$#%#&#*#=#-#;#>#,#'#)#  ",
+"  !#~#{#]#^#/#(#_#:#<#[#}#|#1#2#3#4#5#6#7#8#    ",
+"  9#0#a#b#c#d#e#f#g#h#i#j#k#l#m#n#o#p#q#r#      ",
+"  s#t#u#v#w#                                    ",
+"                                                "};

@@ -1,0 +1,5 @@
+* NMQual Integration
+
+Currently Emacs Speaks NONMEM to submit the current control stream via a
+button-press, keyboard (Control-c, Control-q), or Menu drop-down (in the "Tools"
+menu)

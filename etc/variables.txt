@@ -1,0 +1,238 @@
+Variable	Variable Name	Units	Values	Age	Categorical	Commons	Continuous	Dose	EPS	Etas	Fed	Formulation	Gender	Group	Height	ID	IOV	Input	LLOQ	Mus	NTIME	Race	RES	SDTAB	TAD	Theta	Weight
+.ID.	Single Subject NONMEM Identification															1											
+A						1																					
+A_0						1																					
+A_0FLG						1																					
+ADDL	Additional Doses																	1									
+AGE	Age	(yr)		1			1																				
+ALT	Alanine Aminotransferase	(U/L)					1																				
+AMT	Dose Amount	AMT																1									
+AST	Aspartate Aminotransferase	(U/L)					1																				
+BIL	Bilirubin	(mg/dL)					1																				
+BLOCKS						1																					
+BMI	Body Mass Index	(unitless)					1																				
+BSA	Body Surface Area	(m^2)					1																				
+BOV#																	1										
+BUN	"Urea nitrogen, blood"	(mg/dL)					1																				
+CALL	Call 		"(0: Normal, 1: Error, 2: Pk, 3: PK & Error, 10: Advan9, 11: Advan9&Error, 12: Advan9 & PK, 13: Advan9 PK & Error)"															1									
+CDEN_						1																					
+CMT	Compartment																	1									
+CNTID						1																					
+CO2	Bicarbonate and CO2	(mEq/L)					1																				
+COM						1																					
+COMACT						1																					
+COMSAV						1																					
+CONT	Continuation 		"(0: Last/only, 1: Same Event)"															1									
+CPK	Creatine Kinase	(U/L)					1																				
+CPRED	Conditional Estimation Prediction																						1	1			
+CPRED_						1																					
+CPREDI_						1																					
+CPREDI_	"Conditional Estimation, eta-epsilon interaction Prediction"																						1	1			
+CRCL	Creatinine Clearance	(mL/min)					1																				
+CRES	Conditional Estimation Residuals																						1	1			
+CRES_						1																					
+CRESI_						1																					
+CRESI	Conditional Estimation eta-epsilon interaction Residuals																						1	1			
+CT						1																					
+CTDS	Dose	AMT					1	1																			
+CTLO						1																					
+CTUP						1																					
+CWRES	Conditional Weighted Residuals																						1	1			
+CWRES_						1																					
+CWRESI_						1																					
+CWRESI	Conditional Weighted eta-epilon interation Residuals																						1	1			
+DAT1	Date		DD/MM/YY															1									
+DAT2	Date		YY/MM/DD															1									
+DAT3	Date		YY/DD/MM															1									
+DATA						1																					
+DATE	Date		MM/DD/YY															1									
+DAY	Day													1										1			
+DCTLO						1																					
+DCTUP						1																					
+DDCTLO						1																					
+DDCTUP						1																					
+DEN_						1		1																			
+DOSE	Dose	AMT					1																				
+DOSREC						1																					
+DOSTIM						1																					
+DSE	Dose	AMT					1	1																			
+DV	Dependent Variable																	1						1			
+ECWRES_						1																					
+ECWRES	Monte-Carlo Conditional Weighted Residuals																						1	1			
+EPRED_						1																					
+EPRED	Monte-Carlo Prediction																						1	1			
+EPS						1																					
+EPS(#)	Eps variable								1																		
+ERES_						1																					
+ERES	Monte-Carlo Residuals																						1	1			
+ETA						1																1					
+ETA#	Eta varaibility									1																	
+ETA(#)	Eta varaibility									1																	
+ETHN	Ethnicity		RACE		1																						
+EVID	Event Identification		"(0: Obs., 1: dose, 2: other, 3: reset, 4: reset & dose)"															1						1			
+EVTREC						1																					
+EWRES_						1																					
+EWRES	Monte-Carlo Weighted Residuals																						1	1			
+F_FLAG						1																					
+FAST	Food		"(0: Fed, 1: Fasted)"		1						1																
+FED	Food		"(0: Fasted, 1: Fed)"		1						1																
+FIN	Finish Record																	1									
+FORM	Formulation											1															
+FRML	Formulation											1															
+FST	Food		"(0: Fed, 1: Fasted)"		1						1																
+GEND	Gender		SEX		1								1														
+GGT	Gamma-glutamyl transerfase	(U/L)					1																				
+GNDF	Gender		"(0: Male, 1: Female)"		1								1														
+GNDM	Gender		"(0: Female, 1: Male)"		1								1														
+GNDR	Gender		SEX										1														
+HDL	HDL Cholesterol	(mg/dL)					1																				
+HGHT	Height	HEIGHT					1								1												
+HINP	Hepatic Impairment				1																						
+HT	Height	HEIGHT					1								1												
+HTCM	Height	(cm)					1								1												
+HTFT	Height	(ft)					1								1												
+HTIN	Height	(in)					1								1												
+HTM	Height	(m)					1																				
+I_REC						1																					
+I_SS						1																					
+ICALL						1																					
+ICLR	Iris Color				1																						
+ID	NONMEM Identification															1		1									
+IDEFA						1																					
+IDEFD						1																					
+IERC						1																					
+IERE						1																					
+II	Interdose interval	TIME																1									
+IIDX						1																					
+INDR1						1																					
+INDR2						1																					
+IOV#																	1										
+IPROB						1																					
+IREP						1																					
+ISFINL						1																					
+ISSMOD						1																					
+ISSNOW						1																					
+IWRES	Individual Weighted Residuals																						1	1			
+L1	Identification Label (Suppresses .ID.)															1		1									
+L2	Level 2 Identification (EPS)																	1									
+LBM	Lean Body Mass	(kg)					1																				
+LDH	Lactate Dehydrogenase	(U/L)					1																				
+LDL	LDL Cholesterol	(mg/dL)					1																				
+LIREC						1																					
+LLOQ	Lower Limit of Quantitation																		1								
+LOQ	Lower Limit of Quantitation																		1								
+MDV	Missing Dependent Variable		"(0: Present, 1: Missing)"															1						1			
+MFIRST						1																					
+MIXEST						1																					
+MIXNUM						1																					
+MIXP						1																					
+MNEXT						1																					
+MNOW						1																					
+MPAST						1																					
+MRG_	Marginal; 		"(0: Typical Value, 1, 2)"															1									
+MSEC						1																					
+MTDIFF						1																					
+MTIME						1																					
+MU_#	Mu variable																			1							
+NA	Sodium	(mEq/L)					1																				
+NDREC						1																					
+NEPSS_						1																					
+NETAS_						1																					
+NEWIND						1																					
+NEWL2						1																					
+NIND_7						1																					
+NINDR						1																					
+NIREC						1																					
+NMNL	Nominal Time																				1						
+NMTM	Nominal Time																				1						
+NPDE_						1																					
+NPDE	Normalized Probibility Distribution Error																						1	1			
+NPRED	Non-conditional Estimation Prediction																						1	1			
+NPRED_						1																					
+NPROB						1																					
+NREP						1																					
+NRES_						1																					
+NRES	Non-conditional Estimation Residuals																						1	1			
+NTHES_						1																					
+NTME	Nominal Time																				1						
+NUM	Observation Number															1											
+NVNT						1																					
+NWIND						1																					
+NWRES_						1																					
+NWRES	Non-conditional Weighted Residuals																						1	1			
+OBJECT						1																					
+OBS	Observation Number															1											
+OCC	Occasion													1										1			
+OMEGA						1																					
+OMEGAF						1																					
+OMSIMP						1																					
+PASSRC						1										1											
+PAT	Patient ID															1											
+PCMT	Prediction Compartment																	1									
+PR						1																					
+PR_CT						1																					
+PR_Y						1																					
+PRDFL						1																					
+PRED	Predicted																						1	1			
+PRED_						1																					
+PREDI_						1																					
+PREDI	"Non-conditional estimation, eta-epislon interaction prediction"																					1	1	1			
+RACE	Race		RACE		1																						
+RATE	Rate																	1									
+RAW_	Raw data average?		"(0: Not Template, 1: Template)"															1									
+REMP	Renal Impairment						1																				
+RES	Residuals																						1	1			
+RES_						1																					
+RESI_						1																					
+RESI	"Non-conditional estimation, eta-epislon interaction residuals"																						1	1			
+RINP	Renal Impairment				1																						
+RPT_	Repeat or Repititon Base		"(0: Not Repition Base, 1,2,3,4,5)"															1									
+RPTI						1																					
+RPTO						1																					
+RPTON						1																					
+S1IT						1																					
+S1NIT						1																					
+S1NUM						1																					
+S2IT						1																					
+S2NIT						1																					
+S2NUM						1																					
+SCR	Serum Creatinine	(mg/dL)					1																				
+SEOMEG						1																					
+SESIGM						1																					
+SETHET						1																					
+SEX	Gender		SEX		1								1														
+SEXF	Gender		"(0: Male, 1: Female)"		1								1														
+SEXM	Gender		"(0: Female, 1: Male)"		1								1														
+SGOT	Aspartate Aminotransferase	(U/L)					1																				
+SGPT	Alanine Aminotransferase	(U/L)					1																				
+SGSIMP						1																					
+SIGMAF						1																					
+SKIP_						1																					
+SMOK	Smoker		"(0: Non-Smoker, 1: Smoker)"		1																						
+SS	Steady State		"(0: Not steady-state, 1: steady-state, 2:steady-state superpositioned)"															1									
+TAD	Time After Dose	TIME																						1	1		
+TEMPLT						1																					
+THETA						1																					
+THETA(#)	Theta variable																									1	
+THETAF						1																					
+THSIMP						1																					
+TIBC	Iron-binding capacity	(g/dL)					1																				
+TIME	Time	TIME																1						1			
+TRT	Treatment				1									1													
+TSLD	Time Since Last Dose	TIME																						1	1		
+TSTATE						1																					
+TT3	Triiodothyronine	(ng/dL)					1																				
+TT4	Thyroxine	(ug/dL)					1																				
+VARIABLES						1																					
+VST	Visit													1										1			
+WGHT	Weight	(kg)					1																				1
+WRES	Weighted Residuals																						1	1			
+WRES_						1																					
+WRESI_						1																					
+WRESI	"Non-conditional estimation, eta-epislon interaction weighted residuals"																						1	1			
+WT	Weight	(kg)					1																				1
+WTKG	Weight	(kg)					1																				1
+WTLB	Weight	(lb)					1																				1
+Y						1																					
+YLO						1																					
+YUP						1																					

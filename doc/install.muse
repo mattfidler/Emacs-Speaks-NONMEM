@@ -1,0 +1,31 @@
+#title Install esn
+
+In windows, it is easiest to install EsN by using the EmacsPortable
+distribution.  There are still a few optional
+[[install#support][Support Programs]], you may wish to install.
+
+#support
+** Support programs
+
+To use all the capabilities of Emacs, it is useful to install a few support
+programs.  [[install-ghostscript#ghostscript][Ghostscript]] and [[install-ghostscript#gsview][GSView]] are useful helpers for printing, [[install-imagemagick#imagemagick][Imagemagick]]
+allows thumbnail viewing of images within a directory from within emacs,
+[[install-cygwin#cygwin][Cygwin]]/[[install-cygwin#msys][MSYS]] allows unix-type shells, and [[install-hg#thg][Tortoise Hg]] provides a directory-based
+version control that integrates into windows explorer.
+
+#esn
+#zipfile
+* Installing Emacs Speaks NONMEM without EmacsPortable
+Emacs Speaks NONMEM is availble as a
+[[download][zip file, a Gziped tarball file, or a Bziped tarbal file]]. After extracting the
+contents, open the =install.el= in emacs and use the following menu:
+
+ - Emacs-Lisp
+   - Evaluate Buffer
+
+After, restart Emacs Speaks NONMEM.  This should install Emacs Speaks NONMEM for
+the individual who ran the script.  If you would like to install Emacs Speaks
+NONMEM globally, open =~/.emacs= and copy the code between the =;Begin ESN= and =;End
+ESN= into a global start file (usually creating a new =.el= file in the =site-lisp=
+directory (wherever that is located).
+

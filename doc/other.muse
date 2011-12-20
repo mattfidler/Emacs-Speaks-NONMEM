@@ -1,0 +1,23 @@
+#title Alternatives to Emacs Speaks NONMEM
+
+There are a few alternatives to editing NONMEM control streams with syntax
+highlighting and/or helps for NONMEM.  I currently know of two:
+ - [[http://wfn.sourceforge.net/][EditPlus with NM-TRAN extension]]; NM-TRAN extension by Nick Holford
+   - Features code highlighting
+   - Need to setup by Tools -> Preferences and then add the =stx= highlighting file manually.
+   - EditPlus is Shareware with a 30-day trial period.
+[[./images/editplus.png]]
+ - [[http://sourceforge.net/apps/mediawiki/notepad-plus/index.php?title=User_Defined_Language_Files#N][Notepad++ with NM-TRAN extension]];  NM-TRAN extension by Stephen C. Olson
+   - Features:
+     - Code highlighting:
+[[./images/notepad.png]]
+     - Completion (with CTRL+Spacebar for Functions CTRL+Enter for Words):
+[[./images/notepadcomplete.png]]
+     - Help.  Need to type ? after the item you wish to know about and then
+       press CTRL-SHIFT-Spacebar. (Note it leaves the ? in the file)
+[[./images/notepadhelp.png]]
+
+   - This is in addition to all the extra facilities of Notepad++.  I'm not
+     familiar with Notepad++, so I do not know what there are...
+   - Notepad++ is free.
+ - PSPad with NONMEM extension

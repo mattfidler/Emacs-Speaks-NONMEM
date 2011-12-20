@@ -1,0 +1,280 @@
+/* XPM */
+static char * plt_graphics_xpm[] = {
+"24 24 253 2",
+"  	c None",
+". 	c #FFFDFB",
+"+ 	c #F7E7E4",
+"@ 	c #F7E8E4",
+"# 	c #F8ECE9",
+"$ 	c #F9EFEC",
+"% 	c #F9F1EF",
+"& 	c #FBF6F4",
+"* 	c #FAF8F7",
+"= 	c #F0F1F1",
+"- 	c #C5C8C9",
+"; 	c #F1A495",
+"> 	c #E63A17",
+", 	c #E83B13",
+"' 	c #ED4B22",
+") 	c #F15B2E",
+"! 	c #F46A39",
+"~ 	c #F97D4A",
+"{ 	c #FB8550",
+"] 	c #FD8B54",
+"^ 	c #F38757",
+"/ 	c #E7855E",
+"( 	c #C7C3C2",
+"_ 	c #F09D8C",
+": 	c #E63410",
+"< 	c #F3B5A6",
+"[ 	c #F08D73",
+"} 	c #F5A187",
+"| 	c #F3B49D",
+"1 	c #F89166",
+"2 	c #FBC4AC",
+"3 	c #F8BDA1",
+"4 	c #F57F4C",
+"5 	c #F08359",
+"6 	c #D8B1A4",
+"7 	c #DBDFE1",
+"8 	c #F09D8D",
+"9 	c #E53915",
+"0 	c #E5D4CF",
+"a 	c #D18E7D",
+"b 	c #F5D7CE",
+"c 	c #D16037",
+"d 	c #F0BAA3",
+"e 	c #EDDDD6",
+"f 	c #D28D6C",
+"g 	c #F5753E",
+"h 	c #EF7D52",
+"i 	c #DE9F8B",
+"j 	c #FFFFFF",
+"k 	c #DEE3E4",
+"l 	c #F09E8D",
+"m 	c #E53B17",
+"n 	c #E8C2B8",
+"o 	c #E24014",
+"p 	c #F8CCBE",
+"q 	c #F1BBA7",
+"r 	c #E3AA91",
+"s 	c #ECD5CA",
+"t 	c #F2824D",
+"u 	c #FA7941",
+"v 	c #EF7A4E",
+"w 	c #D88367",
+"x 	c #AE867B",
+"y 	c #A66F60",
+"z 	c #AA6E62",
+"A 	c #F0A090",
+"B 	c #E4401C",
+"C 	c #CF4523",
+"D 	c #F05A31",
+"E 	c #DA5F38",
+"F 	c #CD6842",
+"G 	c #EA7A4A",
+"H 	c #DD7F52",
+"I 	c #FA8D5A",
+"J 	c #F78150",
+"K 	c #EA7F59",
+"L 	c #E8815F",
+"M 	c #DA6E52",
+"N 	c #D8573C",
+"O 	c #CF5B43",
+"P 	c #B2867D",
+"Q 	c #E9BFB7",
+"R 	c #DECAC6",
+"S 	c #E2DDDC",
+"T 	c #E0DDDC",
+"U 	c #E3DEDC",
+"V 	c #E1DEDD",
+"W 	c #E2DEDD",
+"X 	c #E0DEDD",
+"Y 	c #E0DEDC",
+"Z 	c #DEDBDA",
+"` 	c #D9DBDC",
+" .	c #DB9E9A",
+"..	c #E16F66",
+"+.	c #DFD2CF",
+"@.	c #BDA7A2",
+"#.	c #EAE8E8",
+"$.	c #E8E8E8",
+"%.	c #EAEAEA",
+"&.	c #EAE5E5",
+"*.	c #EB8B85",
+"=.	c #EAD5D3",
+"-.	c #EC766E",
+";.	c #C4A5A4",
+">.	c #EBEAEA",
+",.	c #E9E9E9",
+"'.	c #EBEBEB",
+").	c #EBEDED",
+"!.	c #EBBEBB",
+"~.	c #EC7067",
+"{.	c #ED6C64",
+"].	c #EBD3D1",
+"^.	c #C3CACA",
+"/.	c #EDECEC",
+"(.	c #EDEDED",
+"_.	c #EDEFEF",
+":.	c #EDE2E2",
+"<.	c #ED4439",
+"[.	c #ED7A71",
+"}.	c #EDEBEB",
+"|.	c #EDF0F0",
+"1.	c #EEEEEE",
+"2.	c #EFEFEF",
+"3.	c #EFF5F5",
+"4.	c #EE645C",
+"5.	c #ED5248",
+"6.	c #EFEEED",
+"7.	c #F2F2F2",
+"8.	c #E0E0E1",
+"9.	c #0D0D0D",
+"0.	c #070707",
+"a.	c #010101",
+"b.	c #393939",
+"c.	c #AFAFAF",
+"d.	c #F1F1F1",
+"e.	c #F1F2F2",
+"f.	c #EF9F9A",
+"g.	c #EC2D1F",
+"h.	c #F1CECC",
+"i.	c #EEF2F2",
+"j.	c #D5D6D8",
+"k.	c #C5C6CA",
+"l.	c #000000",
+"m.	c #020202",
+"n.	c #B1B1B1",
+"o.	c #F3F3F3",
+"p.	c #F3FCFD",
+"q.	c #F1B9B5",
+"r.	c #EF3A2E",
+"s.	c #EC4B40",
+"t.	c #E0ECEE",
+"u.	c #CCCDD0",
+"v.	c #C4C5CA",
+"w.	c #C8C8CC",
+"x.	c #090909",
+"y.	c #E4E4E4",
+"z.	c #494949",
+"A.	c #323232",
+"B.	c #F4FDFE",
+"C.	c #F2A29C",
+"D.	c #F26C63",
+"E.	c #D9261A",
+"F.	c #C4635D",
+"G.	c #C6CCD1",
+"H.	c #C8C9CC",
+"I.	c #454545",
+"J.	c #EAEBEB",
+"K.	c #CECFCF",
+"L.	c #242424",
+"M.	c #6D6C6C",
+"N.	c #B5A8A7",
+"O.	c #EA7971",
+"P.	c #DE928F",
+"Q.	c #C25F59",
+"R.	c #B61B11",
+"S.	c #BF7572",
+"T.	c #C6CACF",
+"U.	c #C8C9CD",
+"V.	c #D7B6B4",
+"W.	c #C89A98",
+"X.	c #D0ACAC",
+"Y.	c #D19693",
+"Z.	c #CE716A",
+"`.	c #C66761",
+" +	c #C29999",
+".+	c #C2BFC2",
+"++	c #B81E14",
+"@+	c #B92116",
+"#+	c #BE7875",
+"$+	c #C4C8CD",
+"%+	c #CECED2",
+"&+	c #C7C8CC",
+"*+	c #E2E2E3",
+"=+	c #E9A8A3",
+"-+	c #C4CBD0",
+";+	c #BF8786",
+">+	c #B72117",
+",+	c #B71F15",
+"'+	c #CD7873",
+")+	c #EDF1F3",
+"!+	c #DBDBDE",
+"~+	c #EAEAEB",
+"{+	c #F7F7F7",
+"]+	c #EEF4F4",
+"^+	c #E3ECEE",
+"/+	c #DC746D",
+"(+	c #DF2B1F",
+"_+	c #EC2C20",
+":+	c #F36A60",
+"<+	c #E9F0F2",
+"[+	c #E2E2E4",
+"}+	c #F9F9F9",
+"|+	c #F8F8F8",
+"1+	c #4C4B4B",
+"2+	c #F7F8F8",
+"3+	c #FBFFFF",
+"4+	c #F15D53",
+"5+	c #EF3125",
+"6+	c #F03125",
+"7+	c #D83125",
+"8+	c #DCE4E6",
+"9+	c #FAFAFA",
+"0+	c #F8FCFC",
+"a+	c #0C0C0C",
+"b+	c #BDBDBD",
+"c+	c #828282",
+"d+	c #EE483E",
+"e+	c #EE3226",
+"f+	c #E22F22",
+"g+	c #CD2217",
+"h+	c #F7C8C5",
+"i+	c #FAFCFC",
+"j+	c #F8C5C1",
+"k+	c #2B2323",
+"l+	c #F9FFFF",
+"m+	c #EE4F45",
+"n+	c #EC3A2F",
+"o+	c #D13529",
+"p+	c #EA382D",
+"q+	c #F07067",
+"r+	c #FAFFFF",
+"s+	c #FBFBFB",
+"t+	c #D9D8D9",
+"u+	c #0A0A0A",
+"v+	c #030303",
+"w+	c #0B0B0B",
+"x+	c #2A2A2A",
+"y+	c #776968",
+"z+	c #ECCECB",
+"A+	c #EDF0F1",
+"B+	c #F1CCCA",
+"C+	c #E8C9C7",
+"D+	c #E0CAC9",
+"                                                ",
+"        . + @ # $ % & * = -                     ",
+"        ; > , ' ) ! ~ { ] ^ / (                 ",
+"        _ : < [ } | 1 2 3 4 5 6 7               ",
+"        8 9 0 a b c d e f g h i j k             ",
+"        l m n o p q r s t u v w x y z           ",
+"        A B C D E F G H I J K L M N O P         ",
+"        Q R S T S U V W X Y Z `  ...+.@.        ",
+"        #.$.%.%.%.%.%.%.%.%.%.&.*.=.-.;.        ",
+"        >.,.'.'.'.'.'.'.'.'.).!.~.{.].^.        ",
+"        /.'.(.(.(.(.(.(.(._.:.<.[.}.|.          ",
+"        1.(.2.2.2.2.2.2.2.3.4.5.6.7.8.          ",
+"      9.0.a.9.b.c.d.d.d.e.f.g.h.i.j.k.          ",
+"  l.l.l.l.l.l.l.m.n.o.p.q.r.s.t.u.v.w.          ",
+"  l.l.x.c.y.z.l.l.A.B.C.D.E.F.G.k.k.H.          ",
+"l.l.l.I.J.= K.L.M.N.O.P.Q.R.S.T.k.k.U.          ",
+"l.l.l.  V.W.X.Y.Z.`. +.+++@+#+$+%+&+*+          ",
+"l.l.l.  =+l.l.l.l.l.-+;+>+,+'+)+!+~+{+          ",
+"l.l.l.  ]+l.l.l.l.l.^+/+(+_+:+<+[+}+|+          ",
+"l.l.l.1+1.2+}+l.l.l.3+4+5+6+7+8+9+}+0+          ",
+"  l.l.a+b+,.c+l.l.l.3+d+e+f+g+h+3+i+j+          ",
+"  l.l.l.l.l.l.l.l.k+l+m+n+o+p+q+r+s+t+          ",
+"      u+v+a.w+x+y+z+A+B+C+D+                    ",
+"                                                "};

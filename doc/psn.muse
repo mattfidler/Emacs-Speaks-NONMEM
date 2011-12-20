@@ -1,0 +1,28 @@
+#title Perl Speaks NONMEM (psn)
+
+* Perl Speaks NONMEM integration
+Emacs Speaks NONMEM allows you to run the following commands from
+[[http://psn.sourceforge.net][Perl Speaks NONMEM]] from within Emacs:
+
+ - Boostrap (bootstrap)
+ - Case Deletion Diagnostics (cdd)
+ - Log Liklihood Profiling (llp)
+ - Summaries (sumo)
+ - Visual Predictive Check (vpc)
+ - Numerical Predictive Check (npc)
+
+Things not supported yet
+ - Stochastic Simulation and Estimation (sse)
+ - Stepwise Covariate Model Building (scm)
+ - Update Initial Values of model (update_inits)
+ - Wrap rows with input that is more that 20 columns (create_cont_data)
+ - Subset data (create_subsets)
+ - Print Data Statistics (data_stats)
+ - Non-parametric estimation on extended grid (extended_grid)
+ - Non-parametric bootstrap (nonpb)
+ - Individual Probabilities (pind)
+ - Standard Errors of Etas (se_of_eta)
+ - Unwrap data that was coded with the CONT data item for split rows (unwrap_data)
+
+Things that will not be supported:
+ - Single Valued Columns (single_valued_columns)

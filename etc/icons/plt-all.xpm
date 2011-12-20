@@ -1,0 +1,282 @@
+/* XPM */
+static char * plt_all_xpm[] = {
+"24 24 255 2",
+"  	c None",
+". 	c #FFFDFB",
+"+ 	c #F7E7E4",
+"@ 	c #F7E8E4",
+"# 	c #F8ECE9",
+"$ 	c #F9EFEC",
+"% 	c #F9F1EF",
+"& 	c #FBF6F4",
+"* 	c #FAF8F7",
+"= 	c #F0F1F1",
+"- 	c #C5C8C9",
+"; 	c #F1A495",
+"> 	c #E63A17",
+", 	c #E83B13",
+"' 	c #ED4B22",
+") 	c #F15B2E",
+"! 	c #F46A39",
+"~ 	c #F97D4A",
+"{ 	c #FB8550",
+"] 	c #FD8B54",
+"^ 	c #F38757",
+"/ 	c #E7855E",
+"( 	c #C7C3C2",
+"_ 	c #F09D8C",
+": 	c #E63410",
+"< 	c #F3B5A6",
+"[ 	c #F08D73",
+"} 	c #F5A187",
+"| 	c #F3B49D",
+"1 	c #F89166",
+"2 	c #FBC4AC",
+"3 	c #F8BDA1",
+"4 	c #F57F4C",
+"5 	c #F08359",
+"6 	c #D8B1A4",
+"7 	c #DBDFE1",
+"8 	c #F09D8D",
+"9 	c #E53915",
+"0 	c #E5D4CF",
+"a 	c #D18E7D",
+"b 	c #F5D7CE",
+"c 	c #D16037",
+"d 	c #F0BAA3",
+"e 	c #EDDDD6",
+"f 	c #D28D6C",
+"g 	c #F5753E",
+"h 	c #EF7D52",
+"i 	c #DE9F8B",
+"j 	c #FFFFFF",
+"k 	c #DEE3E4",
+"l 	c #F09E8D",
+"m 	c #E53B17",
+"n 	c #E8C2B8",
+"o 	c #E24014",
+"p 	c #F8CCBE",
+"q 	c #F1BBA7",
+"r 	c #E3AA91",
+"s 	c #ECD5CA",
+"t 	c #F2824D",
+"u 	c #FA7941",
+"v 	c #EF7A4E",
+"w 	c #D88367",
+"x 	c #AE867B",
+"y 	c #A66F60",
+"z 	c #AA6E62",
+"A 	c #F0A090",
+"B 	c #E4401C",
+"C 	c #CF4523",
+"D 	c #F05A31",
+"E 	c #DA5F38",
+"F 	c #CD6842",
+"G 	c #EA7A4A",
+"H 	c #DD7F52",
+"I 	c #FA8D5A",
+"J 	c #F78150",
+"K 	c #EA7F59",
+"L 	c #E8815F",
+"M 	c #DA6E52",
+"N 	c #D8573C",
+"O 	c #CF5B43",
+"P 	c #B2867D",
+"Q 	c #E9BFB7",
+"R 	c #DECAC6",
+"S 	c #E2DDDC",
+"T 	c #E0DDDC",
+"U 	c #E3DEDC",
+"V 	c #E1DEDD",
+"W 	c #E2DEDD",
+"X 	c #E0DEDD",
+"Y 	c #E0DEDC",
+"Z 	c #DEDBDA",
+"` 	c #D9DBDC",
+" .	c #DB9E9A",
+"..	c #E16F66",
+"+.	c #DFD2CF",
+"@.	c #BDA7A2",
+"#.	c #EAE8E8",
+"$.	c #E8E8E8",
+"%.	c #EAEAEA",
+"&.	c #EAE5E5",
+"*.	c #EB8B85",
+"=.	c #EAD5D3",
+"-.	c #EC766E",
+";.	c #C4A5A4",
+">.	c #EBEAEA",
+",.	c #E9E9E9",
+"'.	c #EBEBEB",
+").	c #EBEDED",
+"!.	c #EBBEBB",
+"~.	c #EC7067",
+"{.	c #ED6C64",
+"].	c #EBD3D1",
+"^.	c #C3CACA",
+"/.	c #EDECEC",
+"(.	c #EDEDED",
+"_.	c #EDEFEF",
+":.	c #EDE2E2",
+"<.	c #ED4439",
+"[.	c #ED7A71",
+"}.	c #EDEBEB",
+"|.	c #EDF0F0",
+"1.	c #EEEEEE",
+"2.	c #EFEFEF",
+"3.	c #EFF5F5",
+"4.	c #EE645C",
+"5.	c #ED5248",
+"6.	c #EFEEED",
+"7.	c #F2F2F2",
+"8.	c #E0E0E1",
+"9.	c #F1F1F1",
+"0.	c #F1F2F2",
+"a.	c #EF9F9A",
+"b.	c #EC2D1F",
+"c.	c #F1CECC",
+"d.	c #EEF2F2",
+"e.	c #D5D6D8",
+"f.	c #C5C6CA",
+"g.	c #F3F3F3",
+"h.	c #F3FCFD",
+"i.	c #F1B9B5",
+"j.	c #EF3A2E",
+"k.	c #EC4B40",
+"l.	c #E0ECEE",
+"m.	c #CCCDD0",
+"n.	c #C4C5CA",
+"o.	c #C8C8CC",
+"p.	c #ECECEC",
+"q.	c #F4F4F4",
+"r.	c #F4F5F5",
+"s.	c #F4FDFE",
+"t.	c #F2A29C",
+"u.	c #F26C63",
+"v.	c #D9261A",
+"w.	c #C4635D",
+"x.	c #C6CCD1",
+"y.	c #C8C9CC",
+"z.	c #EAEBEB",
+"A.	c #F3F4F4",
+"B.	c #F3F5F5",
+"C.	c #F3F1F1",
+"D.	c #F0DEDD",
+"E.	c #EA7971",
+"F.	c #DE928F",
+"G.	c #C25F59",
+"H.	c #B61B11",
+"I.	c #BF7572",
+"J.	c #C6CACF",
+"K.	c #C8C9CD",
+"L.	c #D7B6B4",
+"M.	c #C89A98",
+"N.	c #D0ACAC",
+"O.	c #D19693",
+"P.	c #CE716A",
+"Q.	c #C66761",
+"R.	c #C29999",
+"S.	c #C2BFC2",
+"T.	c #B81E14",
+"U.	c #B92116",
+"V.	c #BE7875",
+"W.	c #C4C8CD",
+"X.	c #CECED2",
+"Y.	c #C7C8CC",
+"Z.	c #E2E2E3",
+"`.	c #E9A8A3",
+" +	c #DA2F24",
+".+	c #C3443D",
+"++	c #BC8684",
+"@+	c #C0AAAC",
+"#+	c #C3BEC1",
+"$+	c #C4CBD0",
+"%+	c #BF8786",
+"&+	c #B72117",
+"*+	c #B71F15",
+"=+	c #CD7873",
+"-+	c #EDF1F3",
+";+	c #DBDBDE",
+">+	c #EAEAEB",
+",+	c #F7F7F7",
+"'+	c #EEF4F4",
+")+	c #F6F1F0",
+"!+	c #F26F67",
+"~+	c #F3A7A3",
+"{+	c #ECECEE",
+"]+	c #E4E4E6",
+"^+	c #E3ECEE",
+"/+	c #DC746D",
+"(+	c #DF2B1F",
+"_+	c #EC2C20",
+":+	c #F36A60",
+"<+	c #E9F0F2",
+"[+	c #E2E2E4",
+"}+	c #F9F9F9",
+"|+	c #F8F8F8",
+"1+	c #F7F8F8",
+"2+	c #F27971",
+"3+	c #F7CDCA",
+"4+	c #FBFCFC",
+"5+	c #FBFFFF",
+"6+	c #F15D53",
+"7+	c #EF3125",
+"8+	c #F03125",
+"9+	c #D83125",
+"0+	c #DCE4E6",
+"a+	c #FAFAFA",
+"b+	c #F8FCFC",
+"c+	c #FAFBFB",
+"d+	c #F8DCDA",
+"e+	c #EF5A4F",
+"f+	c #FAFFFF",
+"g+	c #EE483E",
+"h+	c #EE3226",
+"i+	c #E22F22",
+"j+	c #CD2217",
+"k+	c #F7C8C5",
+"l+	c #FAFCFC",
+"m+	c #F8C5C1",
+"n+	c #F6F6F6",
+"o+	c #F8FFFF",
+"p+	c #EF665D",
+"q+	c #F6CBC7",
+"r+	c #F9FFFF",
+"s+	c #EE4F45",
+"t+	c #EC3A2F",
+"u+	c #D13529",
+"v+	c #EA382D",
+"w+	c #F07067",
+"x+	c #FBFBFB",
+"y+	c #D9D8D9",
+"z+	c #EFF2F2",
+"A+	c #F4D6D4",
+"B+	c #F2D3D0",
+"C+	c #EDF0F1",
+"D+	c #F1CCCA",
+"E+	c #E8C9C7",
+"F+	c #E0CAC9",
+"                                                ",
+"        . + @ # $ % & * = -                     ",
+"        ; > , ' ) ! ~ { ] ^ / (                 ",
+"        _ : < [ } | 1 2 3 4 5 6 7               ",
+"        8 9 0 a b c d e f g h i j k             ",
+"        l m n o p q r s t u v w x y z           ",
+"        A B C D E F G H I J K L M N O P         ",
+"        Q R S T S U V W X Y Z `  ...+.@.        ",
+"        #.$.%.%.%.%.%.%.%.%.%.&.*.=.-.;.        ",
+"        >.,.'.'.'.'.'.'.'.'.).!.~.{.].^.        ",
+"        /.'.(.(.(.(.(.(.(._.:.<.[.}.|.          ",
+"        1.(.2.2.2.2.2.2.2.3.4.5.6.7.8.          ",
+"        '.2.9.9.9.9.9.9.0.a.b.c.d.e.f.          ",
+"        '.9.g.g.g.g.g.h.i.j.k.l.m.n.o.          ",
+"        p.7.q.q.q.r.s.t.u.v.w.x.f.f.y.          ",
+"        z.= A.B.C.D.E.F.G.H.I.J.f.f.K.          ",
+"        L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.          ",
+"        `. +.+++@+#+$+%+&+*+=+-+;+>+,+          ",
+"        '+)+!+~+{+]+^+/+(+_+:+<+[+}+|+          ",
+"        1.1+}+2+3+4+5+6+7+8+9+0+a+}+b+          ",
+"        1.|+c+d+e+f+5+g+h+i+j+k+5+l+m+          ",
+"        p.n+|+o+p+q+r+s+t+u+v+w+f+x+y+          ",
+"          2.7.z+A+B+C+D+E+F+                    ",
+"                                                "};
