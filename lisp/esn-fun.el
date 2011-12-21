@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 225
+;;     Update #: 226
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -85,6 +85,22 @@
 (declare-function esn-undo-numbering "esn-extended")
 (declare-function esn-max-what "esn-properties")
 (declare-function esn-get-current-record "esn-narrow")
+
+(defun esn-get-data ()
+  "Gets the data for the current file/problem."
+  (save-restriction
+    (save-excursion
+      (let ((case-fold-search 't)
+            (data "")
+            (inhibit-read-only 't))
+          (esn-narrow-to-current-problem)
+          (goto-char (point-min))
+          (if (not (re-search-forward
+                    (eval-when-compile (esn-reg-data-rec "DAT")) nil t)) nil
+            (setq data (match-string 2))
+            (if (string-match (format "^%s" (regexp-quote esn-completing-current-directory)) data)
+                (setq data (replace-match "" nil nil data))))
+          (symbol-value 'data)))))
 
 (defun esn-add-to-alist (alist-var elt-cons &optional no-replace)
   "Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.

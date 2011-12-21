@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Fri Aug 20 08:29:58 2010 (-0500)
 ;; Version: 
-;; Last-Updated: Tue Nov 29 10:38:15 2011 (-0600)
+;; Last-Updated: Wed Dec 21 10:06:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1292
+;;     Update #: 1294
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -22,6 +22,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 21-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov 29 10:38:15 2011 (-0600) #1292 (Matthew L. Fidler)
+;;    Added `esn-get-inputs'  It was somehow deleted.
 ;; 06-Jun-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Jun  6 11:11:21 2011 (-0500) #1289 (Matthew L. Fidler)
 ;;    Bug fix for esn-tables saving when the add/require is just a string.
@@ -705,6 +708,188 @@ that match the supplied regular expression.
     ret))
 
 
+;; Create a get inputs cache.  Flush the cache whenever $INPUT is modified.
+(defvar esn-get-inputs-cache (make-hash-table :test 'equal)
+  "Hash to cache $INPUT lookups.")
+(make-variable-buffer-local 'esn-get-inputs-cache)
+(esn-rec-modification-hook "input" (lambda() (setq esn-get-inputs-cache (make-hash-table :test 'equal))))
+
+
+;;;###autoload
+(defun* esn-get-inputs (&rest rest &key (keep 'valid) (alias 'list) (return 'items) &allow-other-keys)
+  "Gets a list of defined inputs from the control stream.
+
+INPUT represent the input statements (possibly cached from other functions..?)
+
+:keep defines how to handle DROP and SKIP records
+
+:keep 'alias changes the input record as follows:
+
+original $INPUT record:
+
+ $INPUT ONE TWO=DROP THREE=SKIP DROP SKIP
+
+to a list:
+
+ (\"ONE\" \"TWO\" \"THREE\" \"DROP\" \"SKIP\")
+
+:KEEP 'drop changes input record as follows:
+
+original $INPUT record:
+
+ $INPUT ONE TWO=DROP THREE=SKIP DROP SKIP
+
+to a list:
+
+ (\"ONE\" \"DROP\" \"SKIP\" \"DROP\" \"SKIP\")
+
+:KEEP 'valid change input record as follows:
+
+original $INPUT record:
+
+ $INPUT ONE TWO=DROP THREE=SKIP DROP SKIP
+
+to a list:
+
+ (\"ONE\")
+
+The handling of aliases have three possible methods:
+
+
+:ALIAS 'first
+
+Changes the original $INPUT from
+
+ $INPUT FIRST=SECOND THIRD=FOURTH FIFTH
+
+to a list:
+
+ (\"FIRST\" \"THIRD\" \"FIFTH\")
+
+:ALIAS 'second
+
+Changes the original $INPUT from
+
+ $INPUT FIRST=SECOND THIRD=FOURTH FIFTH
+
+to a list:
+
+ (\"SECOND\" \"FOURTH\" \"FIFTH\")
+
+:ALIAS 'list
+
+Changes the original $INPUT from
+
+ $INPUT FIRST=SECOND THIRD=FOURTH FIFTH
+
+to a list:
+
+ ((\"FIRST\" \"SECOND\") (\"THIRD\" \"FOURTH\") \"FIFTH\")
+
+
+The return value can be either:
+
+:RETURN 'list, which gives a list as stated above
+
+:RETURN 'items, which gives a list with no sublists contained in
+it.  For example:
+
+The record
+
+ $INPUT FIRST=SECOND THIRD=FOURTH FIFTH
+
+Would return the following list:
+
+ (\"FIRST\" \"SECOND\" \"THIRD\" \"FOURTH\" \"FIFTH\")
+
+
+
+:RETURN 'regexp, which gives a regular expression of the kept variables.
+
+"
+  (if (gethash (list keep alias return) esn-get-inputs-cache)
+      (gethash (list keep alias return) esn-get-inputs-cache)
+    (let ((inp (esn-rec "INP" 't))
+          ret
+          (start 0))
+      ;; Drop $INPUT record statements. 
+      (while (string-match (eval-when-compile (esn-reg-record-exp "INP" nil)) inp start)
+        (setq start (match-beginning 0))
+        (setq inp (replace-match "" nil nil inp)))
+      ;; Delete comments
+      (setq start 0)
+      (while (string-match ";.*" inp start)
+        (setq start (match-beginning 0))
+        (setq inp (replace-match "" nil nil inp)))
+      ;; Replace newlines
+      (setq start 0)
+      (while (string-match "\n" inp start)
+        (setq start (match-beginning 0))
+        (setq inp (replace-match " " nil nil inp)))
+      ;; Change DROP and SKIP
+      ;; DROP = VAR
+      (setq start 0)
+      (while (string-match "\\(DROP\\|SKIP\\)[ \t]*=[ \t]*\\([A-Za-z][^ \t]*\\)" inp start)
+        (cond
+         ((eq keep 'alias) ;; Keep the alias instead.
+          (setq start (+ (match-beginning 0) (length (match-string 2))))
+          (setq inp (replace-match "\\2" t nil inp)))
+         ((eq keep 'drop) ; Keep the Drop or skip statement
+          (setq start (+ (match-beginning 0) (length (match-string 1))))
+          (setq inp (replace-match "\\1" t nil inp)))
+         ((eq keep 'valid) ; remove DROP and SKIP statements
+          (setq start (match-beginning 0))
+          (setq inp (replace-match "" nil nil inp)))))
+      ;; VAR = DROP
+      (setq start 0)
+      (while (string-match "\\<\\([A-Za-z][^ \t]*\\)[ \t]*=[ \t]*\\(DROP\\|SKIP\\)" inp start)
+        (cond
+         ((eq keep 'alias) ;; Keep the alias.
+          (setq start (+ (match-beginning 0) (length (match-string 1))))
+          (setq inp (replace-match "\\1" t nil inp)))
+         ((eq keep 'drop) ;; Keep the Drop/skip statement
+          (setq start (+ (match-beginning 0)) (length (match-string 2)))
+          (setq inp (replace-match "\\2" t nil inp)))
+         ((eq keep 'valid) ;Remove Drop and Skip statements
+          (setq start (match-beginning 0))
+          (setq inp (replace-match "" nil nil inp)))
+         (t
+          (error ":keep option not specified appropriately in `esn-get-inputs'")
+          (setq start (match-end 0)))))
+      ;; Remaining DROP and SKIP statements.
+      (unless (eq keep 'valid)
+        (setq start 0)
+        (while (string-match "\\(DROP\\|SKIP\\)" inp start)
+          (setq inp (replace-match "" nil nil inp))
+          (setq start (match-beginning 0))))
+      ;; Now deal with aliases
+      (setq start 0)
+      (while (string-match "\\<\\([A-Za-z][^ \t]*\\)[ \t]*=[ \t]*\\([A-Za-z][^ \t]*\\)\\>" inp start)
+        (cond
+         ((and (eq alias 'list) (eq return 'regexp))
+          (setq start (+ 1 (match-beginning 0) (length (match-string 1)) (length (match-string 2))))
+          (setq inp (replace-match "\\1 \\2" t nil inp)))
+         ((eq alias 'first)
+          (setq inp (replace-match "\\1" t nil inp))
+          (setq start (+ (match-beginning 0) (length (match-string 1)))))
+         ((eq alias 'second)
+          (setq inp (replace-match "\\2" t nil inp))
+          (setq start (+ (match-beginning 0) (length (match-string 2)))))
+         ((eq alias 'list)
+          (setq start (+ 1 (match-beginning 0) (length (match-string 1)) (length (match-string 2))))
+          (setq inp (replace-match "\\1=\\2" t nil inp)))
+         (t
+          (error ":alias option not specified appropriately in `esn-get-inputs'"))))
+      (setq ret (split-string inp (if (or (eq return 'regexp)
+                                          (eq return 'items))
+                                      "[ \t=]+" nil) t))
+      (cond
+       ((eq return 'list)
+        (seq ret (mapcar (lambda(x) (split-string x "[=]+" t)))))
+       ((eq return 'regexp)
+        (setq ret (regexp-opt ret 'words))))
+      (puthash (list keep alias return) ret esn-get-inputs-cache)
+      (symbol-value 'ret))))
 
 (defun esn-add-table (name var opt)
   "Adds table NAME  with variables VAR and options OPT to the control stream."

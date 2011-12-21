@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Jan 12 09:06:53 2011 (-0600)
 ;; Version: 
-;; Last-Updated: Wed Apr 27 18:58:38 2011 (-0500)
+;; Last-Updated: Wed Dec 21 14:32:02 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 104
+;;     Update #: 119
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -88,14 +88,13 @@ $(EXPR) defines an expression to evaluate
     (while (string-match "[%]\\( +\\)[%]" ret start)
       (setq ret (replace-match "\\1" t nil ret))
       (setq start (+ (match-beginning 0) (length (match-string 1 ret)))))
-    ;; Then replace %FN%
+    ;; Then replace $FN
     (setq start 0)
-    (while (string-match "[$]\\([^(][^ \t\n]*\\)" ret start)
+    (while (string-match "[$]\\([^(][^ \t\n\"\')]*\\)" ret start)
       (setq var (intern-soft (match-string 1 ret)))
       (save-match-data
         (cond
          ((not var) ;; Not defined, leave alone.
-          
           (setq var ""))
          ((fboundp var) ;; Function
           (condition-case error
@@ -105,8 +104,10 @@ $(EXPR) defines an expression to evaluate
                       (symbol-name var)
                       (error-message-string error))
              (setq var ""))))
-         ((boundp var) ;; Variable
-          (setq var (format "%s" (symbol-value var))))))
+         ((boundp var) ;; Variable  Nil=""
+          (if (symbol-value var)
+              (setq var (format "%s" (symbol-value var)))
+            (setq var "")))))
       (setq ret (replace-match var t t ret))
       (setq start (+ (match-beginning 0) (length var))))
     (setq start 0)
@@ -135,6 +136,7 @@ $(EXPR) defines an expression to evaluate
     ;; Put in format-time-string constructs
     (setq ret (format-time-string ret))
     (symbol-value 'ret)))
+
 (defmacro* def-esn-template (template-name description &key content group)
   "Define EsN Template"
   (declare (indent 1))
@@ -143,6 +145,7 @@ $(EXPR) defines an expression to evaluate
        ,(format  "EsN template for %s (See `esn-parse-template' for a description)" description)
        :type 'string
        :group ,group)
+     (setq ,template-name ,content)
      (defun ,template-name ()
        ,(format "%s (uses `%s')" description (symbol-name template-name))
        (interactive)

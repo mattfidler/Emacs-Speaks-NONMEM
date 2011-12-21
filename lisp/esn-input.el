@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Jan 27 14:25:25 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Wed Dec 21 09:32:36 2011 (-0600)
+;; Last-Updated: Wed Dec 21 15:16:00 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 325
+;;     Update #: 326
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: 23.x
@@ -460,8 +460,7 @@
             (header "")
             (inhibit-read-only 't)
             (esw esn-skip-wrap)
-            ret 
-            )
+            ret)
         (save-excursion
           (esn-narrow-to-current-problem)
           (goto-char (point-min))

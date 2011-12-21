@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Jan 29 16:20:10 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Wed Dec 21 09:44:50 2011 (-0600)
+;; Last-Updated: Wed Dec 21 15:59:36 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 809
+;;     Update #: 855
 ;; URL: http://esnm.sourceforge.net/
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: Emacs 23.x
@@ -496,8 +496,6 @@
   (unless (esn-plt-tools-is-running-p)))
 
 
-
-
 (defun esn-plt-hl (&optional a num-cmt)
   "Creates the portion of the script that determines if
 half-lives will be calculated and how many compartments"
@@ -528,6 +526,7 @@ half-lives will be calculated and how many compartments"
     (setq ret (format "CalculateHalfLives        <- c(%s)
 NumberOfCompartments     <- c(%s)" (if calc-hl "T" "F") num-cmt))
     (symbol-value 'ret)))
+
 (defun esn-plt-fix-labels (labs)
   "Fixes variable labels to be more human readable..."
   (let (
@@ -556,92 +555,9 @@ NumberOfCompartments     <- c(%s)" (if calc-hl "T" "F") num-cmt))
                           (symbol-value 'r)))
                       ret))
     (symbol-value 'ret)))
-(defun esn-plt-demo (dm-a-q ret-q
-                            inp
-                            )
-  "* Demographic characteristics for PLT tools graphics script."
-  ;; Gets demographic characteristics.
-  (let (
-        (data "")
-        (head "")
-        (inform "Data cannot be input as a covariate file...")
-        (delim "")
-        (idalias "")
-        (i 0))
-    ;; Only supports 1 sub-problem.
-    (save-excursion
-      (goto-char (point-min))
-      (if (not (re-search-forward (eval-when-compile (esn-reg-data-rec "DAT")) nil t))
-          (message inform)
-        (setq data (match-string 1))
-        (if (string-match (format "^%s" (regexp-quote esn-completing-current-directory)) data)
-            (setq data (replace-match "" nil nil data)))
-        (setq head (esn-input-get-header data))
-        (when (string-match "^.*$" head)
-          (setq head (match-string 0 head)))
-        (setq delim
-              (cond
-               ( (= (length (split-string head "," 't)) (length inp))
-                 (set dm-a-q
-                      (mapcar
-                       (lambda(x)
-                         (setq i (+ i 1))
-                         (list (nth (- i 1) inp) x))
-                       (split-string head "," 't)))
-                 "Comma"
-                 )
-               ( (= (length (split-string head "\t" 't)) (length inp))
-                 (set dm-a-q
-                      (mapcar
-                       (lambda(x)
-                         (setq i (+ i 1))
-                         (list (nth (- i 1) inp) x))
-                       (split-string head "\t" 't)))
-                 "Tab"
-                 )
-               ( (= (length (split-string head " " 't)) (length inp))
-                 (set dm-a-q
-                      (mapcar
-                       (lambda(x)
-                         (setq i (+ i 1))
-                         (list (nth (- i 1) inp) x))
-                       (split-string head " " 't)))
-                 "Space"
-                 )
-               ('t nil)))
-        (setq idalias (cadr (assoc "ID" (symbol-value dm-a-q))))
-        (setq data (expand-file-name data))
-        (when esn-w32
-          (setq data (concat (upcase (substring data 0 1)) (substring data 1))))
-        (when (string-match "-DEMO-" (symbol-value ret-q))
-          (set ret-q
-               (replace-match
-                (format
-                 "DEMOEXISTS     <- c(T)\nIDALIAS        <- c(\"%s\")\nDEMOFILENAME      <- c(\"%s\")\nDEMODELIMITER     <- c(\"%s\")"
-                 idalias
-                 data
-                 delim
-                 )
-                't 't (symbol-value ret-q))))))
-    (when (string-match "-DEMO-" (symbol-value ret-q))
-      (set ret-q
-           (replace-match
-            "DEMOEXISTS <- c(F)\nIDALIAS <- c(\"\")\nDEMOFILENAME <- c(\"\")\nDEMODELIMITER <- c(\"\")\n"
-            't 't (symbol-value ret-q))))))
 
-(defun esn-plt-inp ()
-  "* Gets the input record for PLT tools determination of variables."
-  (let (
-        (inp (esn-rec "INP" 't)))
-    (while (string-match "=[ \t]*\\(DROP\\|SKIP\\)\\>" inp)
-      (setq inp (replace-match "" 't 't inp)))
-    (while (string-match "\\<\\(DROP\\|SKIP\\)[ \t]*=" inp)
-      (setq inp (replace-match "" 't 't inp)))
-    (while (string-match "\\<\\(DROP\\|SKIP\\)\\>" inp)
-      (setq inp (replace-match "" 't 't inp)))
-    (while (string-match (eval-when-compile (esn-reg-record-exp "INP" nil)) inp)
-      (setq inp (replace-match "" 't 't inp)))
-    (split-string inp "[ \t\n]+" 't)))
+
+
 (defun esn-plt-ca-cov (v codes text rep
                          ret-q) ; Quoted
   "* Gets categorical covariate, and replaces categories in ret-q, and returns description.
@@ -875,15 +791,15 @@ rep = Script rep place."
          (height-covs (regexp-opt esn-plt-height-covs 'words))
          (dose-group  (regexp-opt esn-plt-dose-covs 'words))
          (co-covs (regexp-opt esn-xpose-cotab 'words))
-
+         
          (race-covs (regexp-opt esn-plt-race-covs 'words))
          (gender-covs (regexp-opt esn-plt-gender-covs 'words))
          (form-covs (regexp-opt esn-plt-formulation-covs 'words))
          (fed-covs (regexp-opt esn-plt-fed-covs 'words))
-
+         
          (ca-covs (regexp-opt esn-xpose-catab 'words))
          (id-covs (regexp-opt esn-xpose-ids 'words))
-
+         
          (col-names '())
          (col-type '())
          (col-desc '())
@@ -1125,69 +1041,7 @@ rep = Script rep place."
       (setq hl "CalculateHalfLives       <- c(F)
 NumberOfCompartments     <- c(1)" ))
     (symbol-value 'ret)))
-(defalias 'e 'esn-plt-graphics)
-(defun esn-plt-graphics (&optional a)
-  "Creates a graphics script based on control stream values"
-  (interactive)
-  (require 'esn-units)
-  (let* (
-         (debug-on-error 't)
-         (inp (esn-plt-inp))
-         (demo-alias '())
-         (advan (or a (esn-advan)))
-         (esn-var-names '())
-         (num-cmt 1)
-         (hl (esn-plt-hl advan 'num-cmt))
-         (theta-names "")
-         (esn-var-names '())
-         (eta-names (esn-plt-eta (esn-plt-fix-labels (esn-get-variable-names "OME" "\\= *;+\\(.*\\)" ";+\\(.*\\)"))))
-         (omega (esn-rec "OME" 't))
-         (sigma (esn-rec "SIG" 't))
-         (time (esn-get-time-units))
-         (conc (esn-get-concentration-units))
-         (vol (esn-get-volume-units))
-         (dose (esn-get-dose-units))
-         (ret esn-plt-graphics-script))
-    (setq time (or time "hr"))
-    ;; Check to make sure that the number of compartments is correctly assigned
-    ;; for calculating half-life.  esn-plt-theta will set hl to the correct
-    ;; value.
-    (setq theta-names (esn-plt-theta (esn-plt-fix-labels (esn-get-variable-names "THE"  "\\= *;\\(.*\\)" ";\\(.*\\)"))
-                                     num-cmt hl
-                                     ))
-    (when (string-match (regexp-quote "-CALC-HL-") ret)
-      (setq ret (replace-match hl 't 't ret)))
-    (when (string-match (regexp-quote "-THETAS-") ret)
-      (setq ret (replace-match theta-names 't 't ret)))
-    (when (string-match (regexp-quote "-AMT-UNITS-") ret)
-      (setq ret (replace-match dose 't 't ret)))
-    (while (string-match (regexp-quote "-TIME-UNITS-") ret)
-      (setq ret (replace-match time 't 't ret)))
-    (when (string-match (regexp-quote "-CONC-UNITS-") ret)
-      (setq ret (replace-match conc 't 't ret)))
-    (when (string-match (regexp-quote "-ESNVER-") ret)
-      (setq ret (replace-match (format "%s" esn-mode-ver) 't 't ret)))
-    (when (string-match (regexp-quote "-ETAS-") ret)
-      (setq ret (replace-match eta-names 't 't ret)))
-    (esn-plt-demo 'demo-alias 'ret inp)
-    ;; Deomgraphics
 
-    (setq ret (esn-plt-covs ret 'inp demo-alias))
-
-    (when (string-match "-TIMESTAMP-" ret)
-      (setq ret (replace-match (format-time-string "%a %b %d %T %Z %Y") t t ret)))
-    (when (string-match "-BlackWhite-" ret)
-      (setq ret (replace-match (if 't "Color" "Monochrome") 't 't ret)))
-    (when (string-match "-GlobalHeader-" ret)
-      (setq ret (replace-match "" 't 't ret)))
-    (while (string-match "\n\n+" ret)
-      (setq ret (replace-match "\n" 't 't ret)))
-    (message "%s" ret)
-    (symbol-value 'ret)))
-
-(def-esn-project-update esn-plt-graphics-project
-  :apply-function esn-plt-graphics
-  :message "EsN PLT graphics scripts update")
 
 (defun esn-plt-auto-now ( &optional force)
   "* Auto Timer NOW."
@@ -1509,103 +1363,172 @@ Work-abcd-plta/
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Graphics Template
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun esn-plt-graphics-script-path ()
+  "Returns the Graphics Script Path"
+  (if (buffer-file-name)
+      (concat
+       (expand-file-name (concat (file-name-directory (buffer-file-name)) "../SCRIPTS-GRAPHICS")))
+    ""))
+
+(defalias 'e 'esn-plt-graphics)
+(defun esn-plt-graphics (&optional a)
+  "Creates a graphics script based on control stream values"
+  (interactive)
+  (require 'esn-units)
+  (let* ((demo-alias '())
+         (advan (or a (esn-advan)))
+         (esn-var-names '())
+         (num-cmt 1)
+         (hl (esn-plt-hl advan 'num-cmt))
+         (theta-names "")
+         (esn-var-names '())
+         (eta-names (esn-plt-eta (esn-plt-fix-labels (esn-get-variable-names "OME" "\\= *;+\\(.*\\)" ";+\\(.*\\)"))))
+         (omega (esn-rec "OME" 't))
+         (sigma (esn-rec "SIG" 't))
+         (time (esn-get-time-units))
+         (conc (esn-get-concentration-units))
+         (vol (esn-get-volume-units))
+         (dose (esn-get-dose-units))
+         (inputs (esn-get-inputs))
+         (data (expand-file-name (esn-get-data)))
+         (header (esn-input-get-header data))
+         (i -1)
+         (id -1)
+         (id-alias "")
+         (delim (progn
+                  (mapc (lambda(x)
+                          (setq i (+ i 1))
+                          (if (string= x "ID")
+                              (setq id i)))
+                        inputs)
+                  (flet ((get-delim (arg)
+                                (let* ((hs (split-string header arg 't))
+                                       (same (= (length hs) (length inputs))))
+                                  (when same
+                                    (setq id-alias (nth id hs)))
+                                  same)))
+                    (cond
+                     ((get-delim ",") "Comma")
+                     ((get-delim "\t") "Tab")
+                     ((get-delim " ") "Space")))))
+         (ret nil))
+    (setq theta-names (esn-plt-theta (esn-plt-fix-labels (esn-get-variable-names "THE"  "\\= *;\\(.*\\)" ";\\(.*\\)"))
+                                     num-cmt hl))
+    (setq time (or time "hr"))
+    (setq ret (esn-plt-graphics-script))
+    (when nil
+      
+      ;; Check to make sure that the number of compartments is correctly assigned
+      ;; for calculating half-life.  esn-plt-theta will set hl to the correct
+      ;; value.
+      
+      ;; Deomgraphics
+      
+      (setq ret (esn-plt-covs ret 'inp demo-alias))
+      (when (string-match "-BlackWhite-" ret)
+        (setq ret (replace-match (if 't "Color" "Monochrome") 't 't ret)))
+      (when (string-match "-GlobalHeader-" ret)
+        (setq ret (replace-match "" 't 't ret)))
+      (while (string-match "\n\n+" ret)
+        (setq ret (replace-match "\n" 't 't ret))))
+    ;;(message "%s" ret)
+    (symbol-value 'ret)))
+
+(def-esn-project-update esn-plt-graphics-project
+  :apply-function esn-plt-graphics
+  :message "EsN PLT graphics scripts update")
+
 (def-esn-template esn-plt-graphics-script
   "PLT Graphics Script template"
   :content "######################################################################
 # PLTTools Graphics Script
-# Program Version 3.3.1 build 2449 EsN %esn-mode-ver%
-# Saved 2011-01-12 08:38:06
-# Path
+# Program Version 3.3.1 build 2449 EsN $esn-mode-ver
+# Saved %Y-%m-%d %H:%M:%S
+# Path $esn-plt-graphics-script-path
 ######################################################################
 # INITIAL SETUP
 ####################
 # Calculate Half Lives
 ####################
-CalculateHalfLives       <- c()
-NumberOfCompartments     <- c()
+$hl
 ####################
 # THETAS
 ####################
-THETANUMBER      <- c()
-PARAMNONMEM      <- c()
-HALFLIVES        <- c()
-PARAMNAMES       <- c()
+$theta-names
 THETASCREEN      <- c()
 ####################
 # ETAS
 ####################
-ETANUMBERS       <- c()
-ETAPARAMS        <- c()
-EXPETA   <- c()
+$eta-names
 USECORRESPONDING         <- c()
 ####################
 # SIGMAS
 ####################
-SIGMANUMBER      <- c()
-SIGMANAME        <- c()
+SIGMANUMBER      <- c(\"\")
+SIGMANAME        <- c(\"\")
 ####################
 # COVARIATES
 ####################
-COVARColNames    <- c()
-COVARNONMEM      <- c()
-COVARDescriptors         <- c()
-COVARType        <- c()
-COVARGLM  <- c()
+COVARColNames    <- c(\"\")
+COVARNONMEM      <- c(\"\")
+COVARDescriptors         <- c(\"\")
+COVARType        <- c(\"\")
+COVARGLM  <- c(F)
 ####################
 # DemoFile% %
 ####################
-DEMOEXISTS       <- c()
-IDALIAS  <- c()
-DEMOFILENAME     <- c()
-DEMODELIMITER    <- c()
+DEMOEXISTS     <- c(T)
+IDALIAS        <- c(\"$id-alias\")
+DEMOFILENAME      <- c(\"$data\")
+DEMODELIMITER     <- c(\"$delim\")
 ####################
 # Select Graphics
 ####################
-BySubjectGraphics        <- c()
-SpaghettiGraphics        <- c()
-ETAdomain        <- c()
-expETAdomain     <- c()
-PostHocDomain    <- c()
-ETAvsETA         <- c()
-LogLogCp         <- c()
-LinearLinearCp   <- c()
-ResidualsCp      <- c()
+BySubjectGraphics        <- c(T)
+SpaghettiGraphics        <- c(T)
+ETAdomain        <- c(T)
+expETAdomain     <- c(T)
+PostHocDomain    <- c(T)
+ETAvsETA         <- c(T)
+LogLogCp         <- c(T)
+LinearLinearCp   <- c(T)
+ResidualsCp      <- c(T)
 ####################
 # Additional Options
 ####################
-CalculateStatistics      <- c()
-DisplayOutlierIDs        <- c()
-StratifyCovariate        <- c()
+CalculateStatistics      <- c(T)
+DisplayOutlierIDs        <- c(T)
+StratifyCovariate        <- c(T)
 ####################
 # Graphics Options
 ####################
-BlackWhite       <- c()
-GlobalHeader     <- c()
+BlackWhite       <- c(\"Color\")
+GlobalHeader     <- c(\"\")
 ####################
 # Units
 ####################
-AMTunit  <- c()
-TIMEUnitsTABLE   <- c()
-TIMEUnitsGRAPHICS        <- c()
+AMTunit           <- c(\"$dose\")
+TIMEUnitsTABLE    <- c(\"$time\")
+TIMEUnitsGRAPHICS <- c(\"$time\")
 ####################
 # Scaling
 ####################
-IDCorrection     <- c()
-DVconversion     <- c()
-AMTconversion    <- c()
+IDCorrection     <- c(\"\")
+DVconversion     <- c(1)
+AMTconversion    <- c(1)
 ####################
 # Number of Dependent Variables
 ####################
-NumberofDependentVariables       <- c()
+NumberofDependentVariables       <- c(\"1\")
 ####################
 # Single DV
 ####################
-LOQ      <- c()
-DVUnits  <- c()
+LOQ      <- c(\"\")
+DVUnits  <- c(\"\")
 ####################
 # Multiple DVs (optional)
 ####################
-IndicatorColumn  <- c()
+IndicatorColumn  <- c(\"\")
 FlagValues       <- c()
 DVNames  <- c()
 LOQValues        <- c()
@@ -1613,87 +1536,87 @@ MultipleDVUnits  <- c()
 ####################
 # By-Subject Graphics
 ####################
-BySubject01      <- list()
+BySubject01      <- list(\"\", \"\", \"\", \"\", \"Linear Only\", F, \"\")
 ####################
 # Options
 ####################
 ####################
 # Options
 ####################
-BySubjectRows    <- c()
-DosesTextField   <- c()
-LabelDoseOptions         <- c()
+BySubjectRows    <- c(2)
+DosesTextField   <- c(T)
+LabelDoseOptions         <- c(\"At All Doses\")
 ####################
 # Race (optional)
 ####################
-RaceCodes        <- c()
-RaceText         <- c()
+RaceCodes        <- c(\"\")
+RaceText         <- c(\"\")
 ####################
 # Gender (optional)
 ####################
-GenderCodes      <- c()
-GenderText       <- c()
+GenderCodes      <- c(\"\")
+GenderText       <- c(\"\")
 ####################
 # By-Subject Grouping Variable
 ####################
-BySubjectGroupCodes      <- c()
-BySubjectGroupText       <- c()
+BySubjectGroupCodes      <- c(\"\")
+BySubjectGroupText       <- c(\"\")
 ####################
 # By-Subject Grouping
 ####################
-BySubjectGroupVariable   <- c()
-BySubjectGroupLabel      <- c()
+BySubjectGroupVariable   <- c(\"\")
+BySubjectGroupLabel      <- c(\"\")
 ####################
 # By-Subject MultiplePeriods
 ####################
-BySubjectPeriodVariable  <- c()
-BySubjectPeriodLabel     <- c()
+BySubjectPeriodVariable  <- c(\"\")
+BySubjectPeriodLabel     <- c(\"\")
 ####################
 # Spaghetti Graphics
 ####################
-Spaghetti01      <- list()
+Spaghetti01      <- list(\"\", \"\",\"\", \"Ratio\", \"Wide\", \"\")
 ####################
 # Display Formulation (optional)
 ####################
-FormulationStatusName    <- c()
-DisplayFormulationCodes  <- c()
-DisplayFormulationText   <- c()
+FormulationStatusName    <- c(\"\")
+DisplayFormulationCodes  <- c(\"\")
+DisplayFormulationText   <- c(\"\")
 ####################
 # Display Fed Status (optional)
 ####################
-FedStatusName    <- c()
-DisplayFedCodes  <- c()
-DisplayFedText   <- c()
+FedStatusName    <- c(\"\")
+DisplayFedCodes  <- c(\"\")
+DisplayFedText   <- c(\"\")
 ####################
 # Spaghetti Grouping
 ####################
-SpaghettiGroupVariable   <- c()
-SpaghettiGroupLabel      <- c()
+SpaghettiGroupVariable   <- c(\"\")
+SpaghettiGroupLabel      <- c(\"\")
 ####################
 # Spaghetti Grouping Variable
 ####################
-SpaghettiGroupCodes      <- c()
-SpaghettiGroupText       <- c()
+SpaghettiGroupCodes      <- c(\"\")
+SpaghettiGroupText       <- c(\"\")
 ####################
 # Spaghetti MultiplePeriods
 ####################
-SpaghettiPeriodVariable  <- c()
-SpaghettiPeriodLabel     <- c()
+SpaghettiPeriodVariable  <- c(\"\")
+SpaghettiPeriodLabel     <- c(\"\")
 ####################
 # Grouping 3
 ####################
-Group3Variable   <- c()
-Group3Label      <- c()
+Group3Variable   <- c(\"\")
+Group3Label      <- c(\"\")
 ####################
 # Grouping Variable 3
 ####################
-Group3Codes      <- c()
-Group3Text       <- c()
+Group3Codes      <- c(\"\")
+Group3Text       <- c(\"\")
 ####################
 # MultiplePeriods 3
 ####################
-Group3PeriodVariable     <- c()
-Group3PeriodLabel        <- c()
+Group3PeriodVariable     <- c(\"\")
+Group3PeriodLabel        <- c(\"\")
 ########################################
 # PLTsoft END
 ########################################
