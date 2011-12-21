@@ -1,0 +1,14 @@
+#*#
+*~
+#*.*#
+*#
+*elc
+*pdf
+*texi
+*html
+*tmp
+*.aux
+*.out
+*.tex
+*.log
+*.DS_Store

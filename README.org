@@ -1,0 +1,118 @@
+#+TITLE: Emacs Speaks NONMEM
+#+AUTHOR: Matthew L. Fidler
+* EsN Todo/Wish List
+** TODO Fix Theta renumbering system to be like org-mode (up and down moves estimates)
+:PROPERTIES:
+:ID: 82c77234-690c-41a7-becc-3753cf9cdddb
+:END:
+[2011-01-17 Mon 11:52]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/indirect-emax-01.ctl::(1,%20FIXED)%20%3BC%20THETA(8)%20-%20Kout][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/indirect-emax-01.ctl::(1, FIXED) ;C THETA(8) - Kout]]
+** TODO THETA-up and THETA down.
+:PROPERTIES:
+:ID: 27d2a42c-2744-4407-8a29-dd2c4bc890f0
+:END:  
+
+Need to make this work with estimates better and also implemnet EsN theta-down
+[2011-01-17 Mon 11:57]
+[[file:c:/EmacsPortable.App/Other/esn/lisp/esn-fun.el::(defun%20esn-theta-up%20()][file:c:/EmacsPortable.App/Other/esn/lisp/esn-fun.el::(defun esn-theta-up ()]]
+** TODO Fix cwtab for PLT tools tables.
+:PROPERTIES:
+:ID: be3098d7-0e91-4e75-94e4-3246b96d887c
+:END:
+[2011-01-17 Mon 14:29]
+[[file:c:/EmacsPortable.App/Other/esn/lisp/esn-plt.el:::group%20'esn-plt-tables][file:c:/EmacsPortable.App/Other/esn/lisp/esn-plt.el:::group 'esn-plt-tables]]
+** TODO Fix auto-generated tables to wrap with new wrapping procedure (for tables)
+:CLOCK:
+CLOCK: [2011-01-17 Mon 14:31]--[2011-01-17 Mon 14:32] =>  0:01
+:END:
+:PROPERTIES:
+:ID: 78523148-06c5-4b0d-9d0f-239d2f548bbf
+:END:
+[2011-01-17 Mon 14:31]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/indirect-linear-01.ctl]]
+** TODO Create a pygments parser.
+[[http://pygments.org/docs/lexerdevelopment/][Pygments]]
+:CLOCK:
+CLOCK: [2011-01-20 Thu 08:07]--[2011-01-20 Thu 08:08] =>  0:01
+:END:
+:PROPERTIES:
+:ID: 074f10cc-29f2-488e-9035-c57db7083dbd
+:END:
+[2011-01-20 Thu 08:07]
+[[file:~/org/todo.org::*Get%20a%20refund!%20%5B%5Bhttp://www.alconnet.com/usftwBulletinBoard/upload/indexable/Health%20Services/Vitality/2010/2010_vitality_it%27s%20free%20to%20be%20fit_alcon_v5.pdf%5D%5B2010_vitality_it's%20free%20to%20be%20fit_alcon_v5.pdf%20(application/pdf%20Object)%5D%5D][Get a refund! {{http://www.alconnet.com/usftwBulletinBoard/upload/indexable/Health%20Services/Vitality/2010/2010_vitality_it%27s%20free%20to%20be%20fit_alcon_v5.pdf}{2010_vitality_it's free to be fit_alcon_v5.pdf (application/pdf Object)}}]]
+** TODO Have tables only be inserted for specific $ESTIMATION and $SIMULATION Steps.
+:PROPERTIES:
+:ID: 25c3c835-6c54-4d90-9529-bc1e5f2ac693
+:END:
+[2011-01-20 Thu 11:14]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/direct-emax-03-sim.ctl::%3B@%20Pred%20Variables%2023/50%20@%3B][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/direct-emax-03-sim.ctl::;@ Pred Variables 23/50 @;]]
+** TODO Make known options inside of a parenthetical statement such as $SIMULATE and MODEL.
+:CLOCK:
+CLOCK: [2011-01-20 Thu 11:33]--[2011-01-20 Thu 11:34] =>  0:01
+:END:
+:PROPERTIES:
+:ID: 1fb1141b-ed63-4d5d-ac81-72ff38d2f3c8
+:END:
+[2011-01-20 Thu 11:33]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/direct-emax-03-sim.ctl]]
+** TODO Fix MODEL Alignment
+:PROPERTIES:
+:ID: 9298cc0e-0a49-4a7c-8aab-3ffda03a17e9
+:END:
+[2011-01-21 Fri 12:56]    
+[[file:~/org/todo.org::*Write%20CnP%20agonist%20data%20analysis%20plan%20%5B4/5%5D][Write CnP agonist data analysis plan {4/5}]]
+** TODO Change header definitions to be much easier to use.
+:PROPERTIES:
+:ID: 52154894-efd9-4466-a0e7-b694dad75166
+:END:  
+Consider using something like (esn-defheader
+[2011-01-22 Sat 07:07]
+** TODO EsN Input comments as orgtbl-mode comments.
+:CLOCK:
+CLOCK: [2011-01-24 Mon 12:07]--[2011-01-24 Mon 12:08] =>  0:01
+:END:
+[2011-01-24 Mon 12:07]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl::%3BC%20AMT:%20Amount%20of%20Dose][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl::;C AMT: Amount of Dose]]
+** TODO Create EsN to VPC under PLT Tools
+:CLOCK:
+CLOCK: [2011-01-24 Mon 12:28]--[2011-01-24 Mon 12:29] =>  0:01
+:END:
+[2011-01-24 Mon 12:28]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl::$SIMULATE%20(158257233)%20SUBPROBLEMS%3D200%20ONLYSIMULATION][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl::$SIMULATE (158257233) SUBPROBLEMS=200 ONLYSIMULATION]]
+** TODO Run all pending alignment hooks on save (EsN)
+[2011-01-24 Mon 12:12]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl]]
+** TODO Create EsN control stream actions
+[2011-01-24 Mon 12:29]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl::$SIMULATE%20(158257233)%20SUBPROBLEMS%3D200%20ONLYSIMULATION][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/Work-rate-unfixed/direct-linear-03-sim.ctl::$SIMULATE (158257233) SUBPROBLEMS=200 ONLYSIMULATION]]
+** TODO Magic semi-colon runs exit record hook
+[2011-01-25 Tue 08:24]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-linear-01-add-prop.ctl::$OMEGA]]
+** TODO Mark is being changed in EsN.  Therefore replace in region does not work.
+[2011-01-25 Tue 12:01]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-beta-01.ctl::B%20%3D%20(SL%2BSL2)**(TVSL%2BTVSL2)/((TVSL**TVSL*TVSL2**TVSL2))][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-beta-01.ctl::B = (SL+SL2)**(TVSL+TVSL2)/((TVSL**TVSL*TVSL2**TVSL2))]]
+** TODO Highlight in red when assigning a input data item.
+[2011-01-25 Tue 15:24]
+[[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-pow-01-sim.ctl::$INPUT%20ID%20DAY%20DATE%3DDROP%20TIME%20CTME%20AMT%20RATE%20DV%20DRUG%20OCC][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-pow-01-sim.ctl::$INPUT ID DAY DATE=DROP TIME CTME AMT RATE DV DRUG OCC]]
+** TODO IOV in order when adding more than one IOV
+  [2011-01-26 Wed 09:06]
+  [[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-pow-03.ctl::IOV1%20%3D%20IOV1%2BOC7*ETA(12)%2BOC8*ETA(13)][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-pow-03.ctl::IOV1 = IOV1+OC7*ETA(12)+OC8*ETA(13)]]
+** TODO Mark, Undo, etc.
+  [2011-01-26 Wed 09:07]
+  [[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-pow-03.ctl::IOV1%20%3D%20IOV1%2BOC7*ETA(12)%2BOC8*ETA(13)][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-pow-03.ctl::IOV1 = IOV1+OC7*ETA(12)+OC8*ETA(13)]]
+** MAYBE Make sure documents in PLT tools' control structure are not able to be saved. :WAIT:
+  :LOGBOOK:
+  - State "MAYBE"      from "TODO"       [2011-03-11 Fri 10:04]
+  :END:
+  [2011-03-01 Tue 16:19]
+  [[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/TEXTFILES/CONTROL/Control.100628-083344.txt::%3BC%20GRP:%20GRP][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/TEXTFILES/CONTROL/Control.100628-083344.txt::;C GRP: GRP]]
+** TODO Fix IOV calculation
+  :CLOCK:
+  CLOCK: [2011-03-11 Fri 15:19]--[2011-03-11 Fri 15:20] =>  0:01
+  :END:
+  [2011-03-11 Fri 15:19]
+  [[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-exp-03.ctl::PLBO%20%3D%201][file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate-mult/direct-exp-03.ctl::PLBO = 1]]
+** TODO Fix input alignment problems.
+  [2011-03-11 Fri 15:46]
+  [[file:p:/PK0030/S00/R00/3_PK_Analysis/@Plan/work-rate/indirect-emax-03.ctl]]
+

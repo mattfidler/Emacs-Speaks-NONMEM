@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Apr 2212:13:43 2010 (-0500)
 ;; Version:
-;; Last-Updated: Fri Sep 30 08:04:48 2011 (-0500)
+;; Last-Updated: Wed Dec 21 09:19:43 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 29
+;;     Update #: 32
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -22,6 +22,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 21-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec 21 09:13:04 2011 (-0600) #31 (Matthew L. Fidler)
+;;    Took out the `make-local-hook' function
 ;; 07-Dec-2010    Matthew L. Fidler  
 ;;    Last-Updated: Tue Dec  7 11:10:58 2010 (-0600) #21 (Matthew L. Fidler)
 ;;    Bugfix to have esn-path added to load path without trailing slash.
@@ -152,21 +155,14 @@
           )
          )
     ;; Only when its going to make a difference
-    (set-auto-mode 't)
-    )
-  )
-(add-hook 'text-mode-hook (lambda ()
-                            (interactive)
-                            (make-local-hook 'post-command-hook)
-                            (add-hook 'post-command-hook 'esn-recheck-mode-hook)
-                            )
-          )
-(add-hook 'fundamental-mode-hook (lambda ()
-                                   (interactive)
-                                   (make-local-hook 'post-command-hook)
-                                   (add-hook 'post-command-hook 'esn-recheck-mode-hook)
-                                   )
-          )
+    (set-auto-mode 't)))
+
+(defun esn-turn-on-check ()
+  "Turns on a check for a recognized Control stream in .txt files and the like."
+  (interactive)
+  (add-hook 'post-command-hook 'esn-recheck-mode-hook nil t))
+(add-hook 'text-mode-hook 'esn-turn-on-check)
+(add-hook 'fundamental-mode-hook 'esn-turn-on-check)
 ;;(require 'esn-autoloads)
 (autoload 'esn-mode "esn-mode" "EsN mode" t)
 (provide 'esn-start)
