@@ -8,14 +8,15 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 16
+;;     Update #: 18
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `warnings'.
+;;   `backquote', `bytecomp', `cconv', `help-fns', `macroexp',
+;;   `warnings'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -26,6 +27,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 21-Dec-2011    Matthew L. Fidler  
+;;    Added support for relative filenames
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,11 +67,19 @@
 (defun esn-drag-and-drop (uri)
   "* Drag and drop support for Emacs Speaks NONMEM.  Currently supports dragging CSV files"
   (when (eq major-mode 'esn-mode)
-    (let ((f (dnd-get-local-file-name uri t)) ret)
+    (let ((f (dnd-get-local-file-name uri t))
+          pt
+          ret)
       (when (string-match "\\.csv$" f)
         (when (string-match " " f)
           (setq f (concat "\"" f "\"")))
+        (setq pt (point))
         (insert (concat "$DATA " f "\n\n$INPUT "))
+        ;; Update to relative path.
+        (save-restriction
+          (narrow-to-region pt (point))
+          (let ((esn-compress-paths t))
+            (esn-update-relative-paths)))
         (esn-add-input-line)
         (setq ret 't))
       (symbol-value 'ret))))

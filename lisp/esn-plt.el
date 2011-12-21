@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Jan 29 16:20:10 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Mon Jun  6 11:12:44 2011 (-0500)
+;; Last-Updated: Wed Dec 21 09:44:50 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 808
+;;     Update #: 809
 ;; URL: http://esnm.sourceforge.net/
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: Emacs 23.x
@@ -856,8 +856,7 @@ rep = Script rep place."
              (format
               "%s <- c(\"\")\n%s <- c(\"\")\n"
               codes
-              text
-              ))
+              text))
        (when (string-match what (symbol-value ret-q))
          (set ret-q (replace-match tmp 't 't (symbol-value ret-q))))))
    (list

@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Jan 26 14:50:03 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Mon May  2 14:58:15 2011 (-0500)
+;; Last-Updated: Wed Dec 21 09:52:04 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 425
+;;     Update #: 426
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords:  header, esn, update
 ;; Compatibility: Emacs 23.x
@@ -214,14 +214,13 @@ interfere with reserved NONMEM variables."
                       "PCMT"
                       "RATE"
                       "SS"
-                      "TIME"
-                      ) nil))))
+                      "TIME") nil))))
         (al '()))
     (save-restriction
       (while (< i np)
         (setq i (+ i 1))
         (esn-narrow-to-problem i)
-                                        ; First Set aliases to NONMEM reserved variables to be kept throughout
+        ;; First Set aliases to NONMEM reserved variables to be kept throughout
         (save-excursion
           (goto-char (point-min))
           (when (re-search-forward (eval-when-compile (esn-reg-record-exp "INP" 't)) nil t)
@@ -286,8 +285,7 @@ interfere with reserved NONMEM variables."
                                                          "PRIN"
                                                          "UNCO"
                                                          "FIRS"
-                                                         "$TAB"
-                                                         ) 't)) tab)
+                                                         "$TAB") 't)) tab)
                 (setq tab (replace-match "" nil nil tab)))
               (while (string-match "\\<FILE[ \t]*[= \t][ \t]*[^ \t]*" tab)
                 (setq tab (replace-match "" nil nil tab))))
@@ -320,8 +318,7 @@ interfere with reserved NONMEM variables."
 (defun esn-mirror-purpose-problem ()
   "* This function mirrors the purpose on the $PROBLEM statement. (First line Only)"
   (interactive)
-  (let (
-        (p (esn-update-get-purpose 't))
+  (let ((p (esn-update-get-purpose 't))
         (case-fold-search 't))
     (when (string-match "^\\(.*\\)$" p)
       (setq p (match-string 1 p)))
@@ -336,8 +333,7 @@ interfere with reserved NONMEM variables."
 (defun esn-update-modification ()
   "* Update modification information"
   (interactive)
-  (let* (
-         line
+  (let* (line
          (case-fold-search 't)
          (inhibit-read-only 't)
          (inhibit-point-motion-hooks 't)
@@ -463,8 +459,7 @@ interfere with reserved NONMEM variables."
          (unless (string-match ret "^[ \t\n;]$")
            (setq ret (format (esn-update-modification-line) ret))
            (add-to-list 'tmp-lst ret))))
-     mod-lst
-     )
+     mod-lst)
     (setq mod-txt (apply 'concat (reverse tmp-lst)))
     (when add-user
       ;; Before save use RCS to add the previous version to the RCS log (via
@@ -1973,8 +1968,7 @@ Updates table names.
   "Function that updates the paths on a save.
 If a relative path is smaller, use it.
 If an absolute path is smaller, use it."
-  (let* (
-         (case-fold-search 't)
+  (let* ((case-fold-search 't)
          (cdir (if esn-default-directory
                    (expand-file-name esn-default-directory)
                  esn-default-directory))
@@ -1991,11 +1985,11 @@ If an absolute path is smaller, use it."
               (setq nrcdir (concat rcdir "../"))
               (if (< (length rcdir) (length cdir))
                   (save-excursion
-                                        ;                    (message "Replacing `\\([\"']?\\)%s\\([A-Za-z]\\)' with `\\1%s\\2'" (regexp-quote cdir) rcdir)
+                    ;;(message "Replacing `\\([\"']?\\)%s\\([A-Za-z]\\)' with `\\1%s\\2'" (regexp-quote cdir) rcdir)
                     (goto-char (point-min))
                     (while (re-search-forward (format "\\([\"']?\\)%s\\([A-Za-z]\\)" (regexp-quote cdir)) nil t)
                       (replace-match (concat "\\1" rcdir "\\2"))))
-                                        ;                (message "Replacing `\\([\"']?\\)%s\\([A-Za-z]\\)' with `%s'" (regexp-quote rcdir) cdir)
+                ;; (message "Replacing `\\([\"']?\\)%s\\([A-Za-z]\\)' with `%s'" (regexp-quote rcdir) cdir)
                 (save-excursion
                   (goto-char (point-min))
                   (while (re-search-forward  (format "\\([\"']?\\)%s\\([A-Za-z]\\)" (regexp-quote rcdir)) nil t)
@@ -2086,7 +2080,7 @@ If an absolute path is smaller, use it."
               (max-lisp-eval-depth 1024))
           (esn-file-coding-system)
           ;; (message "Add Header.")
-          (esn-update-relative-paths)                      ; Update relative Paths.
+          (esn-update-relative-paths)                      ;; Update relative Paths.
           ;; CWRES first in case tables are needed.
           (when esn-automatically-generate-cwres
             (esn-cwres))
