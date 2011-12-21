@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Jan 27 14:25:25 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Mon May  2 12:31:51 2011 (-0500)
+;; Last-Updated: Wed Dec 21 09:32:36 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 315
+;;     Update #: 325
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: 23.x
@@ -22,6 +22,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 21-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec 21 09:32:06 2011 (-0600) #324 (Matthew L. Fidler)
+;;    Bug fix for input when using a cygwin head command.
 ;; 06-Dec-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Dec  6 14:34:37 2010 (-0600) #307 (Matthew L. Fidler)
 ;;    Cygwin head.exe support bug fix.
@@ -214,24 +217,19 @@
 (defun esn-input-get-header (data &optional no-message)
   "This gets the header of a CSV file.  First try to use head since it takes up less memory then loading the whole file."
   (if (and data (file-exists-p data))
-      (let (
-            (case-fold-search 't)
+      (let ((case-fold-search 't)
             (errs '("command not found"
                     "is not recognized"
                     "'head'"
                     "^[ \t\n]*$"
                     ))
             (header (if esn-w32
-                        (if (file-exists-p (concat esn-path "bin/head.exe"))
-                            (concat (concat esn-path "bin/head.exe -n1 " data))
-                          ;; Use Cygwin paths when needed...
-                          (let ((head (executable-find "head")) (f data))
+                        ;; Use Cygwin paths when needed...
+                        (let ((head (executable-find "head")) (f data))
                             (when (string-match "cygwin" head)
                               (when (string-match "^\\([A-Z]\\):/" f)
                                 (setq f (replace-match (concat "/cygdrive/" (downcase (match-string 1 data)) "/") t t f))))
-                            (concat "head -n1 " f)
-                            )
-                          )
+                            (concat head " -n1 " f))
                       (concat "head -n1 " data)))
             (p1 (point))
             (p2 (point)))
