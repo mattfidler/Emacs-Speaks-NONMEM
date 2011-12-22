@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew Fidler
 ;; Created: Tue Jan 26 15:04:17 2010 (-0600)
 ;; Version: 0.13
-;; Last-Updated: Tue Aug 30 16:48:30 2011 (-0500)
+;; Last-Updated: Thu Dec 22 17:16:32 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 512
+;;     Update #: 515
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs NONMEM
 ;; Compatibility: 23.x.  Let me know if any other versions work.
@@ -23,6 +23,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 22-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec 22 17:06:05 2011 (-0600) #513 (Matthew L. Fidler)
+;;    Attempted to support `org-table-comment'
 ;; 07-Feb-2011    Matthew L. Fidler  
 ;;    Last-Updated: Mon Feb  7 13:06:00 2011 (-0600) #505 (Matthew L. Fidler)
 ;;    Make local hook removed.
@@ -200,20 +203,7 @@
 (esn-r 'esn-tab-pred)
 
 (require 'org-table-comment nil t)
-(defvar org-table-comment-swap nil)
-(make-variable-buffer-local 'org-table-comment-swap)
-(setq org-table-comment-before-edit-hook '())
-(setq org-table-comment-after-edit-hook '())
-(setq esn-wrapping-of-records t)
 
-(when (featurep 'org-table-comment)
-  (add-hook 'org-table-comment-before-edit-hook
-	    (lambda()
-	      (setq org-table-comment-swap esn-wrapping-of-records)
-	      (setq esn-wrapping-of-records nil)))
-  (add-hook 'org-table-comment-after-edit-hook
-	    (lambda()
-	      (setq esn-wrapping-of-records org-table-comment-swap))))
 
 (defun esn-insert-new-buffer-strings()
   "Insert new buffer template."
@@ -434,6 +424,12 @@
     (esn-company-start)
     (esn-cui-start)
     (esn-ac-start)
+    (unless (boundp 'org-table-comment-before-edit-hook)
+      (set (make-local-variable 'org-table-comment-before-edit-hook) nil))
+    (unless (boundp 'org-table-comment-after-edit-hook)
+      (set (make-local-variable 'org-table-comment-after-edit-hook) nil))
+    (add-hook 'org-table-comment-before-edit-hook 'esn-orgtbl-comment-mode-start-hook)
+    (add-hook 'org-table-comment-after-edit-hook 'esn-orgtbl-comment-mode-stop-hook)
     (run-mode-hooks 'esn-mode-hook)
 
     (setq esn-use-pirana-saved nil)

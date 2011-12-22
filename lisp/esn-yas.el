@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Fri Sep 17 10:59:18 2010 (-0500)
 ;; Version:
-;; Last-Updated: Mon May  2 15:04:52 2011 (-0500)
+;; Last-Updated: Thu Dec 22 16:56:21 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1068
+;;     Update #: 1073
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -23,6 +23,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 22-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec 22 15:37:26 2011 (-0600) #1071 (Matthew L. Fidler)
+;;    build snippet bug fix.
 ;; 03-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Wed Nov  3 15:27:09 2010 (-0500) #1055 (Matthew L. Fidler)
 ;;    There are some strange bugs on the pending snippets but I can't reproduce them.
@@ -105,8 +108,8 @@
                                              lower
                                              upper
                                              (or theta-label "")))
-  (format "THETA(%s)" (esn-yas-current-theta theta))
-  )
+  (format "THETA(%s)" (esn-yas-current-theta theta)))
+
 (defun esn-yas-current-theta (&optional theta)
   "* Function that determines the current theta number based on esn-yas-last-theta-value"
   (let (
@@ -123,9 +126,7 @@
       (setq i (+ i 1))
       )
     (setq ret (+ (or esn-yas-last-theta 1) s))
-    (symbol-value 'ret)
-    )
-  )
+    (symbol-value 'ret)))
 
 (defun esn-yas-format (text &rest args)
   "* Yas based format.  Takes the following extra arguments:
@@ -154,6 +155,8 @@ When %NEXT-THETA% is found do the following, set esn-yas-added-2-thetas to true
         )
       (setq ret (apply 'esn-format ret args))
       (symbol-value 'ret))))
+
+
 ;;;###autoload
 (defun esn-yas-before ()
   "* Hook for Before YAS completion"
@@ -161,21 +164,9 @@ When %NEXT-THETA% is found do the following, set esn-yas-added-2-thetas to true
       (progn
         (when (eq major-mode 'esn-mode)
           (setq esn-yas-start (point-at-bol))
-          (when esn-add-update-topics-timer
-            (cancel-timer esn-add-update-topics-timer)
-            )
-                                        ;    (esn-kill-buffer-hook); Kill all timers NOW.
+          (esn-cancel-all-timers)
+          ;; (esn-kill-buffer-hook); Kill all timers NOW.
           (setq esn-run-save-fn 't)
-          (when esn-align-equals-fun-timer 
-            (cancel-timer esn-align-equals-fun-timer))
-          (when esn-align-matrix-timer
-            (cancel-timer esn-align-matrix-timer))
-          (when esn-number-theta-timer
-            (cancel-timer esn-number-theta-timer))
-          (when esn-number-eta-timer
-            (cancel-timer esn-number-eta-timer))
-          (when esn-number-eps-timer
-            (cancel-timer esn-number-eps-timer))
           (setq esn-yas-last-theta (esn-yas-next-theta))
           (setq esn-yas-pending-thetas nil)
           (setq esn-yas-pending-omegas nil)
@@ -191,6 +182,7 @@ When %NEXT-THETA% is found do the following, set esn-yas-added-2-thetas to true
   (if (fboundp 'yas/snippets-at-point)
       (= 0 (length (yas/snippets-at-point 'all-snippets)))
     't))
+
 ;;;###autoload
 (defun esn-yas-after ()
   "* Hook for After YAS completion"
@@ -204,51 +196,39 @@ When %NEXT-THETA% is found do the following, set esn-yas-added-2-thetas to true
 
 (defmacro esn-yas-mu (theta-number)
   "* Macro for initial MU_# for theta number"
-  (list 'esn-yas-mu-trf 'text '1 theta-number)
-  )
+  (list 'esn-yas-mu-trf 'text '1 theta-number))
+
 (defvar esn-yas-no-mu nil
-  "* Defines if there is no MU-referencing mirrors in this template...."
-  )
+  "* Defines if there is no MU-referencing mirrors in this template....")
+
 (make-variable-buffer-local 'esn-yas-no-mu)
 (defun  esn-yas-par-tv (theta-number tv-number)
   "* Esn Yas Par tv expansion."
   (prog1 (esn-yas-par theta-number (concat "TV" (yas/field-value tv-number)) "")
-    (setq esn-yas-no-mu (esn-yas-mu tv-number))
-    )
-  )
+    (setq esn-yas-no-mu (esn-yas-mu tv-number))))
+
 (defun esn-yas-par (theta-number tv units &rest rest)
   "* Parameter value abbreviation"
-  (let (
-        (ret (apply 'esn-yas-eta-types tv nil units theta-number rest))
-        )
+  (let ((ret (apply 'esn-yas-eta-types tv nil units theta-number rest)))
     (setq ret (esn-yas-choose ret 'esn-yas-eta-types-transform 'esn-add-omega-theta))
     (setq ret (esn-yas-mu-trf ret nil tv))
     (when esn-yas-no-mu
-      (setq esn-yas-no-mu (concat esn-yas-no-mu (esn-yas-mu-trf ret 1 theta-number)))
-      )
-    (symbol-value 'ret)
-    )
-  )
+      (setq esn-yas-no-mu (concat esn-yas-no-mu (esn-yas-mu-trf ret 1 theta-number))))
+    (symbol-value 'ret)))
+
 (defmacro esn-yas-scale ()
   "* Macro for scale"
-  (list 'unless 'yas/modified-p (list 'esn-yas-fix-pending-units (list 'esn-scale ''t)))
-  )
+  (list 'unless 'yas/modified-p (list 'esn-yas-fix-pending-units (list 'esn-scale ''t))))
+
 (defun esn-yas-choose (values &optional transform-function function &rest ignore)
   "* EsN Yas chooser; Optionally apply function "
-  (let (
-        (ret (yas/choose-value (reverse values)))
-        )
+  (let ((ret (yas/choose-value (reverse values))))
     (when transform-function
       (save-excursion
         (save-match-data
           (save-restriction
             (when ret
-              (setq ret (funcall transform-function ret))
-              )
-            )
-          )
-        )
-      )
+              (setq ret (funcall transform-function ret)))))))
     (when function
       (save-excursion
         (save-match-data
@@ -1037,20 +1017,19 @@ Supported code:
   "* Build Yasnippets for Esn-mode."
   (interactive)
   (when (boundp 'yas/root-directory)
-    (let (
-          (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
+    (let* ((new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
                        yas/root-directory
-                     (nth 0 yas/root-directory)
-                     ))
+                      (nth 0 yas/root-directory)))
+           (end-dir (substring new-dir -1))
           added-snippets
           file
           atfile
-          snippet-list
-          )
+          snippet-list)
+      (when (not (or (string= "/" end-dir) (string= "\\" end-dir)))
+        (setq new-dir (concat new-dir "/")))
       (setq new-dir (concat new-dir "esn-mode/"))
       (unless (file-exists-p new-dir)
-        (make-directory new-dir 't)
-        )
+        (make-directory new-dir 't))
       (when (or (interactive-p) (not (file-exists-p (concat new-dir ".yas-parents"))))
         (mapc
          (lambda(x)
@@ -1058,38 +1037,27 @@ Supported code:
                nil
              (mapc
               (lambda(y)
-                (setq file (let (
-                                 (str (format "%s %s" (nth 1 x) (nth 1 y)))
-                                 (ret "")
-                                 )
+                (setq file (let ((str (format "%s %s" (nth 1 x) (nth 1 y)))
+                                 (ret ""))
                              (cond
                               ( (string-match "One" str)
-                                (setq ret "1C")
-                                )
+                                (setq ret "1C"))
                               ( (string-match "Two" str)
-                                (setq ret "2C")
-                                )
+                                (setq ret "2C"))
                               ( (string-match "Three" str)
-                                (setq ret "3C")
-                                )
-                              )
+                                (setq ret "3C")))
                              (if (not (string-match "First" str))
                                  (setq ret (concat ret ".IV")))
                              (cond
                               ( (string-match "AOB" str)
-                                (setq ret (concat ret ".AOB"))
-                                )
+                                (setq ret (concat ret ".AOB")))
                               ( (string-match "ALPHA" str)
-                                (setq ret (concat ret ".ALPHA"))
-                                )
+                                (setq ret (concat ret ".ALPHA")))
                               ( (string-match "VSS" str)
                                 (setq ret (concat ret ".VSS")))
                               ( (not (string-match "CL" str))
-                                (setq ret (concat ret ".K"))
-                                )
-                              )
-                             (symbol-value 'ret)
-                             ))
+                                (setq ret (concat ret ".K"))))
+                             (symbol-value 'ret)))
                 (setq atfile file)
                 (while (string-match "[.]" atfile)
                   (setq atfile (replace-match "_" nil nil atfile)))
@@ -1106,15 +1074,11 @@ Supported code:
                       (insert "\n# group: ")
                       (insert (cond
                                ( (string-match "One Compartment" (nth 1 x))
-                                 "One Compartment"
-                                 )
+                                 "One Compartment")
                                ( (string-match "Two Compartment" (nth 1 x))
-                                 "Two Compartment"
-                                 )
+                                 "Two Compartment")
                                ( (string-match "Three Compartment" (nth 1 x))
-                                 "Three Compartment"
-                                 )
-                               ))
+                                 "Three Compartment")))
                       (insert "\n# contributor: Matthew L. Fidler")
                       (insert "\n# --\n")
                       (insert (esn-yas-esn-snippet
@@ -1135,45 +1099,25 @@ Supported code:
                                               ( (string-match "\\(rate\\|alpha\\|beta\\|gamma\\)" (nth 1 z))
                                                 "1/Time")
                                               ( 't
-                                                "")
-                                              )
+                                                ""))
                                              (with-temp-buffer
                                                (insert (nth 1 z))
                                                (goto-char (point-min))
                                                (when (re-search-forward "\\<Typical\\> *" nil 't)
                                                  (replace-match ""))
-                                               (buffer-substring (point-min) (point-max))
-                                               )
-                                             )
-                                     )
-                                   )
-                                 (nth 3 y)
-                                 ""
-                                 )
+                                               (buffer-substring (point-min) (point-max))))))
+                                 (nth 3 y) "")
                                 (mapconcat
                                  (lambda(z)
                                    (if (string-match "^S[0-9]+" (nth 0 z))
                                        (if (string-match "central" (nth 1 z))
                                            (concat "\n  " (nth 0 z) " = SCALE \n")
-                                         ""
-                                         )
-                                     "")
-                                   )
+                                         "")
+                                     ""))
                                  (nth 3 x)
-                                 ""
-                                 )
-                                ))
-
-                              )
-                      )
-                  )
-                )
-              (nth 4 x)
-              )
-             )
-           )
-         esn-advan-trans-vars
-         )
+                                 "")))))))
+              (nth 4 x))))
+         esn-advan-trans-vars)
         (with-temp-file (concat new-dir "tv.yasnippet")
           (insert "# -*- mode: snippet -*-
 # name: TV
@@ -1184,8 +1128,7 @@ Supported code:
   TV$1 = ${2:$(esn-yas-tv 1)}
   ${2:$$(esn-yas-par-tv 1 1)}
   ${3:;Pending blocks below...$(esn-yas-pending)}$0
-  ")
-          )
+  "))
         (with-temp-file (concat new-dir "ccv.yasnippet")
           (insert "# -*- mode: snippet -*-
 # name: CCV/Proportional
@@ -1204,8 +1147,7 @@ $ERROR
   IWRES = IRES/(W+DEL)
   Y     = F+EPS*W
   ${1:;Pending blocks below...$(esn-yas-pending)}$0
-  ")
-          )
+  "))
         (with-temp-file (concat new-dir "addprop.yasnippet")
           (insert "# -*- mode: snippet -*-
 # name: Additive+CCV/Proportional 
@@ -1303,17 +1245,11 @@ $ESTIMATION METHOD=CONDITIONAL INTERACTION NOLAPLACIAN MAXEVALS=${1:9999}
 $COVARIANCE PRINT=E
 
 $0
-  ")
-          )
+  "))
         
         (with-temp-file (concat new-dir ".yas-parents")
-          (insert "text-mode")
-          )
-        )
-      (yas/load-directory new-dir)
-      )
-    )
-  )
+          (insert "text-mode")))
+      (yas/load-directory new-dir))))
 (when nil
   (yas/define-snippets 'esn-mode 
                        (append 

@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 226
+;;     Update #: 227
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -85,6 +85,7 @@
 (declare-function esn-undo-numbering "esn-extended")
 (declare-function esn-max-what "esn-properties")
 (declare-function esn-get-current-record "esn-narrow")
+
 
 (defun esn-get-data ()
   "Gets the data for the current file/problem."

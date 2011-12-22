@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Apr 2212:13:43 2010 (-0500)
 ;; Version:
-;; Last-Updated: Wed Dec 21 09:19:43 2011 (-0600)
+;; Last-Updated: Thu Dec 22 15:41:59 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 32
+;;     Update #: 33
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -78,8 +78,7 @@
              '( (lambda()
                   (interactive)
                   (let (
-                        (ret nil)
-                        )
+                        (ret nil))
                     (save-excursion
                       (setq ret (re-search-forward "^[ \t]*\\$[Pp][Rr][Oo][A-Za-z]" nil 't))
                       (when ret

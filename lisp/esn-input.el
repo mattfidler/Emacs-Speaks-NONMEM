@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Jan 27 14:25:25 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Wed Dec 21 15:16:00 2011 (-0600)
+;; Last-Updated: Thu Dec 22 17:11:39 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 326
+;;     Update #: 346
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: 23.x
@@ -22,13 +22,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 22-Dec-2011    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec 22 16:46:52 2011 (-0600) #341 (Matthew L. Fidler)
+;;    Changed Input description to an org-style comment table.  Use
+;;    orgtbl mode for better editing.
 ;; 21-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Dec 21 09:32:06 2011 (-0600) #324 (Matthew L. Fidler)
 ;;    Bug fix for input when using a cygwin head command.
 ;; 06-Dec-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Dec  6 14:34:37 2010 (-0600) #307 (Matthew L. Fidler)
 ;;    Cygwin head.exe support bug fix.
-;; 01-Dec-2010    Matthew L. Fidler  
+;; 01-Dec-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Dec  1 11:04:34 2010 (-0600) #300 (Matthew L. Fidler)
 ;;    Bug fixes for header.
 ;; 19-Aug-2010    Matthew L. Fidler  
@@ -83,6 +87,28 @@
 (declare-function esn-magic-wrap "esn-magic-keys")
 
 (require 'esn-start)
+;;;###autoload
+
+(defvar esn-org-table-comment-swap nil)
+
+
+(defun esn-orgtbl-comment-mode-start-hook ()
+  "A hook to run before a commented orgtbl is edited"
+  (when (eq major-mode 'esn-mode)
+    (esn-cancel-all-timers)
+    (setq esn-org-table-comment-swap esn-wrapping-of-records)
+    (setq esn-wrapping-of-records)
+    (setq esn-run-save-fn 't)))
+
+;;;###autoload
+(defun esn-orgtbl-comment-mode-stop-hook ()
+  "A hook to run after a comment orgtbl is edited"
+  (when (eq major-mode 'esn-mode)
+    (setq esn-org-table-comment-swap esn-wrapping-of-records)
+    (setq esn-run-save-fn nil)
+    (setq esn-get-current-record-start nil)
+    (setq esn-yas-last-theta nil)))
+
 
 (defun esn-add-drop-if-appropriate (header)
   "* Define =DROP,DV=,TIME= rules"
@@ -262,8 +288,7 @@
         (symbol-value 'header))
     (unless no-message
       (esn-message "Data file ``%s'' does not exist.  Can't auto-complete $INPUT record." data))
-    ""
-    ))
+    ""))
 ;;;###autoload
 (defun esn-mode-add-input-variables ()
   "Defines input variable aliases automatically if not present."
@@ -306,16 +331,20 @@
       (setq inp (split-string (upcase (buffer-substring (point-min) (point-max))))))
     (mapc (lambda(x)
             (if (assoc (upcase x) esn-variable-labels)
-                (setq ret (concat ret "\n;C " (upcase x) ":" (make-string (- 6 (min 4 (length x))) ? )
-                                  (cadr (assoc (upcase x) esn-variable-labels))))
-              (setq ret (concat ret "\n;C " (upcase x) ":" (make-string (- 6 (min 4 (length x))) ? ) x))))
-          inp
-          )
-    (setq ret (concat ";C ----------------------------------------------------------------------------\n"
-                      ";C                                INPUT Variables\n"
-                      ";C ----------------------------------------------------------------------------"
+                (setq ret (concat ret "\n;| " (upcase x) (make-string (- 6 (min 4 (length x))) ? )
+                                  " | "
+                                  (cadr (assoc (upcase x) esn-variable-labels))
+                                  (make-string (- 67 (length (cadr (assoc (upcase x) esn-variable-labels)))) ? )
+                                  "|"))
+              (setq ret (concat ret "\n;| " (upcase x) (make-string (- 6 (min 4 (length x))) ? )
+                                " | " x
+                                (make-string (- 67 (length x)) ? ) "|"))))
+          inp)
+    (setq ret (concat ";|-----------------------------------------------------------------------------|\n"
+                      ";|                                INPUT Variables                              |\n"
+                      ";|--------+--------------------------------------------------------------------|"
                       ret
-                      "\n;C ----------------------------------------------------------------------------\n"))
+                      "\n;|--------+--------------------------------------------------------------------|\n"))
     (symbol-value 'ret)))
 
 (defun esn-format-input-line (inp)

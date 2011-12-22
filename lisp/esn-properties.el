@@ -6,17 +6,16 @@
 ;; Maintainer: Matthew L. Filder
 ;; Created: Thu Jan 28 15:58:26 2010 (-0600)
 ;; Version: Provides properties about the current control Stream.
-;; Last-Updated: Mon May  2 13:08:15 2011 (-0500)
+;; Last-Updated: Thu Dec 22 16:55:34 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 279
+;;     Update #: 280
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs Speaks NONMEM 
 ;; Compatibility: Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `esn-autoloads', `esn-macros', `esn-magic-keys', `esn-options',
-;;   `esn-rec-hooks', `esn-reg', `esn-start', `esn-vars'.
+;;   `esn-macros'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -416,10 +415,25 @@ preserves match data."
                               (backward-char msl)
                               (esn-in-comment-p))))))
       (symbol-value 'ret))))
+;;;###autoload
+(defun esn-cancel-all-timers ()
+  "Cancels all timers"
+  (when esn-add-update-topics-timer
+    (cancel-timer esn-add-update-topics-timer))
+  (when esn-align-equals-fun-timer 
+    (cancel-timer esn-align-equals-fun-timer))
+  (when esn-align-matrix-timer
+    (cancel-timer esn-align-matrix-timer))
+  (when esn-number-theta-timer
+    (cancel-timer esn-number-theta-timer))
+  (when esn-number-eta-timer
+    (cancel-timer esn-number-eta-timer))
+  (when esn-number-eps-timer
+    (cancel-timer esn-number-eps-timer)))
 
 ;;;###autoload
 (defun esn-cancel-pending-unneeded-timers ()
-  "* Cancels unneeded times when the current record changes"
+  "* Cancels unneeded timers when the current record changes"
   (when esn-align-equals-fun-timer
     (cancel-timer esn-align-equals-fun-timer))
   (when esn-align-matrix-timer

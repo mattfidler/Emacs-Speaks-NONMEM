@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Jan 29 16:20:10 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Wed Dec 21 15:59:36 2011 (-0600)
+;; Last-Updated: Thu Dec 22 17:19:52 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 855
+;;     Update #: 870
 ;; URL: http://esnm.sourceforge.net/
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: Emacs 23.x
@@ -131,7 +131,6 @@
 ;;
 ;;; Code:
 
-
 (declare-function esn-mode--fontlock "esn-fontlock")
 (declare-function esn-narrow-rec "esn-narrow")
 (declare-function esn-error "esn-exec")
@@ -149,11 +148,13 @@
   (require 'esn-project)
   (require 'esn-options)
   (require 'esn-vars))
+
 (require 'esn-templates)
+
 (defface esn-plt-title-face '((t (:weight ultra-bold :height 2.0)))
   "PLT title face"
-  :group 'esn-plt
-  )
+  :group 'esn-plt)
+
 (unless (boundp 'esn-plt-title-face)
   (setq esn-plt-title-face '((t (:weight ultra-bold :height 2.0)))))
 
@@ -203,8 +204,7 @@
                      (goto-char (overlay-start button))
                      (if (re-search-backward "[(]\\([0-9]\\{6\\}-[0-9]\\{6\\}\\)[)]" nil t)
                          (match-string 1)
-                       nil
-                       )))))
+                       nil)))))
     (cond
      ( (string= "[MODEL]" btn)
        (kill-buffer (current-buffer))
@@ -259,6 +259,7 @@
                                                  (1 esn-plt-title-face)))))
   (setq font-lock-defaults '(esn-plt-list-font-lock-keywords nil t))
   (font-lock-mode 1))
+
 (defun esn-plt-munge-theta (text timestamp &optional start-at)
   "* Changes theta estimates to show what the final value turned out to be."
   (interactive)
@@ -293,18 +294,15 @@
               (insert " ")
               (setq i (+ i 1))))
           (setq text (buffer-substring (point-min) (point-max))))))
-    text
-    ))
+    text))
 (defun esn-plt-list-current ()
   "* Lists all runs associated with current control stream."
   (interactive)
   (setq esn-plt-list-last-buffer (current-buffer))
-  (let (
-        (timestamps (esn-plt-find-timestamps))
+  (let ((timestamps (esn-plt-find-timestamps))
         (buf-name (format "*EsN: PLT runs for %s*" (buffer-file-name)))
         pt
-        pt2
-        )
+        pt2)
     (pop-to-buffer (get-buffer-create buf-name))
     (delete-region (point-min) (point-max))
     (unless timestamps
@@ -347,7 +345,6 @@
                           (end-of-line)
                           (esn-mode--fontlock)
                           (font-lock-mode 1)
-                                        ;                          (message "%s" (buffer-substring pt (point)))
                           (concat
                            (esn-plt-munge-theta (esn-rec "THE" 't) file)
                            "\n"
@@ -1287,6 +1284,10 @@ Work-abcd-plta/
 	(setq buf (replace-match "\\1-plta\\2" t nil buf))))
     (symbol-value 'buf)))
 
+(defun esn-plt-has-submitted-p ()
+  "Have successfully run this file?"
+  (esn-plt-find-timestamps))
+
 (defun esn-plt-find-timestamps (&optional file-name)
   "Find Timestamps associated with current buffer or specified FILE-NAME."
   (if (not (esn-use-plt-p))
@@ -1392,6 +1393,8 @@ Work-abcd-plta/
          (inputs (esn-get-inputs))
          (data (expand-file-name (esn-get-data)))
          (header (esn-input-get-header data))
+         (pltg (concat (file-name-directory (buffer-file-name)) "../SCRIPTS-GRAPHICS/"
+                       (file-name-nondirectory (file-name-sans-extension (buffer-file-name))) ".pltg"))
          (i -1)
          (id -1)
          (id-alias "")
@@ -1411,7 +1414,31 @@ Work-abcd-plta/
                      ((get-delim ",") "Comma")
                      ((get-delim "\t") "Tab")
                      ((get-delim " ") "Space")))))
+         (parms (esn-get-parameters :all t))
+         parms-reg
+         ca-covs id-covs fed-covs form-covs race-covs
+         co-covs dose-group height-covs weigth-covs age-covs
          (ret nil))
+    (setq parms (append parms inputs))
+    (setq parms-reg (regexp-opt parms 'words))
+    (flet ((get-cov (lst cov)
+                    (mapc
+                     (lambda(x)
+                       (when (string-match parms-reg x)
+                         (add-to-list lst x)))
+                     cov)))
+      (get-cov 'ca-covs esn-xpose-catab)
+      (get-cov 'id-covs esn-xpose-ids)
+      (get-cov 'age-covs esn-plt-age-covs)
+      (get-cov 'weight-covs esn-plt-weight-covs)
+      (get-cov 'height-covs esn-plt-height-covs)
+      (get-cov 'dose-group esn-plt-gose-covs)
+      (get-cov 'co-covs esn-xpose-cotab)
+      (get-cov 'race-covs esn-plt-race-covs)
+      (get-cov 'gender-covs esn-plt-gender-covs)
+      (get-cov 'form-covs esn-plt-formulation-covs)
+      (get-cov 'fed-covs esn-plt-fed-covs))
+    ;;(error "%s,%s" parms ca-covs)
     (setq theta-names (esn-plt-theta (esn-plt-fix-labels (esn-get-variable-names "THE"  "\\= *;\\(.*\\)" ";\\(.*\\)"))
                                      num-cmt hl))
     (setq time (or time "hr"))
@@ -1431,6 +1458,15 @@ Work-abcd-plta/
         (setq ret (replace-match "" 't 't ret)))
       (while (string-match "\n\n+" ret)
         (setq ret (replace-match "\n" 't 't ret))))
+    ;; Write graphics script when this PLT run has not been submitted
+    ;; OR there is no graphics script for the PLT tools run.
+    (when (or (not (file-exists-p pltg))
+              (and (file-exists-p pltg)
+                   (not (esn-plt-has-submitted-p))))
+      (with-temp-buffer
+        (insert ret)
+        (write-file pltg)))
+    
     ;;(message "%s" ret)
     (symbol-value 'ret)))
 

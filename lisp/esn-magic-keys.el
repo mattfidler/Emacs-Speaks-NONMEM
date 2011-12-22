@@ -8,7 +8,7 @@
 ;; Version: 0.1
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 1073
+;;     Update #: 1075
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: Emacs 23.x
@@ -195,43 +195,44 @@
 ;;;###autoload
 (defun esn-before-change-functions-hook (beg end)
   "Called when in EsN mode on change of buffer."
-  (condition-case error
-      (save-excursion
-        (save-restriction 
-          (when beg
-            (goto-char beg)
-            (let* ((rec (esn-get-current-record t))
-                   (mark-active mark-active)
-                   (rec-hook (concat "esn-" (downcase rec) "-modification-hook"))
-                   (hook (intern-soft rec-hook)))
-              (when hook
-                (condition-case error
-                    (run-hooks hook)
-                  (error
-                   (message "Error running `%s': %s" rec-hook (error-message-string error))))))
-            (goto-char end)
-            (unless (esn-last-record-same-p t)
-              (let* ((rec (esn-get-current-record))
+  (unless esn-run-save-fn
+    (condition-case error
+        (save-excursion
+          (save-restriction 
+            (when beg
+              (goto-char beg)
+              (let* ((rec (esn-get-current-record t))
+                     (mark-active mark-active)
                      (rec-hook (concat "esn-" (downcase rec) "-modification-hook"))
                      (hook (intern-soft rec-hook)))
                 (when hook
                   (condition-case error
                       (run-hooks hook)
                     (error
-                     (message "Error running `%s': %s" rec-hook (error-message-string error))))))))))
-    (error
-     (message "Error in `esn-before-change-functions-hook': %s" (error-message-string error)))))
+                     (message "Error running `%s': %s" rec-hook (error-message-string error))))))
+              (goto-char end)
+              (unless (esn-last-record-same-p t)
+                (let* ((rec (esn-get-current-record))
+                       (rec-hook (concat "esn-" (downcase rec) "-modification-hook"))
+                       (hook (intern-soft rec-hook)))
+                  (when hook
+                    (condition-case error
+                        (run-hooks hook)
+                      (error
+                       (message "Error running `%s': %s" rec-hook (error-message-string error))))))))))
+      (error
+       (message "Error in `esn-before-change-functions-hook': %s" (error-message-string error))))))
 
 (defun esn-post-command-hook (&rest ignore)
   "Define a timer to run the esn-post-command-hook so that it doesn't incessantly redraw if not needed."
   (interactive)
   ;;  (message "Last Command: %s" last-command)
-  (let (
-        (inhibit-read-only 't)
+  (let ((inhibit-read-only 't)
         (inhibit-point-motion-hooks 't)
         (mark-active mark-active)
         )
     (when (and (eq major-mode 'esn-mode)
+               (not esn-run-save-fn)
              (not (memq last-command '(tabbar-select-tab-callback
                                        ignore
                                         ;mouse-drag-region
@@ -338,11 +339,12 @@
 
 (defun esn-pre-command-hook ()
   "Esn's pre command hook"
-  (setq esn-last-file-name (buffer-file-name))
-  (setq esn-last-record-name (esn-get-current-rec))
-  (setq esn-last-record-start esn-get-current-record-start)
-  (setq esn-pre-command-point (point))
-  (esn-pre-command-hook-run))
+  (unless esn-run-save-fn
+    (setq esn-last-file-name (buffer-file-name))
+    (setq esn-last-record-name (esn-get-current-rec))
+    (setq esn-last-record-start esn-get-current-record-start)
+    (setq esn-pre-command-point (point))
+    (esn-pre-command-hook-run)))
 
 (defun esn-pre-command-hook-run ()
   "* Wrapped around an error handler"
