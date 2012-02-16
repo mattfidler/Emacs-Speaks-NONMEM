@@ -6,9 +6,9 @@
 ;; Maintainer:  Matthew L. Fidler
 ;; Created: Thu Jul 29 12:28:00 2010 (-0500)
 ;; Version:
-;; Last-Updated: Wed Apr 27 22:53:25 2011 (-0500)
+;; Last-Updated: Thu Feb 16 10:37:41 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1854
+;;     Update #: 1856
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -75,15 +75,15 @@
   (interactive)
   (let ((all-recs '())
         (all-abbrev '()))
-    (setq esn-nm-cookie-dir "f:/Documents/NONMEM/nm7/help")
+    (setq esn-nm-cookie-dir "~usb/Documents/NONMEM/nm7/help")
     (setq esn-nm-cookie-ver "7")
     (esn-gen-cookies-1)
     (esn-gen-help)
-    (setq esn-nm-cookie-dir "f:/Documents/NONMEM/nmvi/help")
+    (setq esn-nm-cookie-dir "~usb/Documents/NONMEM/nmvi/help")
     (setq esn-nm-cookie-ver "6")
     (esn-gen-cookies-1)
     (esn-gen-help)
-    (setq esn-nm-cookie-dir "f:/Documents/NONMEM/nmv/help")
+    (setq esn-nm-cookie-dir "~usb/Documents/NONMEM/nmv/help")
     (setq esn-nm-cookie-ver "5")
     (esn-gen-cookies-1)
     (esn-gen-help)
@@ -790,7 +790,7 @@
     ;;           Always set etas to 0 during the computation of the objective
     ;;           function.   Also called the "first order (FO) method."  This
     ;;           is the default.
-
+    
     ;;      1 or CONDITIONAL
     ;;           Use conditional estimates for the etas during  the  computa-
     ;;           tion  of  the  objective  function.   METHOD=1  (without the

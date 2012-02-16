@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Fri Sep 17 10:59:18 2010 (-0500)
 ;; Version:
-;; Last-Updated: Thu Dec 22 16:56:21 2011 (-0600)
+;; Last-Updated: Thu Feb 16 10:35:31 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1073
+;;     Update #: 1076
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -23,6 +23,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 16-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Feb 16 10:34:50 2012 (-0600) #1075 (Matthew L. Fidler)
+;;    Bug fix for generating yasnippets.
 ;; 22-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Thu Dec 22 15:37:26 2011 (-0600) #1071 (Matthew L. Fidler)
 ;;    build snippet bug fix.
@@ -1017,9 +1020,9 @@ Supported code:
   "* Build Yasnippets for Esn-mode."
   (interactive)
   (when (boundp 'yas/root-directory)
-    (let* ((new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
-                       yas/root-directory
-                      (nth 0 yas/root-directory)))
+    (let* ((new-dir (if (listp yas/root-directory)
+			(nth 0 yas/root-directory)
+                      yas/root-directory))
            (end-dir (substring new-dir -1))
           added-snippets
           file

@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew Fidler
 ;; Created: Thu Apr 2212:13:43 2010 (-0500)
 ;; Version:
-;; Last-Updated: Thu Dec 22 15:41:59 2011 (-0600)
+;; Last-Updated: Thu Feb 16 10:24:56 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 33
+;;     Update #: 36
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -22,6 +22,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 16-Feb-2012    Matthew L. Fidler  
+;;    Last-Updated: Thu Feb 16 10:24:36 2012 (-0600) #35 (Matthew L. Fidler)
+;;    Added esn-autoloads 
 ;; 21-Dec-2011    Matthew L. Fidler  
 ;;    Last-Updated: Wed Dec 21 09:13:04 2011 (-0600) #31 (Matthew L. Fidler)
 ;;    Took out the `make-local-hook' function
@@ -34,7 +37,7 @@
 ;; 25-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Oct 25 14:16:27 2010 (-0500) #13 (Matthew L. Fidler)
 ;;    Removed requirement of esn-yas.
-;; 08-Sep-2010    Matthew L. Fidler  
+;; 08-Sep-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Sep  8 10:28:09 2010 (-0500) #7 (Matthew L. Fidler)
 ;;    Added autoloads variables and options to esn-start.el
 ;; 03-May-2010    Matthew L. Fidler
@@ -71,38 +74,42 @@
 (defvar esn-w32
   (memq system-type '(emx win32 w32 mswindows ms-dos windows-nt))
   "*Non-nil represents emacs running on windows.")
+
 (setq esn-path (file-name-directory (or
                                      load-file-name
                                      buffer-file-name)))
-(add-to-list 'magic-mode-alist
-             '( (lambda()
-                  (interactive)
-                  (let (
-                        (ret nil))
-                    (save-excursion
-                      (setq ret (re-search-forward "^[ \t]*\\$[Pp][Rr][Oo][A-Za-z]" nil 't))
-                      (when ret
-                        (beginning-of-line)
-                        (while (and ret (not (bobp)))
-                          (if (not (looking-at "^\\([ \t]*\\|[ \t]*;.*\\|^[ \t]*\\$[Pp][Rr][Oo][A-Za-z].*\\)$"))
-                              (setq ret nil)
-                            (forward-line -1)
-                            (beginning-of-line)))))
-                    (symbol-value 'ret))
-                  ) . esn-mode) )
 
-(defcustom esn-default-extension '(
-                                   ".mod"
-                                   ".ctl"
-                                   ".pltc"
-                                   ".con"
-                                   )
+(defun esn-turn-on-when-find-problem ()
+  "Turns on ESN mode when $PROBLEM statement is found in a file"
+  (interactive)
+  (let ((ret nil))
+    (save-excursion
+      (setq ret (re-search-forward "^[ \t]*\\$[Pp][Rr][Oo][A-Za-z]" nil 't))
+      (when ret
+        (beginning-of-line)
+        (while (and ret (not (bobp)))
+          (if (not (looking-at "^\\([ \t]*\\|[ \t]*;.*\\|^[ \t]*\\$[Pp][Rr][Oo][A-Za-z].*\\)$"))
+              (setq ret nil)
+            (forward-line -1)
+            (beginning-of-line)))))
+    (symbol-value 'ret)))
+
+(add-to-list 'magic-mode-alist
+             '( esn-turn-on-when-find-problem . esn-mode))
+
+(defcustom esn-default-extension
+  '(
+    ".mod"
+    ".ctl"
+    ".pltc"
+    ".con"
+    ".nmctl"
+    )
   "* List of extensions for NONMEM models."
   :type '(repeat
           (string :tag "Extension for NONMEM model")
           )
-  :group 'esn-mode
-  )
+  :group 'esn-mode)
 
 (defcustom esn-nonmem-output-extension '(
                                          ".lst"
@@ -112,26 +119,21 @@
                                          )
   "* Default extension for NONMEM reports."
   :type '(repeat
-          (string :tag "Extension for NONMEM report")
-          )
-  :group 'esn-mode
-  )
+          (string :tag "Extension for NONMEM report"))
+  :group 'esn-mode)
+
 (defcustom esn-nonmem-default-output-extension ".lst"
   "* Default extension for NONMEM reports.  Used for execution of NONMEM."
   :type 'string
-  :group 'esn-mode
-  )
+  :group 'esn-mode)
 
 (with-temp-buffer
   (let (
         (case-fold-search 't)
-        (i 0)
-        )
+        (i 0))
     (while (< i (length esn-default-extension))
       (insert (format "(add-to-list 'auto-mode-alist '(\"\\\\%s\\\\'\" . esn-mode))"  (nth i esn-default-extension)))
-      (setq i (+ i 1))
-      )
-    )
+      (setq i (+ i 1))))
   (eval-buffer))
 
 (add-to-list 'load-path esn-path)
@@ -150,9 +152,7 @@
          (> magic-mode-regexp-match-limit (point))
          (or
           (string= major-mode "text-mode")
-          (string= major-mode "fundamental-mode")
-          )
-         )
+          (string= major-mode "fundamental-mode")))
     ;; Only when its going to make a difference
     (set-auto-mode 't)))
 
@@ -162,7 +162,7 @@
   (add-hook 'post-command-hook 'esn-recheck-mode-hook nil t))
 (add-hook 'text-mode-hook 'esn-turn-on-check)
 (add-hook 'fundamental-mode-hook 'esn-turn-on-check)
-;;(require 'esn-autoloads)
+(require 'esn-autoloads)
 (autoload 'esn-mode "esn-mode" "EsN mode" t)
 (provide 'esn-start)
 

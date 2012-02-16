@@ -7,9 +7,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Fri Aug 20 09:29:13 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Mon May  2 12:38:42 2011 (-0500)
+;; Last-Updated: Thu Feb 16 10:37:53 2012 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 122
+;;     Update #: 124
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -69,7 +69,7 @@
 ;; 
 ;;; Code:
 
-;;(require 'esn-options)
+
 (declare-function esn-get-current-rec "esn-narrow")
 (defvar esn-current-nm-vars nil )
 (defvar esn-current-fallback-help-version "7")

@@ -8,7 +8,7 @@
 ;; Version: 0.1
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 1075
+;;     Update #: 1077
 ;; URL: http://esnm.sourceforge.net
 ;; Keywords: Emacs Speaks NONMEM
 ;; Compatibility: Emacs 23.x
@@ -135,11 +135,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-(require 'esn-fun)
-(require 'esn-which)
-(eval-when-compile
-  (require 'esn-version-switch))
-(require 'esn-start)
+;(require 'esn-fun)
+;(require 'esn-which)
+;(eval-when-compile
+;  (require 'esn-version-switch))
+;(require 'esn-start)
 ;;(declare-fucntion esn-rec3 "esn-fun")
 (declare-function esn-get-current-record "esn-narrow")
 (declare-function esn-last-record-same-p "esn-narrow")
