@@ -653,7 +653,6 @@ statement"
             (setq blk (re-search-forward "\\<BLOCK\\>" nil t))
             (goto-char (point-min))
             (setq same (re-search-forward "\\<SAME\\>" nil t))
-            (message "%s %s %s" (buffer-string) blk same)
             (goto-char (point-min))
             (while (re-search-forward "\\<\\(BLOCK *\\(?:( *[0-9]+ *)\\)\\|SAME\\)" nil t)
               (replace-match ""))
@@ -817,78 +816,63 @@ statement"
                                                                      "ERR"
                                                                      "SIGMA"
                                                                      )
-                                                                   't)
-                                                       )
-                                               )
+                                                                   't)))
                                              nil t)
                           (if (not (and
                                     (re-search-forward
-                                     "\\=.*?\\([A-Z][A-Za-z0-9_.]*\\)" nil t))
-                                   )
+                                     "\\=.*?\\([A-Z][A-Za-z0-9_.]*\\)" nil t)))
                               (progn
                                 (setq in-var nil)
-                                (esn-undo-numbering)
-                                )
+                                (esn-undo-numbering))
                             ;; Update point.
                             (setq this-command 'esn-upcase-char-self-insert)
                             (setq p1 (save-excursion
                                        (goto-char (point))
                                        (backward-char (length (match-string 1)))
                                        (point)))
-                            (esn-undo-numbering)
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                 ;; Yank
-                 ((memq this-command '(yank-pop
-                                       yank
-                                       cua-paste
-                                       transpose-chars
-                                       transpose-words
-                                       ))
-                  (setq this-command 'esn-upcase-char-self-insert)
-                  (setq p1 (point))
-                  )
-                 ;; Kill
-                 ((memq this-command '(kill-word))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq p2 (progn (forward-word arg) (point)))
-                  )
-                 ((memq this-command '(backward-kill-word))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq p2 (progn (forward-word (- arg)) (point)))
-                  )
-                 ;; Delete whole line doesn't change variable labels, just (possibly) rearranges them.
-                 ((memq this-command '(kill-line
-                                       backward-delete-char-untabify
-                                       ))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq pt (save-excursion (end-of-line)
-                                           (re-search-backward ";.*\\=" nil t)
-                                           (re-search-forward "\\=;[;C]*" nil t)
-                                           (re-search-forward "\\=[ \t]*\\[[PFApfa]\\]" nil t)
-                                           (re-search-forward (eval-when-compile
-                                                                (format "\\=[ \t]*%s"
-                                                                        (regexp-opt '(
-                                                                                      "THETA"
-                                                                                      "ETA"
-                                                                                      "OMEGA"
-                                                                                      "EPS"
-                                                                                      "ERR"
-                                                                                      "SIGMA"
-                                                                                      )
-                                                                                    't))) nil t)
-                                           (re-search-forward "\\=.*?[A-Z]" nil t)
-                                           (point)
-                                           ))
-                  )
-
+                            (esn-undo-numbering))))))))
+                ;; Yank
+                ((memq this-command '(yank-pop
+                                      yank
+                                      cua-paste
+                                      transpose-chars
+                                      transpose-words
+                                      ))
+                 (setq this-command 'esn-upcase-char-self-insert)
+                 (setq p1 (point)))
+                ;; Kill
+                ((memq this-command '(kill-word))
+                 (setq this-command 'esn-magic-bs-del)
+                 (setq p1 (point))
+                 (setq p2 (progn (forward-word arg) (point))))
+                ((memq this-command '(backward-kill-word))
+                 (setq this-command 'esn-magic-bs-del)
+                 (setq p1 (point))
+                 (setq p2 (progn (forward-word (- arg)) (point))))
+                ;; Delete whole line doesn't change variable labels, just (possibly) rearranges them.
+                ((memq this-command '(kill-line
+                                      backward-delete-char-untabify
+                                      ))
+                 (setq this-command 'esn-magic-bs-del)
+                 (setq p1 (point))
+                 (setq pt (save-excursion (end-of-line)
+                                          (re-search-backward ";.*\\=" nil t)
+                                          (re-search-forward "\\=;[;C]*" nil t)
+                                          (re-search-forward "\\=[ \t]*\\[[PFApfa]\\]" nil t)
+                                          (re-search-forward (eval-when-compile
+                                                               (format "\\=[ \t]*%s"
+                                                                       (regexp-opt '(
+                                                                                     "THETA"
+                                                                                     "ETA"
+                                                                                     "OMEGA"
+                                                                                     "EPS"
+                                                                                     "ERR"
+                                                                                     "SIGMA"
+                                                                                     )
+                                                                                   't))) nil t)
+                                          (re-search-forward "\\=.*?[A-Z]" nil t)
+                                          (point)))
+                 
                  ((memq this-command '(kill-region
                                        cua-cut-region
                                        ))
@@ -896,79 +880,50 @@ statement"
                   (setq p1 (point))
                   (setq p2 (mark 't))
                   (unless p2
-                    (setq p1 nil)
-                    )
-                  )
+                    (setq p1 nil)))
                  )
                 (when (or p1 p2)
-                                        ;             (message "%s,%s" p1 p2)
+                  ;; (message "%s,%s" p1 p2)
                   )
                 (when p1
-                  (esn-fix-variable-label nil nil nil p1)
-                  )
+                  (esn-fix-variable-label nil nil nil p1))
                 (when p2
-                  (esn-fix-variable-label nil nil nil p2)
-                  )
+                  (esn-fix-variable-label nil nil nil p2))
                 (unless (or p1 p2)
-                  (esn-undo-numbering)
-                  )
-                )
+                  (esn-undo-numbering)))
             ;; Inserting...
             (setq in-comment (save-excursion
-                               (re-search-backward "\\;.*\\=" nil t)
-                               ))
+                               (re-search-backward "\\;.*\\=" nil t)))
             (when in-comment
               (setq rec (esn-get-current-record))
               (when (or (string= rec "THE")
                         (string= rec "OME")
-                        (string= rec "SIG")
-                        )
+                        (string= rec "SIG"))
                 (save-excursion
                   (setq pt1 (point))
                   (when (re-search-backward ";")
                     (re-search-forward "\\=;[;C]*" nil t)
                     (re-search-forward "\\=[ \t]*\\[[PFApfa]\\]" nil t)
-                    (re-search-forward (eval-when-compile
-                                         (format "\\=[ \t]*%s"
-                                                 (regexp-opt '(
-                                                               "THETA"
-                                                               "ETA"
-                                                               "OMEGA"
-                                                               "EPS"
-                                                               "ERR"
-                                                               "SIGMA"
-                                                               )
-                                                             't)
-                                                 )
-                                         )
-                                       nil t)
+                    (re-search-forward
+                     (eval-when-compile
+                       (format "\\=[ \t]*%s"
+                               (regexp-opt '("THETA" "ETA" "OMEGA" "EPS" "ERR" "SIGMA")
+                                           't)))
+                     nil t)
                     (if (not (re-search-forward
                               "\\=.*?\\([A-Z][A-Za-z0-9_.]*\\)" nil t))
                         (setq in-var nil)
                       (when (and (<= pt1 (point))
                                         ;                            (>= pt1 (- (point) (length (match-string 1)))
                                  )
-                        (setq in-var (match-string 1))
-                        )
-                      )
-                    )
-                  )
-                )
-              )
+                        (setq in-var (match-string 1))))))))
             (if  in-var
                 (progn
                   (unless killp
                     (message "Changing Label, move away from label to reapply (%s)"
-                             in-var
-                             )
-                    )
-                  (esn-fix-numbering nil nil nil nil in-var)
-                  )
-              (esn-undo-numbering)
-              )
-            )
-          )
-        ))))
+                             in-var))
+                  (esn-fix-numbering nil nil nil nil in-var))
+              (esn-undo-numbering))))))))
 
 (esn-tos-post-hook (lambda()
                      (condition-case error
