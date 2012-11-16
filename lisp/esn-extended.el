@@ -59,6 +59,7 @@
 (declare-function esn-rec "esn-properties")
 (declare-function esn-xpose-get-input-line "esn-xpose")
 (declare-function esn-get-current-record "esn-narrow")
+
 (eval-when-compile
   (require 'esn-macros))
 
@@ -69,25 +70,21 @@
 
 
 (defun esn-undo-numbering (&optional the ome sig var)
+  "Changes THETA, ETA, and EPS to extended variable names."
   (interactive)
-  (let (
-        (tvar (or the (esn-get-variable-names "THE")))
+  (let ((tvar (or the (esn-get-variable-names "THE")))
         (avar (or ome (esn-get-variable-names "OME")))
         (svar (or sig (esn-get-variable-names "SIG")))
         (dups '())
         (there "")
-        (case-fold-search 't)
-        )
+        (case-fold-search 't))
     (mapc (lambda(x)
             (if (string-match (format "\\<%s\\>" x) there)
                 (add-to-list 'dups (downcase x))
-              (setq there (concat there " " x))
-              )
-            )
+              (setq there (concat there " " x))))
           (append tvar avar svar))
-    (esn-undo-numbering-tos tvar avar svar dups var)
-    )
-  )
+    (esn-undo-numbering-tos tvar avar svar dups var)))
+
 (defun esn-undo-numbering-tos (tvar avar svar dups var)
   "This is a function that changes all known THETA, ETA, etc to their extended control stream name. ERR -> SIGMA"
   (esn-undo-region-tos tvar "THETA" dups var)
@@ -95,9 +92,8 @@
   (esn-undo-region-tos svar "EPS" dups var)
   (esn-undo-region-tos svar "ERR" dups var)
   (when esn-wfn-extended-zero
-    (esn-undo-region-zero avar dups var)
-    )
-  )
+    (esn-undo-region-zero avar dups var)))
+
 (defun esn-undo-region-zero (lst dups v)
   "This undoes the numbering for the ZERO= in the estimation
 step (used for hybrid)."
@@ -580,8 +576,7 @@ Only change var if var is non-nil
                     (when is-new
                       (setq ndupn x))
                     ))
-                all-dups)
-          )
+                all-dups))
         (when (and (not (string= (or ndup "") ""))
                    (not (= ndupn -1))
                    )
@@ -594,17 +589,12 @@ Only change var if var is non-nil
             (goto-char (point-min))
             (esn-wfn-tmp-rep lst hi var reg 'pmin 'pmax 'prev 'md 'used)
             (goto-char (point-max))
-            (widen)
-            )
-          )
-        )
-      )
-    ))
+            (widen)))))))
 
 
 (defvar esn-var-names '()
-  "Defines a list of saved variable names.  Used to speed up before and after commands."
-  )
+  "Defines a list of saved variable names.  Used to speed up before and after commands.")
+
 ;;;###autoload
 (defun esn-get-variable-names (&optional what cm cmsame)
   "Gets the theta names from the appropriate block, and returns
@@ -613,10 +603,8 @@ statement"
   (save-restriction
     (if (assoc what esn-var-names)
         (progn
-          (nth 1 (assoc what esn-var-names))
-          )
-      (let* (
-             (theta (esn-rec (or what "THE") 't 't))
+          (nth 1 (assoc what esn-var-names)))
+      (let* ((theta (esn-rec (or what "THE") 't 't))
              (ret '())
              (vars nil)
              (lblk 0)
@@ -632,8 +620,7 @@ statement"
              (cur "")
              (inp-reg-lst (esn-xpose-get-input-line) )
              (esn-inp "")
-             (semi nil)
-             )
+             (semi nil))
         (setq esn-inp (upcase (concat "\\(" (mapconcat (lambda (x) x) inp-reg-lst "\\|") "\\)")))
         (with-temp-buffer
           (insert theta)
@@ -642,41 +629,19 @@ statement"
             (while (re-search-forward ";[C;]*" nil t)
               (replace-match ";"))
             (goto-char (point-min))
-            (while (re-search-forward (eval-when-compile
-                                        (format "%s"
-                                                (regexp-opt '(
-                                                              "THETA"
-                                                              "ETA"
-                                                              "OMEGA"
-                                                              "EPS"
-                                                              "ERR"
-                                                              "SIGMA"
-                                                              )
-                                                            't)
-                                                )
-                                        )
-                                      nil t)
-              (replace-match "")
-              )
-            )
+            (while (re-search-forward
+                    (eval-when-compile
+                      (format ".*\\<%s"
+                              (regexp-opt '("THETA" "ETA" "OMEGA" "EPS" "ERR" "SIGMA") 't)))
+                    nil t)
+              (replace-match "")))
           (when esn-wfn-var-label-skip-afp
             (goto-char (point-min))
-            (while (re-search-forward (eval-when-compile
-                                        (format "%s"
-                                                (regexp-opt '(
-                                                              "[A]"
-                                                              "[a]"
-                                                              "[F]"
-                                                              "[f]"
-                                                              "[P]"
-                                                              "[p]"
-                                                              )
-                                                            't
-                                                            )
-                                                )) nil t)
-              (replace-match "")
-              )
-            )
+            (while (re-search-forward
+                    (eval-when-compile
+                      (format "%s"
+                              (regexp-opt '("[A]" "[a]" "[F]" "[f]" "[P]" "[p]") 't))) nil t)
+              (replace-match "")))
           (goto-char (point-min))
           (while (re-search-forward "\\<FIX\\(?:ED?\\)?\\>" nil t)
             (replace-match ""))
@@ -688,6 +653,7 @@ statement"
             (setq blk (re-search-forward "\\<BLOCK\\>" nil t))
             (goto-char (point-min))
             (setq same (re-search-forward "\\<SAME\\>" nil t))
+            (message "%s %s %s" (buffer-string) blk same)
             (goto-char (point-min))
             (while (re-search-forward "\\<\\(BLOCK *\\(?:( *[0-9]+ *)\\)\\|SAME\\)" nil t)
               (replace-match ""))
@@ -701,19 +667,14 @@ statement"
                         (setq cur (match-string 1))
                         (when (string-match (format "^\\(%s\\|%s\\)$"
                                                     esn-wfn-excluded-variables
-                                                    esn-inp
-                                                    )
+                                                    esn-inp)
                                             (upcase cur))
-                          (setq cur "")
-                          )
+                          (setq cur ""))
                         (setq ret (push cur ret))
-                        (setq i (+ i 1))
-                        )
+                        (setq i (+ i 1)))
                       (while (< i lblk)
                         (setq ret (push "" ret))
-                        (setq i (+ i 1))
-                        )
-                      )
+                        (setq i (+ i 1))))
                   (setq i 0)
                   (setq lblk 0)
                   (while (re-search-forward est nil t)
@@ -725,17 +686,11 @@ statement"
                                  (ret (or
                                        (string= ch ";")
                                        (string= ch "(")
-                                       (string= ch ")")
-                                       ))
-                                 )
-                            (symbol-value 'ret)
-                            )
-                          )
-                         )
+                                       (string= ch ")"))))
+                            (symbol-value 'ret))))
                         (replace-match "")
                       (replace-match (substring (match-string 0) -1))
-                      (re-search-backward ";\\=" nil t)
-                      )
+                      (re-search-backward ";\\=" nil t))
                     (if (esn-in-comment-p)
                         (end-of-line)
                       (replace-match "")
@@ -752,36 +707,23 @@ statement"
                                                            esn-inp
                                                            )
                                                    (upcase cur))
-                                (setq cur "")
-                                )
-                              (setq ret (push cur ret))
-                              )
-                          (setq ret (push "" ret))
-                          )
-                        )
-                      ))
-                  )
+                                (setq cur ""))
+                              (setq ret (push cur ret)))
+                          (setq ret (push "" ret)))))))
               (setq lblk 0)
               (while (re-search-forward est nil t)
                 (if (not
                      (and
                       (string= "(" (substring (match-string 0) 0 1))
-                      (let* (
-                             (ch (substring (match-string 0) -1))
+                      (let* ((ch (substring (match-string 0) -1))
                              (ret (or
                                    (string= ch ";")
                                    (string= ch "(")
-                                   (string= ch ")")
-                                   ))
-                             )
-                        (symbol-value 'ret)
-                        )
-                      )
-                     )
+                                   (string= ch ")"))))
+                        (symbol-value 'ret))))
                     (replace-match "")
                   (replace-match (substring (match-string 0) -1))
-                  (re-search-backward ";\\=" nil t)
-                  )
+                  (re-search-backward ";\\=" nil t))
                 (if (esn-in-comment-p)
                     (end-of-line)
                   (setq lblk (+ 1 lblk))
@@ -791,30 +733,18 @@ statement"
                           (setq cur (match-string 1))
                           (when (string-match (format "^\\(%s\\|%s\\)$"
                                                       esn-wfn-excluded-variables
-                                                      esn-inp
-                                                      )
+                                                      esn-inp)
                                               (upcase cur))
-                            (setq cur "")
-                            )
-                          (setq ret (push cur ret))
-                          )
-                        )
-                    (setq ret (push "" ret))
-                    ))
-                )
-              )
+                            (setq cur ""))
+                          (setq ret (push cur ret))))
+                    (setq ret (push "" ret))))))
             (goto-char (point-max))
             (widen)
             (if (re-search-forward "\\$[A-Z]*[ \n\t]" nil t) nil
-              (goto-char (point-max))
-              )
-            )
-          )
+              (goto-char (point-max)))))
         (setq ret (reverse ret))
         (add-to-list `esn-var-names (list what ret))
-        (symbol-value 'ret)
-        ))
-    ))
+        (symbol-value 'ret)))))
 
 (defun esn-fix-variable-label (arg &optional killp undo pt)
   "Before inserting deleting, etc. checks to see if the labels
