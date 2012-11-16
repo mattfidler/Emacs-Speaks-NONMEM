@@ -28,7 +28,7 @@
 ;;    Bug fix to `esn-xpose-get-input-line'
 ;; 04-Oct-2010    Matthew L. Fidler  
 ;;    Bug fix -- When TVx is not requested, but x is requested, remove the TVx from the output table.
-;; 14-Sep-2010    Matthew L. Fidler  
+;; 14-Sep-2010    Matthew L. Fidler
 ;;    Took out FORMAT, ESAMPLE and SEED from calculating what variables are within a table.
 ;; 01-Sep-2010    Matthew L. Fidler
 ;;    Made xpose table skip empty regular expressions (bugfix)
@@ -107,7 +107,7 @@
 
 
 					; Implements Xpose Specific features as well as all automatic tables
-; and file naming conventions.
+                                        ; and file naming conventions.
 
 (require 'esn-vars) 
 (require 'esn-options)
@@ -115,22 +115,22 @@
 (defun esn-get-extension (ext &optional file)
   "This returns the \"extension\" for Xpose when not Xpose naming conventions for control streams are not enforced."
   (save-match-data
-  (if (not esn-xpose-tables-for-non-xpose-ctl-streams)
-      (progn
-        (if (string= "run" (downcase ext))
-            ""
-          (symbol-value 'ext)))
-    (let (
-	  (case-fold-search 't)
-	  (fn (or file (buffer-file-name))))
-      (when (string-match (format "%s$" (regexp-opt esn-default-extension)) fn)
-	(setq fn (replace-match "" nil nil fn)))
-      (when (string-match "[-_~]?[0-9]*$" fn)
-	(setq fn (replace-match "" nil nil fn)))
-      (when (string-match "[\\/]\\([^\\/]*\\)$" fn)
-	(setq fn (match-string 1 fn)))
-      (setq fn (concat fn ext))
-      (symbol-value 'fn)))))
+    (if (not esn-xpose-tables-for-non-xpose-ctl-streams)
+        (progn
+          (if (string= "run" (downcase ext))
+              ""
+            (symbol-value 'ext)))
+      (let (
+            (case-fold-search 't)
+            (fn (or file (buffer-file-name))))
+        (when (string-match (format "%s$" (regexp-opt esn-default-extension)) fn)
+          (setq fn (replace-match "" nil nil fn)))
+        (when (string-match "[-_~]?[0-9]*$" fn)
+          (setq fn (replace-match "" nil nil fn)))
+        (when (string-match "[\\/]\\([^\\/]*\\)$" fn)
+          (setq fn (match-string 1 fn)))
+        (setq fn (concat fn ext))
+        (symbol-value 'fn)))))
 
 (defun esn-xpose-run-number (&optional file)
   "* Returns the run number."
@@ -221,7 +221,7 @@
 
 ;;;###autoload
 (defun esn-xpose-get-input-line (&optional current no-reg)
-"* Gets a regular expression denoting all the acceptable input
+  "* Gets a regular expression denoting all the acceptable input
 line parameters.  This is done for each problem.  If no input
 line is present, then return \"\"
 
@@ -229,155 +229,56 @@ When current is non-nil, return information from the current problem.
 
 If no-reg is non-nil, then return the input line list.
 "
-(interactive)
+  (interactive)
   (if (and (not current)
            (not no-reg)
            esn-xpose-get-input-line-save) ; Should be cleared after something is done in $INP record. 
       esn-xpose-get-input-line-save
-  (save-restriction
-    (let ((case-fold-search 't)
-          (np (esn-num-problems))
-          (i 0)
-          (regs '())
-          inp)
-      (save-excursion
-        (while (< i np)
-          (if current
-              (progn
-                (esn-narrow-to-current-problem)
-                (setq i (+ 1 np)) ;; Exit loop after one iteration.
-                )
-            (setq i (+ i 1))
-            (esn-narrow-to-problem i))
-          (setq inp (esn-rec "INP" 't))
-          (with-temp-buffer
-            (insert inp)
-            (goto-char (point-min))
-            (while (re-search-forward ";.*" nil t)
-              (replace-match ""))
-            (goto-char (point-min))
-            (while (re-search-forward (esn-reg-records 't 't) nil t)
-              (replace-match ""))
-            (while (re-search-forward "\\(DROP\\|SKIP\\)[ \t]*=[ \t]*[A-Za-z][A-Za-z0-9_]*\\>" nil t)
-              (replace-match ""))
-            (goto-char (point-min))
-            (while (re-search-forward "\\<[A-Za-z][A-Za-z0-9_]*[ \t=]+\\(DROP\\|SKIP\\)" nil t)
-              (replace-match ""))
-            (when current
-              (if no-reg
-                  (setq regs (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't))
-                (setq regs (regexp-opt (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't) 'words))))
-            (unless current
-              (if no-reg
-                  (setq regs (push (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't) regs))
-                (setq regs (push (regexp-opt (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't) 'words) regs)))))
-          (widen)))
-      (unless current
-        (setq regs (reverse regs)))
-      (when (and (not current) (not no-reg))
-        (setq esn-xpose-get-input-line-save regs))
-      (symbol-value 'regs)))))
-(defun esn-xpose-tabs (run)
-  "Generate list of Xpose tables needed (based on the run)"
-  (list
-   (list (concat (if esn-xpose-small-table-file-names
-                     "co"
-                   "cotab") run (esn-get-extension esn-xpose-data-extension)) esn-xpose-cotab esn-xpose-no-cotab nil nil
-                   )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "ca"
-                   "catab") run (esn-get-extension esn-xpose-data-extension)) esn-xpose-catab esn-xpose-no-catab nil nil
-                   )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "mu"
-                   "mutab") run (esn-get-extension esn-xpose-data-extension)) esn-xpose-mutab esn-xpose-no-mutab nil nil
-                   )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "xt"
-                   "extra"
-                   ) run (esn-get-extension esn-xpose-data-extension)) esn-xpose-extra esn-xpose-no-extra nil nil
-                     )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "sd"
-                   "sdtab"
-                   )
-                 run (esn-get-extension esn-xpose-data-extension)) esn-xpose-sdtab esn-xpose-no-sdtab nil
-                 )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "pa"
-                   "patab"
-                   ) run (esn-get-extension esn-xpose-data-extension)) (esn-xpose-patab-vars) nil 't nil
-                     )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "cw"
-                   "cwtab"
-                   )
-                 run (esn-get-extension ".deriv")) (esn-xpose-cwtab-vars) nil 't nil
-                 )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "my"
-                   "mytab"
-                   )run (esn-get-extension esn-xpose-data-extension)) esn-xpose-mytab esn-xpose-no-mytab nil nil
-                    )
-   (list (concat (if esn-xpose-small-table-file-names
-                     "xp"
-                   "xptab") run (esn-get-extension esn-xpose-data-extension)) esn-xpose-xptab esn-xpose-no-xptab nil nil
-                   )
-   (list (concat  (if esn-xpose-small-table-file-names
-                      "co"
-                    "cotab"
-                    ) run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-cotab esn-xpose-sim-no-cotab nil 't
-                      )
-   (list (concat  (if esn-xpose-small-table-file-names
-                      "ca"
-                    "catab"
-                    )
-                  run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-catab esn-xpose-sim-no-catab nil 't
+    (save-restriction
+      (let ((case-fold-search 't)
+            (np (esn-num-problems))
+            (i 0)
+            (regs '())
+            inp)
+        (save-excursion
+          (while (< i np)
+            (if current
+                (progn
+                  (esn-narrow-to-current-problem)
+                  (setq i (+ 1 np)) ;; Exit loop after one iteration.
                   )
-   (list (concat  (if esn-xpose-small-table-file-names
-                      "mu"
-				  "mutab"
-				  )run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-mutab esn-xpose-sim-no-mutab nil 't
-                                   )
-		 (list (concat  (if esn-xpose-small-table-file-names
-				    "xt"
-				  "extra") run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-extra esn-xpose-sim-no-extra nil 't
-                                  )
-		 (list (concat (if esn-xpose-small-table-file-names
-				   "sd"
-				 "sdtab")
-			       run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-sdtab esn-xpose-sim-no-sdtab nil 't
-                               )
-                                        ;		 (list (concat "patab" run (esn-get-extension esn-xpose-data-sim-extension)) (esn-xpose-sim-patab-vars) nil 't 't
-                                        ;		       )
-		 (list (concat (if esn-xpose-small-table-file-names
-				   "cw"
-				 "cwtab"
-				 ) run esn-xpose-data-sim-extension ".deriv") (esn-xpose-cwtab-vars) nil 't 't
-		       )
-		 (list (concat (if esn-xpose-small-table-file-names
-				   "my"
-				 "mytab") run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-mytab esn-xpose-sim-no-mytab nil 't
-		       )
-		 (list (concat (if esn-xpose-small-table-file-names
-				   "xp"
-				 "xptab") run (esn-get-extension esn-xpose-data-sim-extension)) esn-xpose-sim-xptab esn-xpose-sim-no-xptab nil 't
-		       )))
-;; (defun esn-plt-tabs ()
-;;   "Tables defined for PLT tools"
-;;   nil
-;;   (list
-;;    (list "AllRecords.txt"
-;;          (esn-plt-all-records)
-;;          esn-plt-no-allrecords
-;;          nil nil nil
-;;          )
-;;    (list "FirstRecords.txt"
-;;          (esn-plt-first-records)
-;;          esn-plt-no-firstrecords
-;;          nil nil nil
-;;          )
-;;    (list "cwtab.deriv" (esn-xpose-cwtab-vars) nil)))
+              (setq i (+ i 1))
+              (esn-narrow-to-problem i))
+            (setq inp (esn-rec "INP" 't))
+            (with-temp-buffer
+              (insert inp)
+              (goto-char (point-min))
+              (while (re-search-forward ";.*" nil t)
+                (replace-match ""))
+              (goto-char (point-min))
+              (while (re-search-forward (esn-reg-records 't 't) nil t)
+                (replace-match ""))
+              (while (re-search-forward "\\(DROP\\|SKIP\\)[ \t]*=[ \t]*[A-Za-z][A-Za-z0-9_]*\\>" nil t)
+                (replace-match ""))
+              (goto-char (point-min))
+              (while (re-search-forward "\\<[A-Za-z][A-Za-z0-9_]*[ \t=]+\\(DROP\\|SKIP\\)" nil t)
+                (replace-match ""))
+              (when current
+                (if no-reg
+                    (setq regs (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't))
+                  (setq regs (regexp-opt (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't) 'words))))
+              (unless current
+                (if no-reg
+                    (setq regs (push (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't) regs))
+                  (setq regs (push (regexp-opt (split-string (buffer-substring (point-min) (point-max)) "[ \t=]+" 't) 'words) regs)))))
+            (widen)))
+        (unless current
+          (setq regs (reverse regs)))
+        (when (and (not current) (not no-reg))
+          (setq esn-xpose-get-input-line-save regs))
+        (symbol-value 'regs)))))
+
+
 
 (defun esn-pdx-eta-tab ()
   "* Defines PDx Eta tab"
@@ -450,40 +351,40 @@ If no-reg is non-nil, then return the input line list.
           (var (if no-id '() esn-xpose-cwtab))
           (inhibit-read-only 't)
           (inhibit-point-motion-hooks 't)
-	(case-fold-search 't)
-	(nm-ver (or nmv (esn-update-get-version)))
-	(added nil))
-    (when (string= "-1" nm-ver)
-      (setq nm-ver esn-assumed-version))
-    (if (< (string-to-number nm-ver) 6.2)
-	(save-excursion
-	  (goto-char (point-min))
-	  (while (re-search-forward "^\" +COM(\\([0-9]+\\)) *= *\\(G\\|H\\)H?(\\([0-9]+\\) *\\, *1 *)" nil t)
-	    (add-to-list 'var (format "COM(%s)=%s%s1" (match-string 1) (match-string 2) (match-string 3)))
-	    (setq added 't))
-	  (unless added
-	    (setq var '())))
-      (save-excursion
-	(if (not (or
-	       (and esn-cwres-foce (esn-is-foce-p))
-	       (and esn-cwres-focei (esn-is-focei-p))
-	       (and esn-cwres-hybrid (esn-is-hybrid-p))
-	       (and esn-cwres-fo-posthoc (esn-is-fo-posthoc-p))
-	       (and esn-cwres-foi-posthoc (esn-is-foi-posthoc-p))
-	       (and esn-cwres-lap (esn-is-lap-p))))
-	    (setq var '())
-	  (let (
-		(maxeta (esn-max-eta))
-		(maxeps (esn-max-eps))
-		(i 0))
-	    (while (< i maxeta)
-	      (setq i (+ i 1))
-	      (add-to-list 'var (format "G%s1" i)))
-	    (setq i 0)
-	    (while (< i  maxeps)
-	      (setq i (+ 1 i))
-	      (add-to-list 'var (format "H%s1" i)))))))
-    (symbol-value 'var))))
+          (case-fold-search 't)
+          (nm-ver (or nmv (esn-update-get-version)))
+          (added nil))
+      (when (string= "-1" nm-ver)
+        (setq nm-ver esn-assumed-version))
+      (if (< (string-to-number nm-ver) 6.2)
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward "^\" +COM(\\([0-9]+\\)) *= *\\(G\\|H\\)H?(\\([0-9]+\\) *\\, *1 *)" nil t)
+              (add-to-list 'var (format "COM(%s)=%s%s1" (match-string 1) (match-string 2) (match-string 3)))
+              (setq added 't))
+            (unless added
+              (setq var '())))
+        (save-excursion
+          (if (not (or
+                    (and esn-cwres-foce (esn-is-foce-p))
+                    (and esn-cwres-focei (esn-is-focei-p))
+                    (and esn-cwres-hybrid (esn-is-hybrid-p))
+                    (and esn-cwres-fo-posthoc (esn-is-fo-posthoc-p))
+                    (and esn-cwres-foi-posthoc (esn-is-foi-posthoc-p))
+                    (and esn-cwres-lap (esn-is-lap-p))))
+              (setq var '())
+            (let (
+                  (maxeta (esn-max-eta))
+                  (maxeps (esn-max-eps))
+                  (i 0))
+              (while (< i maxeta)
+                (setq i (+ i 1))
+                (add-to-list 'var (format "G%s1" i)))
+              (setq i 0)
+              (while (< i  maxeps)
+                (setq i (+ 1 i))
+                (add-to-list 'var (format "H%s1" i)))))))
+      (symbol-value 'var))))
 
 (defun esn-get-pwd ()
   "Gets the pwd of the file."
@@ -491,8 +392,7 @@ If no-reg is non-nil, then return the input line list.
 
 (defun esn-xpose-fish-run-number ()
   "* Fishes for a version that is not already there..."
-  (let (
-	(cver 1)
+  (let ((cver 1)
 	(pwd (esn-get-pwd))
         (padding (or esn-xpose-choose-file-name-padding
                      esn-xpose-choose-file-name-no-run-padding
@@ -507,16 +407,16 @@ If no-reg is non-nil, then return the input line list.
                "run"))
         (file ""))
     (setq file (format "%s%s%s%s"
-                    pwd
-                    run
-                    (let ((tmp (number-to-string cver)))
-                      (when padding
-                        (while (< (length tmp) 3)
-                          (setq tmp (concat "0" tmp))))
-                      (symbol-value 'tmp))
-                    (if (esn-use-pdx-p)
-                        ".ctl"
-                      esn-xpose-default-extension)))
+                       pwd
+                       run
+                       (let ((tmp (number-to-string cver)))
+                         (when padding
+                           (while (< (length tmp) 3)
+                             (setq tmp (concat "0" tmp))))
+                         (symbol-value 'tmp))
+                       (if (esn-use-pdx-p)
+                           ".ctl"
+                         esn-xpose-default-extension)))
     (while (file-exists-p file)
       (message "Found %s,looking for another appropriate name." file)
       (setq cver (+ cver 1))
@@ -536,10 +436,10 @@ If no-reg is non-nil, then return the input line list.
       (while (< (length cver) 3)
         (setq cver (concat "0" cver))))
     (symbol-value 'cver)))
+
 (defun esn-xpose-save-run-number (num)
   "* A save function that saves the file appropriately to a new run."
-  (let (
-	(inhibit-read-only 't)
+  (let ((inhibit-read-only 't)
 	(inhibit-point-motion-hooks 't)
 	(fn (buffer-file-name))
 	(cver (number-to-string num))
@@ -590,6 +490,7 @@ If no-reg is non-nil, then return the input line list.
                            ".ctl"
                          esn-xpose-default-extension)))
     (symbol-value 'cver)))
+
 (defun esn-xpose-save-to-other-file (fn)
   "* Saves the str to a new file, reverts and kills current file."
   (let (
@@ -615,42 +516,97 @@ If no-reg is non-nil, then return the input line list.
 (defun esn-xpose-save ()
   "* Makes sure that xpose naming conventions for model files are correct. Returns if additional update hooks should be stopped."
   (unless esn-inhibit-xpose
-  (if (or
-       (and esn-xpose
-           (or
-            esn-xpose-choose-file-name
-            esn-xpose-choose-file-name-padding
-            esn-xpose-choose-file-name-no-run-padding
-            esn-xpose-choose-file-name-no-run
-            )
-           (not (esn-use-plt-p))
-           (not (esn-use-pdx-p)))
-       (and
-        (esn-use-pdx-p)
-        (or
-         esn-pdx-choose-file-name
-         esn-pdx-choose-file-name-padding
-         )))
-      (let (
-	    (bn (buffer-file-name))
-	    (run "")
-	    (stop 't)
-	    (case-fold-search 't)
-            (esn-force-pdx (esn-use-pdx-p)))
-	(if (not (string-match "\\(?:run\\)?\\([0-9]+\\)" bn))
-	    (progn
-	      (esn-xpose-save-to-other-file (esn-xpose-save-run-number 1)))
-	  (setq run (esn-xpose-save-run-number (string-to-number (match-string 1 bn))))
-	  (if (string-match (regexp-quote run) bn)
-	      (setq stop nil)
-	    (esn-xpose-save-to-other-file run)))
-	(symbol-value 'stop))
-    nil)))
+    (if (or
+         (and esn-xpose
+              (or
+               esn-xpose-choose-file-name
+               esn-xpose-choose-file-name-padding
+               esn-xpose-choose-file-name-no-run-padding
+               esn-xpose-choose-file-name-no-run
+               )
+              (not (esn-use-plt-p))
+              (not (esn-use-pdx-p)))
+         (and
+          (esn-use-pdx-p)
+          (or
+           esn-pdx-choose-file-name
+           esn-pdx-choose-file-name-padding
+           )))
+        (let (
+              (bn (buffer-file-name))
+              (run "")
+              (stop 't)
+              (case-fold-search 't)
+              (esn-force-pdx (esn-use-pdx-p)))
+          (if (not (string-match "\\(?:run\\)?\\([0-9]+\\)" bn))
+              (progn
+                (esn-xpose-save-to-other-file (esn-xpose-save-run-number 1)))
+            (setq run (esn-xpose-save-run-number (string-to-number (match-string 1 bn))))
+            (if (string-match (regexp-quote run) bn)
+                (setq stop nil)
+              (esn-xpose-save-to-other-file run)))
+          (symbol-value 'stop))
+      nil)))
 
 
 (defun esn-xpose-rm-tables-cp ()
   "This function is responsible for removing autogenerated tables on copy."
   )
+
+;; Xpose tables
+
+(require 'esn-tables)
+(defmacro esn-xpose-gen-table-functions (table-name)
+  "Defines table functions for xpose"
+  `(defun ,(intern (concat "esn-xpose-" table-name "-table-name")) ()
+     ,(concat "Gets the table name for " table-name " tables in Xpose")
+     (concat
+      (if esn-xpose-small-table-file-names
+          ,(substring table-name 0 2)
+        ,table-name)
+      ;; esn-xpose-data-sim-extension used to be there.
+      (esn-xpose-run-number))))
+(eval-when-compile
+  (mapc
+   (lambda(x)
+     (eval (macroexpand `(esn-xpose-gen-table-functions ,x))))
+   '("cotab" "catab" "patab" "sdtab")))
+
+(esn-deftable esn-xpose-catab
+  :table-name esn-xpose-catab-table-name
+  :table-options "NOPRINT ONEHEADER"
+  :group 'esn-xpose-tables
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :require-other (esn-subset-regexp :categorical t)
+  :add-id t)
+
+(esn-deftable esn-xpose-cotab
+  :table-name esn-xpose-cotab-table-name
+  :table-options "NOPRINT ONEHEADER"
+  :group 'esn-xpose-tables
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :require-other (esn-subset-regexp :continuous t)
+  :add-id t)
+
+(esn-deftable esn-xpose-patab
+  :table-name esn-xpose-patab-table-name
+  :table-options "NOPRINT ONEHEADER"
+  :group 'esn-xpose-tables
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :require-par-iov t
+  :require-population t
+  :require-individual t
+  :require-eta t
+  :add-id t)
+
+(esn-deftable esn-xpose-sdtab
+  :table-name esn-xpose-sdtab-table-name
+  :table-options "NOPRINT ONEHEADER"
+  :group 'esn-xpose-tables
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :require-par-res t
+  :add-id t)
+
 
 (provide 'esn-xpose)
 

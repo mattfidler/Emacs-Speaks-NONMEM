@@ -212,14 +212,17 @@ hash table `esn-variable-hash' (uses bitwise comparisons)."
 
 (defmacro esn-&keys-filter (args filter)
   "Filter and change arguments for Deftable."
-  (let ((ret (make-symbol "ret")))
+  (let ((ret (make-symbol "ret"))
+        (last-table-name nil))
     (setq ret
           (mapcar
            (lambda(x)
              (if (and (symbolp x)
                       (string-match (concat "^" (regexp-quote (symbol-name filter))) (symbol-name x)))
                  (intern (replace-match ":" t t (symbol-name x)))
-               x))
+               (if (functionp x)
+                   `(funcall ',x)
+                 x)))
            args))
     ret))
 
@@ -305,7 +308,7 @@ Next are the variables to add if any required variables are found:
 :ADD-INDIVIDUAL regexp -- Add individual parameters (Like CL) matching regular expression
 
 :ADD-PRED
-:ADD-PAR-RES
+:ADD-PAR-RES                            
 :ADD-PAR-IOV
 
 :ADD-ERROR t includes ALL error variables (Variables associated with EPS)
@@ -353,86 +356,86 @@ For example, defining the PLT Tools Table AllRecords.txt, you may use:
                 (debug-on-quit t)
                 (time (float-time))
                 req-reg add-reg req-p add-p all-p inputs
-		(table-options ,table-options)
-		(tab-name ,(if (functionp table-name)
-			       (list table-name)
-			     table-name))
-		current-table
-		add orphan undef delreg del)
-	   (when tab-name
-	     (message "[EsN] Determining contents of %s." tab-name)
-	     (setq req-reg (esn-subset-regexp ,@req-arg))
-	     (setq add-reg (esn-subset-regexp ,@add-arg))
-	     
-	     (setq req-p (esn-get-parameters ,@req-arg))
-	     (setq add-p (esn-get-parameters ,@add-arg))
+                (table-options ,table-options)
+                (tab-name ,(if (functionp table-name)
+                               `(funcall ',table-name)
+                             table-name))
+                current-table
+                add orphan undef delreg del)
+           (when tab-name
+             (message "[EsN] Determining contents of %s." tab-name)
+             (setq req-reg (esn-subset-regexp ,@req-arg))
+             (setq add-reg (esn-subset-regexp ,@add-arg))
+             
+             (setq req-p (esn-get-parameters ,@req-arg))
+             (setq add-p (esn-get-parameters ,@add-arg))
              ;; Add customized content.
-	     (when ,(intern (concat (symbol-name name) "-req-table"))
-	       (mapc (lambda(x)
-		       (add-to-list 'req-p x))
-		     ,(intern (concat (symbol-name name) "-req-table"))))
-	     
-	     (when ,(intern (concat (symbol-name name) "-add-table"))
-	       (mapc (lambda(x)
-			 (add-to-list 'add-p x))
-		       ,(intern (concat (symbol-name name) "-add-table"))))
-	     (setq all-p (esn-get-parameters :all t))
+             (when ,(intern (concat (symbol-name name) "-req-table"))
+               (mapc (lambda(x)
+                       (add-to-list 'req-p x))
+                     ,(intern (concat (symbol-name name) "-req-table"))))
+             
+             (when ,(intern (concat (symbol-name name) "-add-table"))
+               (mapc (lambda(x)
+                       (add-to-list 'add-p x))
+                     ,(intern (concat (symbol-name name) "-add-table"))))
+             (setq all-p (esn-get-parameters :all t))
              (setq inputs (esn-get-inputs))
-	     (mapc
-	      (lambda(x)
-		(cond
-		 ((and (not (string= "" req-reg)) (string-match req-reg x))
-		  (add-to-list 'req-p x))
-		 ((and (not (string= "" add-reg)) (string-match add-reg x))
-		  (add-to-list 'add-p x))))
-	      inputs)
-	     ;; Filter what is added (if needed)
-	     
-	     (when (and req-p (< 0 (length req-p)))
-	       (setq current-table (split-string (esn-get-table-variables tab-name)))
-	       (cond
-		((not current-table) ;; Just add the table.
-		 (esn-add-table tab-name (sort (append add-p req-p) 'string<) table-options))
-		(t ;; Modify table -- First determine which are already defined
-		 (mapc
-		  (lambda(x)
-		    (cond
-		     ((and (member x add-p)
-			   (not (member x current-table)))
-		      (add-to-list 'add x))
-		     ((and (member x req-p)
-			   (not (member x current-table)))
-		      (add-to-list 'add x))
-		     ((and (member x current-table)
-			   (or (member x inputs)
-			       (member x all-p))
-			   (not (member x add-p))
-			   (not (member x req-p)))
-		      (add-to-list 'orphan x)
-		      ,(if delete-orphans
-			   '(delete* x current-table :test 'string=))
-		      ,(if delete-orphans
-			   '(add-to-list 'del x)))
-		     ((and (member x current-table)
-			   (not (member x inputs))
-			   (not (member x all-p)))
-		      (add-to-list 'undef x)
-		      ,(if delete
-			   '(delete* x current-table :test 'string=))
-		      ,(if delete
-			   '(add-to-list 'del x)))))
-		  (append add-p req-p current-table))
-		 ;; OK now actually modify table.
-		 (cond
-		  ((or (= 0 (length current-table)) ;; nothing's left
-		       (and (= (length current-table) (length add-p)) ;; All that left is optional.
-			    (equal (sort add-p 'string<) (sort current-table 'string<))))
-		   ;; Delete table.  Nothing of note is left.
-		   (esn-remove-table tab-name))
-		  (t
-		   (when del
-		     (setq del (regexp-opt del 'words)))
-		   (esn-modify-table tab-name (mapconcat (lambda(x) x) add " ") del table-options))))))))))))
+             (mapc
+              (lambda(x)
+                (cond
+                 ((and (not (string= "" req-reg)) (string-match req-reg x))
+                  (add-to-list 'req-p x))
+                 ((and (not (string= "" add-reg)) (string-match add-reg x))
+                  (add-to-list 'add-p x))))
+              inputs)
+             ;; Filter what is added (if needed)
+             
+             (when (and req-p (< 0 (length req-p)))
+               (setq current-table (split-string (esn-get-table-variables tab-name)))
+               (cond
+                ((not current-table) ;; Just add the table.
+                 (esn-add-table tab-name (sort (append add-p req-p) 'string<) table-options))
+                (t ;; Modify table -- First determine which are already defined
+                 (mapc
+                  (lambda(x)
+                    (cond
+                     ((and (member x add-p)
+                           (not (member x current-table)))
+                      (add-to-list 'add x))
+                     ((and (member x req-p)
+                           (not (member x current-table)))
+                      (add-to-list 'add x))
+                     ((and (member x current-table)
+                           (or (member x inputs)
+                               (member x all-p))
+                           (not (member x add-p))
+                           (not (member x req-p)))
+                      (add-to-list 'orphan x)
+                      ,(if delete-orphans
+                           '(delete* x current-table :test 'string=))
+                      ,(if delete-orphans
+                           '(add-to-list 'del x)))
+                     ((and (member x current-table)
+                           (not (member x inputs))
+                           (not (member x all-p)))
+                      (add-to-list 'undef x)
+                      ,(if delete
+                           '(delete* x current-table :test 'string=))
+                      ,(if delete
+                           '(add-to-list 'del x)))))
+                  (append add-p req-p current-table))
+                 ;; OK now actually modify table.
+                 (cond
+                  ((or (= 0 (length current-table)) ;; nothing's left
+                       (and (= (length current-table) (length add-p)) ;; All that left is optional.
+                            (equal (sort add-p 'string<) (sort current-table 'string<))))
+                   ;; Delete table.  Nothing of note is left.
+                   (esn-remove-table tab-name))
+                  (t
+                   (when del
+                     (setq del (regexp-opt del 'words)))
+                   (esn-modify-table tab-name (mapconcat (lambda(x) x) add " ") del table-options))))))))))))
 
 
 
@@ -492,12 +495,12 @@ For example, defining the PLT Tools Table AllRecords.txt, you may use:
                                              (lambda(y) (string-match ,@(assoc-default x alst) y))
                                              ,x))))
                                      pars))))
-            `(defun esn-get-parameters-clear-cache ()
-               "Clears parameter cache."
-               ,@(mapcar
-                  (lambda(x)
-                    `(setq ,(intern (format "esn-get-parameters-%s-cache" x)) nil))
-                  pars))))))
+             `(defun esn-get-parameters-clear-cache ()
+                "Clears parameter cache."
+                ,@(mapcar
+                   (lambda(x)
+                     `(setq ,(intern (format "esn-get-parameters-%s-cache" x)) nil))
+                   pars))))))
 (defvar-gpc pop ind err prd rs etas iv misc cw)
 ;;(message "%s" (macroexpand '(defvar-gpc pop ind err prd rs etas iv misc)))
 ;; Clear cache on abbreviated record modification.
@@ -625,7 +628,7 @@ that match the supplied regular expression.
               
               ;; W = THETA(1)
               ;; Y = F+EPS(1)*W
-	      
+              
               ;; Should have W as an error parameter not a population
               ;; parameter.  Therefore any variable previously considered
               ;; population variables that are located in the line with
@@ -682,7 +685,7 @@ that match the supplied regular expression.
         ;; CL = TVCL
         ;;
         ;; Currently CL is in the Misc category.
-	
+        
         ;; Residual components should be in error.  Anything matching RES$
         ;; is considered a residual.  Currently these are in Misc
         (delete-if (lambda(var)
