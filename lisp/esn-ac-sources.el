@@ -54,10 +54,10 @@
 (declare-function esn-rec3 "esn-fun")
 (declare-function esn-complete-is-known-option-value "esn-completion")
 (declare-function esn-complete-defined-variables "esn-completion")
+
 (eval-when-compile
   (require 'esn-start)
-  (require 'esn-vars)
-  )
+  (require 'esn-vars))
 
 (defvar ac-source-esn-records nil
   "* Esn ac source records.")
@@ -84,8 +84,7 @@
   "* Esn ac source Xmind completions.")
 
 (setq ac-source-esn-records
-      '(
-        (candidates . (lambda() (symbol-value 'esn-current-records-complete)))
+      '((candidates . (lambda() (symbol-value 'esn-current-records-complete)))
         (prefix . "\\<[$][A-Za-z0-9_]*")
         (requires . 1)
         (action . esn-ac-after-record)
@@ -102,12 +101,12 @@
           (esn-after-completion (match-string 0))))
     (error
      (message "Esn After record error: %s" (error-message-string error)))))
+
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Options completion
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq ac-source-esn-options
-      '(
-        (init . esn-ac-options)
+      '((init . esn-ac-options)
         (prefix . "\\(?:[^= \t\n]\\|^\\)[ \t]*\\<\\([A-Za-z0-9_]*\\)")
         (available . (lambda () (esn-current-rec)))
         (requires 1)
@@ -137,10 +136,8 @@
   "* Initialization function to determine the options passed."
   (condition-case error
       (progn
-        (let (
-              (rec (esn-get-current-rec))
-              lst
-              )
+        (let ((rec (esn-get-current-rec))
+              lst)
           (unless (and ac-source-esn-options-cached 
                        (string= ac-source-esn-options-cached rec))
             (if (and rec 
@@ -170,8 +167,7 @@
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq ac-source-esn-option-value
-      '(
-        (init . esn-ac-option-values)
+      '((init . esn-ac-option-values)
         (prefix . "\\<[A-Z_0-9]\\{3,\\}[ \t]*[= \t][ \t]*\\([A-Z0-9_]+\\)")
         (available . (lambda ()
                        (let (
@@ -203,12 +199,10 @@
   "* Initialization function to determine the known values to the specified option. "
   (condition-case error
       (progn
-        (let (
-              (debug-on-error 't)
+        (let ((debug-on-error 't)
               (rec (esn-get-current-rec))
               opt
-              lst
-              )
+              lst)
           (if rec
               (when (looking-back "\\<\\([A-Z_0-9]\\{3,\\}\\)[ \t]*[= \t][ \t]*[A-Z0-9_]+")
                 (setq opt (concat (esn-rec3 (match-string 1)) "="))
@@ -228,8 +222,7 @@
 
 
 (setq ac-source-esn-xmind
-      '(
-        (prefix . "[;C|]*[ \t]*\\(?:Free\\|X\\)?\\(?:mind\\(?:map\\)?\\|map\\)[ \t]*[:=][ \t]*\\(.*\\)")
+      '((prefix . "[;C|]*[ \t]*\\(?:Free\\|X\\)?\\(?:mind\\(?:map\\)?\\|map\\)[ \t]*[:=][ \t]*\\(.*\\)")
         (requires . 1)
         (candidates . esn-xmind-list-of-completions)
                                         ;        (action . esn-ac-after-option-value)
@@ -260,8 +253,7 @@
 (defvar ac-source-esn-lhs nil)
 
 (setq ac-source-esn-lhs
-      '(
-        (candidates . esn-ac-esn-lhs)
+      '((candidates . esn-ac-esn-lhs)
         (symbol . "L")
         (requires . 1)
         (available . esn-is-abbrev-p)
@@ -272,8 +264,6 @@
   "Variable defining the Auto-completion sources for EsN.")
 
 (setq esn-ac-sources '(ac-source-esn-lhs ac-source-esn-options ac-source-esn-option-value ac-source-esn-records))
-
-(setq esn-ac-sources '(ac-source-esn-records))
 (provide 'esn-ac-sources)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; esn-ac-sources.el ends here

@@ -137,6 +137,7 @@
 (defun esn-complete-is-known-record (what)
   "* Determines if the completion is a known record"
   (all-completions what esn-current-records-complete))
+
 (defun esn-complete-is-known-option (rec what &optional no-append)
   "* Determines if the completion is a known record option"
   (let (opt ret)

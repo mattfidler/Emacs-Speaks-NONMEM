@@ -268,9 +268,13 @@
   ;; Turn on completion modes.
   (cond
    ((= 2 esn-completion-type)
-    (auto-complete-mode))
+    (esn-r 'esn-ac)
+    (esn-ac-start))
    ((= 1 esn-completion-type)
-    (company-mode)))
+    (esn-r 'esn-company)
+    (esn-company-start))
+   (t
+    (esn-comint-complete)))
   ;;
   ;; Column Wrapping length
   ;;

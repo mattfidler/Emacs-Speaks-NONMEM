@@ -56,8 +56,7 @@
 (require 'esn-completion)
 (defun esn-comint-complete ()
   (interactive)
-  (let (
-        (prefix (esn-complete-prefix))
+  (let ((prefix (esn-complete-prefix))
         lst)
     (setq lst (esn-complete-candidates prefix))
     (when (eq 'sole 
