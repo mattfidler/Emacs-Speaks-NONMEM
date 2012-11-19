@@ -751,37 +751,29 @@ statement"
   (interactive "*p\nP")
   (when (and esn-update-wfn-labels-when-editing
              esn-wfn-extended)
-    (let (
-          (deactivate-mark nil)
+    (let ((deactivate-mark nil)
           (case-fold-search 't)
-          pt1 pt2
-          )
+          pt1 pt2 )
       (save-excursion
         (when pt
-          (goto-char pt)
-          )
+          (goto-char pt))
                                         ;    (message "%s,%s" this-command undo)
-        (let (
-              (inserting (memq this-command '(self-insert-command
+        (let ((inserting (memq this-command '(self-insert-command
                                               esn-upcase-char-self-insert
                                               esn-magic-quote
                                               esn-magic-$
                                               esn-magic-semi
-                                              esn-magic-space
-                                              )
-                               ))
+                                              esn-magic-space)))
               (deleting (memq this-command '(esn-magic-bs-del
                                              delete-char
                                              backward-delete-char-untabify
-                                             delete-backward-char
-                                             )))
+                                             delete-backward-char)))
               (in-comment nil)
               (rec nil)
               (in-var nil)
               (p1 nil)
               (p2 nil)
-              (this-command this-command)
-              )
+              (this-command this-command))
           (if (not (or inserting deleting))
               (if undo
                   (esn-undo-numbering)

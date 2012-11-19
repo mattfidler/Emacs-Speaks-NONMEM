@@ -291,9 +291,9 @@ is in the PLT tools archive or not.
       esn-use-xpose-save
     (setq esn-use-xpose-saved 't)
     (setq esn-use-xpose-save
-          (let (
-                (ret (and esn-xpose (esn-xpose-run-number)))
-                )
+          (let ((ret (and esn-xpose
+                          (progn (require 'esn-xpose) (featurep 'esn-xpose))
+                          (esn-xpose-run-number))))
             ;; Cannot use PLT tools and Xpose at the same time...
             (setq ret (and ret (not (esn-use-plt-p))))
             (symbol-value 'ret)))

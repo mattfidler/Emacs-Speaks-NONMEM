@@ -158,18 +158,16 @@
     (define-key map [remap delete-char] 'esn-delete-char)
     (define-key map [remap backward-kill-word] 'esn-backward-kill-word)
     (mapc (lambda(x)
-            (define-key map x 'esn-upcase-char-self-insert)
-            )
+            (define-key map x 'esn-upcase-char-self-insert))
           (list "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o"
                 "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"))
-     map)
+    map)
   "Esn mode map")
 
 (defmacro esn-define-keys (map &optional skip-emacsish-keys &rest body)
   (list 'defvar map
         (list 'let (list
-                    (list map (list 'make-sparse-keymap) )
-                    )
+                    (list map (list 'make-sparse-keymap)))
               ;;
               ;; Keys
               ;;
@@ -184,9 +182,7 @@
                       (list 'define-key map (list 'kbd "C-c C-w") ''esn-fix-numbering)
                       (list 'define-key map (list 'kbd "C-c C-q") ''esn-nmqual-submit)
                       (list 'define-key map (list 'kbd "C-c C-f") ''esn-nm-submit)
-                      (list 'define-key map (list 'kbd "C-c C-c") ''esn-switch-rpt) 
-                      )
-                )
+                      (list 'define-key map (list 'kbd "C-c C-c") ''esn-switch-rpt)))
               (list 'define-key map (list 'kbd "<f1>") ''esn-nm-help)
               (list 'define-key map (list 'kbd "\"") ''esn-magic-quote)
               (list 'define-key map (list 'kbd "$") ''esn-magic-$)
@@ -197,14 +193,12 @@
               (list 'define-key map (list 'kbd "(") ''esn-magic-start-paren)
               (list 'define-key map (list 'kbd "<backtab>") ''esn-magic-backtab)
               (append (list 'progn ) (mapcar (lambda(x)
-                                               (list 'define-key map (list 'kbd x) ''esn-upcase-char-self-insert)
-                                               )
+                                               (list 'define-key map (list 'kbd x) ''esn-upcase-char-self-insert))
                                              (list "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o"
                                                    "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"))
                       body)
               map)
-        "Keymap for EsN major mode")
-  )
+        "Keymap for EsN major mode"))
 
 ;; Define the major emacs key bindings.
 (esn-define-keys esn-mode-map)
@@ -216,8 +210,8 @@
       esn-plt-menu nil
       esn-extended-menu nil
       esn-display-menu  nil
-      esn-automation-menu nil
-      )
+      esn-automation-menu nil)
+
 (defun esn-mode--keymap ()
   "* Setup the appropriate keymap based on submode."
   (interactive)
@@ -225,15 +219,14 @@
     (when (boundp 'viper-mode)
       (viper-modify-major-mode 'esn-mode 'emacs-state esn-mode-map)
       (viper-modify-major-mode 'esn-mode 'insert-state esn-mode-map)
-      (viper-change-state-to-vi)
-      )
+      (viper-change-state-to-vi))
     
     (set-keymap-parent newmap (current-local-map))
     
     (esn-menu-def newmap esn-versions-menu  esn-versions-lst)
     (when (esn-use-xpose-p)
-      (esn-menu-def newmap esn-xpose-menu  esn-xpose-lst)
-      )
+      (esn-menu-def newmap esn-xpose-menu  esn-xpose-lst))
+    
     (esn-menu-def newmap esn-tools-menu  esn-tools-lst)
     (esn-menu-def newmap esn-run-menu  esn-run-lst)
     (when (esn-use-pdx-p)
@@ -246,21 +239,18 @@
     (esn-add-toolbar newmap)
     (use-local-map newmap)
     (setq imenu-generic-expression esn-imenu-generic-expression)
-    (imenu-add-to-menubar "->")
-    ))
+    (imenu-add-to-menubar "->")))
 
 (defun esn-customize-nonmem ()
   "Customize Nonmem"
   (interactive)
-  (customize-group "esn-mode")
-  )
+  (customize-group "esn-mode"))
+
 (defun esn-mode-toggle-sticky-var (var &rest extra)
   "* Toggle sticky var"
   (interactive)
-  (let ( 
-        (nvar (if (stringp var) var (symbol-name 'var)))
-        (small (if esn-header-small "small-" ""))
-        )
+  (let ((nvar (if (stringp var) var (symbol-name 'var)))
+        (small (if esn-header-small "small-" "")))
     (when (string-match "esn-\\(pdx\\|plt\\|pirana\\|census\\|def\\)-\\(small-\\)?" nvar)
       (setq nvar (replace-match "esn-" 't 't nvar)))
     (cond 
@@ -281,14 +271,11 @@
          (setq nvar (replace-match (concat "esn-census-" small) 't 't nvar))))
      ( 't
        (when (string-match "esn-" nvar)
-         (setq nvar (replace-match (concat "esn-def-" small) 't 't nvar))))
-     
-     )
+         (setq nvar (replace-match (concat "esn-def-" small) 't 't nvar)))))
     (set (intern nvar) (not (symbol-value (intern nvar))))
     (customize-save-variable (intern nvar) (symbol-value (intern nvar)))
-    (customize-save-customized)
-    )
-  )
+    (customize-save-customized)))
+
 
 (defmacro esn-mode-toggle-var (var &rest extra)
   "* Macro for toggling variables"
@@ -300,9 +287,8 @@
          (list 'customize-save-customized)
          (append
           (list 'progn)
-          extra)
-         ))
-  )
+          extra))))
+
 (defmacro esn-mode-radio-var (var val &rest extra)
   "* Macro for toggling radio buttons"
   (list
@@ -313,14 +299,12 @@
          (list 'customize-save-customized)
          (append
           (list 'progn)
-          extra)
-         )))
+          extra))))
 
 (defvar esn-versions-lst
   (append
    '("Use"
-     "Assumed NONMEM version"
-     )
+     "Assumed NONMEM version")
    (mapcar
     (lambda(x)
       `[,(concat "Assume NONMEM " (cadr x)) (esn-mode-radio-var esn-assumed-version ,(car x))
@@ -331,8 +315,7 @@
      "--"
      ["Customize Executable Locations" (lambda() (interactive) (customize-group "esn-exec"))]
      "--"
-     "Support"
-     )
+     "Support")
    (mapcar
     (lambda(var)
       (let ((toggle-var (concat "esn-mode-use-"
@@ -340,10 +323,9 @@
         (when (string-match "xpose" toggle-var)
           (setq toggle-var "esn-xpose"))
         (setq toggle-var (intern toggle-var))
-      `[,var (esn-mode-toggle-var ,toggle-var (esn-mode))
-             :style toggle
-             :selected ,toggle-var]
-      ))
+        `[,var (esn-mode-toggle-var ,toggle-var (esn-mode))
+               :style toggle
+               :selected ,toggle-var]))
     '("Census"
       "PDx Pop"
       "Pirana"
@@ -402,8 +384,7 @@
        (customize-save-variable 'esn-xpose-choose-file-padding esn-xpose-choose-file-name-padding)
        (customize-save-variable 'esn-xpose-choose-file-name-no-run esn-xpose-choose-file-name-no-run)
        (customize-save-variable 'esn-xpose-choose-file-no-run-padding esn-xpose-choose-file-name-no-run-padding)
-       (customize-save-customized)
-       )
+       (customize-save-customized))
      :active (and esn-xpose (not (esn-use-plt-p)) (not (esn-use-pdx-p)))
      :style radio
      :selected esn-xpose-choose-file-name
@@ -415,13 +396,12 @@
        (setq esn-xpose-choose-file-name-padding 't)
        (setq esn-xpose-choose-file-name-no-run nil)
        (setq esn-xpose-choose-file-name-no-run-padding nil)
-
+       
        (customize-save-variable 'esn-xpose-choose-file-name esn-xpose-choose-file-name)
        (customize-save-variable 'esn-xpose-choose-file-padding esn-xpose-choose-file-name-padding)
        (customize-save-variable 'esn-xpose-choose-file-name-no-run esn-xpose-choose-file-name-no-run)
        (customize-save-variable 'esn-xpose-choose-file-no-run-padding esn-xpose-choose-file-name-no-run-padding)
-       (customize-save-customized)
-       )
+       (customize-save-customized))
      :active (and esn-xpose (not (esn-use-plt-p)) (not (esn-use-pdx-p)))
      :style radio
      :selected esn-xpose-choose-file-name-padding
@@ -433,13 +413,12 @@
        (setq esn-xpose-choose-file-name-padding nil)
        (setq esn-xpose-choose-file-name-no-run 't)
        (setq esn-xpose-choose-file-name-no-run-padding nil)
-
+       
        (customize-save-variable 'esn-xpose-choose-file-name esn-xpose-choose-file-name)
        (customize-save-variable 'esn-xpose-choose-file-padding esn-xpose-choose-file-name-padding)
        (customize-save-variable 'esn-xpose-choose-file-name-no-run esn-xpose-choose-file-name-no-run)
        (customize-save-variable 'esn-xpose-choose-file-no-run-padding esn-xpose-choose-file-name-no-run-padding)
-       (customize-save-customized)
-       )
+       (customize-save-customized))
      :active (and esn-xpose (not (esn-use-plt-p)) (not (esn-use-pdx-p)))
      :style radio
      :selected esn-xpose-choose-file-name-no-run
@@ -1138,10 +1117,8 @@
     ["Change THETA,ETA,EPS to extended variables" esn-undo-numbering
      :active (not esn-wfn-extended)]
     ["Change extended variables to THETA,ETA,EPS" esn-fix-numbering
-     :active (not esn-wfn-extended)]
-    )
-  "Extended CTLs for `esn-mode'."
-  )
+     :active (not esn-wfn-extended)])
+  "Extended CTLs for `esn-mode'.")
 
 (defvar esn-display-lst
   '("Display"

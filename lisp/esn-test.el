@@ -413,6 +413,7 @@ $OMEGA
       (setq var-names (esn-get-variable-names "OME")))
     (setq ret (equal var-names '("E_V1" "E_V2" "E_V3")))
     (message "%s = (E_V1 E_V2 E_V3); %s" var-names ret)))
+
 (provide 'esn-test)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; esn-test.el ends here

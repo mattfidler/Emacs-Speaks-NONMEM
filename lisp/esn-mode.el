@@ -263,11 +263,13 @@
   (set (make-local-variable 'indent-line-function) 'esn-indent-line)
   (set (make-local-variable 'comment-start) ";")
   (set (make-local-variable 'comment-start-skip) ";\\W*")
+  ;; Call the after-save-function.
+  (esn-after-save-function)
   ;;
   ;; Column Wrapping length
   ;;
   (set (make-local-variable 'fill-column) esn-character-limit)
-;;  (setq-default fill-column esn-character-limit)
+  ;;  (setq-default fill-column esn-character-limit)
   )
 
 
@@ -288,27 +290,21 @@
 
 (defun esn-mode--hooks ()
   (interactive)
-  
   (add-hook 'write-contents-hooks 'esn-update-header nil 't)
-  
   (add-hook 'after-save-hook 'esn-after-save-function nil 't)
-  
   (add-hook 'post-command-hook 'esn-post-command-hook nil 't)
-  
   (add-hook 'pre-command-hook 'esn-pre-command-hook nil t)
-  
   (add-hook 'window-scroll-functions 'esn-window-scroll-functions nil t)
   (add-hook 'kill-buffer-hook 'esn-kill-buffer-hook nil t)
   (add-hook 'kill-emacs-hook 'esn-kill-emacs-hook nil t)
-  
   (add-hook 'before-change-functions 'esn-before-change-functions-hook nil t)
   ;; In case some other post-command hook ruins it for everyone else.
-                                        ;    (run-with-timer 1 3 'esn-mode--hooks)
-  
-                                        ;  (add-hook 'window-size-change-functions 'esn-window-size-change-functions nil t)
+  ;;    (run-with-timer 1 3 'esn-mode--hooks)
+  ;;  (add-hook 'window-size-change-functions 'esn-window-size-change-functions nil t)
   )
 (defvar esn-buffers-list '()
   "* List of Buffers that Emacs Speaks NONMEM is currently editing")
+
 (defun esn-kill-buffer-hook ()
   "* Defines functions run on Buffer Kill"
   (condition-case nil
@@ -393,10 +389,9 @@
           (esn-update-save-variables)
           (esn-mode--build-new)
           (esn-mode--hooks)
-          (esn-mode--ini-functions)
-          )
+          (esn-mode--ini-functions))
         ;; Give auto-complete a chance to work.
-
+        
         (when (and (featurep 'auto-complete)
                    (not (featurep 'esn-ac)))
           (require 'esn-ac))

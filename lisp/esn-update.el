@@ -188,8 +188,7 @@ outputted within the tables to make sure that they match what is
 inputted AND makes sure that the variables outputted do not
 interfere with reserved NONMEM variables."
   (interactive)
-  (let (
-        (np (esn-num-problems))
+  (let ((np (esn-num-problems))
         (tab "")
         (i 0)
         (tab-reg "")
@@ -2032,7 +2031,7 @@ If an absolute path is smaller, use it."
     (goto-char (point-min))
     (when (search-forward "\t" nil t)
       (untabify (1- (point)) (point-max))))
-                                        ;      (message "Have a trailing return on the file")
+  ;; (message "Have a trailing return on the file")
   (save-excursion
     (goto-char (point-max))
     (backward-char 1)
@@ -2212,7 +2211,7 @@ If an absolute path is smaller, use it."
         (setq esn-default-directory (replace-match "/" nil nil esn-default-directory)))))
 
 (defun esn-after-save-function ()
-  "Function called after the file has been saved."
+  "Function called after the file has been saved AND on opening a file."
   (interactive)
   (setq esn-update-get-version-cache nil)
   (setq esn-var-names '())

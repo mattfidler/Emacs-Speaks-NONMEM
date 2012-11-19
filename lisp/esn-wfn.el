@@ -88,31 +88,23 @@
 (declare-function esn-error "esn-exec")
 (declare-function esn-xpose-get-input-line "esn-xpose")
 
-
-
 (defun esn-wfn-cmd (cmd &rest ARGS)
   "Runs a Wings for NONMEM command."
   (when (buffer-modified-p)
     (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
         (save-buffer)
-      (esn-error "Buffer must be saved to run Wings For NONMEM.")
-      )
-    )
+      (esn-error "Buffer must be saved to run Wings For NONMEM.")))
   (unless (and esn-mode-wfn-bat (file-exists-p esn-mode-wfn-bat))
-    (esn-error "Wings for NONMEM batch file does not exist, or ESN does not know where it is located.")
-    )
+    (esn-error "Wings for NONMEM batch file does not exist, or ESN does not know where it is located."))
   ;; Save Version before submitting.
   ;;  (esn-add-new-version)
   ;; Need to get the batch file and edit it.
-  (let (
-        (fn "")
+  (let ((fn "")
         (current-directory (buffer-file-name))
         (run (esn-runname-noext))
-        (batch "")
-        )
+        (batch ""))
     (when (string-match "\\([\\\\/]\\)\\([^\\\\/]*\\)" current-directory)
-      (setq current-directory (replace-match "\\1" nil nil current-directory))
-      )
+      (setq current-directory (replace-match "\\1" nil nil current-directory)))
     (find-file esn-mode-wfn-bat)
     (setq batch (buffer-substring (point-min) (point-max)))
     (kill-buffer (current-buffer))
@@ -141,71 +133,51 @@
     (insert (format "%s-%s.bat" run cmd))
     (insert "\n================================================================================\n")
     (start-process-shell-command "*esn-wfn*" "*esn-wfn*"
-                                 (format "%s-%s.bat" run cmd))
-    )
-  )
+                                 (format "%s-%s.bat" run cmd))))
 
 (defun esn-wfn-submit ()
   "Submits run to WFN to run."
   (interactive)
-  (let (
-        (run (esn-runname-noext))
-        )
-    (esn-wfn-cmd esn-mode-wfn-nmgo run)
-    )
-  )
+  (let ((run (esn-runname-noext)))
+    (esn-wfn-cmd esn-mode-wfn-nmgo run)))
+
 (defun esn-wfn-bs ()
   "Bootstrapps run with Wings for NONMEM"
   (interactive)
-  (let (
-        (run (esn-runname-noext))
-        (bs 0)
-        )
+  (let ((run (esn-runname-noext))
+        (bs 0))
     (when (buffer-modified-p)
       (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
           (save-buffer)
-        (esn-error "Buffer must be saved to run Wings For NONMEM.")
-        )
-      )
+        (esn-error "Buffer must be saved to run Wings For NONMEM.")))
     (setq bs (esn-prompt "Number of Bootstrap Replications: "
                          "^[0-9]+$"
                          "Number of Bootstrap Repliactions (Must be an integer): "
                          ))
-    (esn-wfn-cmd esn-mode-wfn-nmbs run bs)
-    )
-  )
+    (esn-wfn-cmd esn-mode-wfn-nmbs run bs)))
 
 (defun esn-wfn-rt ()
   "Submits control stream for randomization test."
   (interactive)
   ;; Need COVARIATE in dataset (need input line)
   ;; Need Number of runs.
-  (let (
-        (run (esn-runname-noext))
+  (let ((run (esn-runname-noext))
         (var "")
         (bs 0)
-        (inp (esn-xpose-get-input-line))
-        )
+        (inp (esn-xpose-get-input-line)))
     (if (not (and (esn-rec "INP") (esn-rec "DAT")))
         (esn-error "Randomization test requires an $INPUT and $DATA record.")
       (when (buffer-modified-p)
         (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
             (save-buffer)
-          (esn-error "Buffer must be saved to run Wings For NONMEM.")
-          )
-        )
+          (esn-error "Buffer must be saved to run Wings For NONMEM.")))
       (setq var (downcase (esn-prompt "Covariate to randomize: "
                                       inp
-                                      "Covariate to randomize (Variable must be in $INPUT): "
-                                      )))
+                                      "Covariate to randomize (Variable must be in $INPUT): ")))
       (setq bs (esn-prompt "Number of Bootstrap Replications: "
                            "^[0-9]+$"
-                           "Number of Bootstrap Repliactions (Must be an integer): "
-                           ))
-      (esn-wfn-cmd esn-mode-wfn-nmrt var run bs)
-      )
-    )
-  )
+                           "Number of Bootstrap Repliactions (Must be an integer): "))
+      (esn-wfn-cmd esn-mode-wfn-nmrt var run bs))))
 
 (provide 'esn-wfn)
 
