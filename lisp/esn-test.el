@@ -15,8 +15,8 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: 
-;; 
+;;; Commentary:
+;;
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -45,7 +45,7 @@
 ;; 
 ;;; Code:
 
-;;(defalias 'e 'esn-sub-test)
+
 (defun esn-sub-test ()
   (interactive)
   (let ((debug-on-error 't)
@@ -54,7 +54,6 @@
       (insert "$PRO ok\n$SUB ADVAN1 TRANS1\n")
       (message "%s" (esn-desc-subroutines)))))
 
-;;(defalias 'e 'esn-yas-esn-snippet-test)
 (defun esn-yas-esn-snippet-test ()
   (interactive)
   (message (esn-yas-esn-snippet "$SUBROUTINES ADVAN1 TRANS2
@@ -68,7 +67,6 @@ $PK
 
   S1   = SCALE")))
 
-;;(defalias 'e 'esn-yas-current-theta-test)
 (defun esn-yas-current-theta-test ()
   (interactive)
   (let ((esn-yas-last-theta 1)
@@ -81,15 +79,15 @@ $PK
              (esn-yas-current-theta 5)
              (esn-yas-current-theta 6))))
 
-;;(defalias 'e 'esn-yas-par-test)
+
 (defun esn-yas-par-test ()
   (interactive)
   (let ((debug-on-error 't)
         (esn-yas-last-theta 1)
         (esn-yas-mu-referencing-type 1))
-    (message "%s" (esn-yas-par 1 "TVCL" "Volume/Time" "0")))
-  )
-;;(defalias 'e 'esn-yas-eta-types-transform-test)
+    (message "%s" (esn-yas-par 1 "TVCL" "Volume/Time" "0"))))
+
+
 (defun esn-yas-eta-types-transform-test ()
   (interactive)
   (let (
@@ -105,7 +103,6 @@ $PK
     (message "%s" (esn-yas-eta-types-transform "Logit"))
     (message "%s" (esn-yas-eta-types-transform "Constrained Log-normal (Theta > C)"))))
 
-;;(defalias 'e 'esn-yas-pending-units-test)
 (defun esn-yas-pending-units-test ()
   (interactive)
   (let (

@@ -556,7 +556,7 @@ remEmpty = delete empty record.
   "Defines alt-down swapping in $OMEGA block"
   (interactive)
   (esn-theta-down "OME"))
-(defalias 'e 'esn-estimate-up)
+
 (defun esn-last-theta-est ()
   "Returns the match of the last estimate."
   (let (in-comment

@@ -69,8 +69,8 @@
 
 (defgroup esn-mode nil
   "Emacs Speaks NONMEM.  Allows color-coding, code-compeltion, wrapping, displaying lines over 80 characters, correct captilization without caps-lock."
-  :group 'emacs
-  )
+  :group 'emacs)
+
 (defvar esn-w32
   (memq system-type '(emx win32 w32 mswindows ms-dos windows-nt))
   "*Non-nil represents emacs running on windows.")
@@ -98,17 +98,14 @@
              '( esn-turn-on-when-find-problem . esn-mode))
 
 (defcustom esn-default-extension
-  '(
-    ".mod"
+  '(".mod"
     ".ctl"
     ".pltc"
     ".con"
-    ".nmctl"
-    )
+    ".nmctl")
   "* List of extensions for NONMEM models."
   :type '(repeat
-          (string :tag "Extension for NONMEM model")
-          )
+          (string :tag "Extension for NONMEM model"))
   :group 'esn-mode)
 
 (defcustom esn-nonmem-output-extension '(

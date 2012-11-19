@@ -106,9 +106,9 @@
     ()
   (setq esn-link-keymap (make-sparse-keymap))
   (define-key esn-link-keymap [(mouse-1)] 'esn-follow-link)
-  ;(define-key esn-link-keymap [(mouse-3)] 'esn-follow-link)
-  ;(define-key esn-link-keymap (kbd "C-RET") 'esn-follow-link)
-                                        ;;  (define-key esn-link-keymap [(mouse-3)] 'esn-pop-link-history)
+                                        ;(define-key esn-link-keymap [(mouse-3)] 'esn-follow-link)
+                                        ;(define-key esn-link-keymap (kbd "C-RET") 'esn-follow-link)
+  ;;  (define-key esn-link-keymap [(mouse-3)] 'esn-pop-link-history)
   ) 
 
 (unless esn-overlay-category-file
@@ -127,16 +127,6 @@
             (when (overlay-get x 'esn-link)
               (delete-overlay x)))
           olist)))
-
-;;(defalias 'e 'esn-make-link-msfo)
-(defalias 'e 'esn-make-link-msfo-2)
-;;(defalias 'e 'esn-make-link-include)
-;;(defalias 'e 'esn-make-link-include-2)
-;;(defalias 'e 'esn-make-link-ref)
-;;(defalias 'e 'esn-make-link-ref-2)
-;;(defalias 'e 'esn-make-link-outfiles)
-;;(defalias 'e 'esn-make-link-outfiles-2)
-;;(defalias 'e 'esn-make-link-data-include)
 
 (defun esn-make-link-msfo (limit)
   "Links MFSO files using font-lock"
@@ -166,9 +156,9 @@
                       (overlay-put over 'esn-link "")
                       (overlay-put over 'esn-ref ""))))))
             (symbol-value 'ret))))
-        (error
-         (message "Error when linking MSFO files (MSFO='' form): %s" (error-message-string error))
-         nil)))
+    (error
+     (message "Error when linking MSFO files (MSFO='' form): %s" (error-message-string error))
+     nil)))
 
 (defun esn-make-link-msfo-2 (limit)
   "Links MFSO files using font-lock"
@@ -213,9 +203,9 @@
               (overlay-put over 'esn-link (match-string 2))
               (overlay-put over 'esn-ref ""))
             (symbol-value 'ret))))
-        (error
-         (message "Error when linking include statements (quote): %s" (error-message-string error))
-         nil)))
+    (error
+     (message "Error when linking include statements (quote): %s" (error-message-string error))
+     nil)))
 
 (defun esn-make-link-include-2 (limit)
   "Links INCLUDE files using font-lock"

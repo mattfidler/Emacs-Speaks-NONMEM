@@ -391,7 +391,8 @@ For example, defining the PLT Tools Table AllRecords.txt, you may use:
               inputs)
              ;; Filter what is added (if needed)
              
-             (when (and req-p (< 0 (length req-p)))
+             (if (not (and req-p (< 0 (length req-p))))
+                 (esn-remove-table tab-name) ;; Remove if needed.
                (setq current-table (split-string (esn-get-table-variables tab-name)))
                (cond
                 ((not current-table) ;; Just add the table.

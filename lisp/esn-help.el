@@ -126,9 +126,9 @@
           (set-bold t))
       (save-excursion
         (while (and (not (bobp))
-                  (= curi (current-indentation)))
-        (forward-line -1)
-        (beginning-of-line))
+                    (= curi (current-indentation)))
+          (forward-line -1)
+          (beginning-of-line))
         (when (looking-at ".*:[ \t]*$")
           (setq set-bold nil)))
       (when set-bold
@@ -143,7 +143,6 @@
 (defun esn-help-link-references (limit)
   "Links references")
 
-(defalias 'e 'esn-nm-help-fontlock)
 (defun esn-nm-help-fontlock ()
   "Builds fontlock and linking for Emacs Speaks NONMEM help"
   (interactive)
@@ -158,8 +157,8 @@
            (esn-help-bold-sections-3)
            (esn-help-link-references
             (0 font-lock-function-name-face))
-            (esn-help-records-link
-             (0 font-lock-function-name-face))))
+           (esn-help-records-link
+            (0 font-lock-function-name-face))))
     (set (make-local-variable 'font-lock-defaults)
          '(esn-help-font-lock-keywords t))
     (when (and (boundp 'font-lock-mode) font-lock-mode)

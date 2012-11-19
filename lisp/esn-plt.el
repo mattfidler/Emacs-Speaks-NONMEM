@@ -1312,7 +1312,7 @@ Work-abcd-plta/
   :require-pred t
   :require-sdtab t
   :require-other (esn-subset-regexp :tad t :occ t :sdtab t)
-  :condition (and esn-plt-generate-tables (esn-use-plt-p))
+  :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
   :group 'esn-plt-tables
   :add-id t)
 
@@ -1340,7 +1340,7 @@ Work-abcd-plta/
   :require-individual t
   :require-eta t
   :group 'esn-plt-tables
-  :condition (and esn-plt-generate-tables (esn-use-plt-p))
+  :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
   :add-id t)
 
 
@@ -1349,7 +1349,7 @@ Work-abcd-plta/
   :table-options "NOPRINT ONEHEADER"
   :require-cwtab t
   :group 'esn-plt-tables
-  :condition (and esn-plt-generate-tables (esn-use-plt-p))
+  :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
   :add-extra '("IPRED" "MDV" "DV" "PRED" "RES")
   :add-id t)
 
@@ -1357,7 +1357,7 @@ Work-abcd-plta/
   :table-name "cwtab.deriv"
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-plt-tables
-  :condition (and esn-plt-generate-tables (esn-use-plt-p))
+  :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
   :add-id t)
 
 
@@ -1370,8 +1370,6 @@ Work-abcd-plta/
       (concat
        (expand-file-name (concat (file-name-directory (buffer-file-name)) "../SCRIPTS-GRAPHICS")))
     ""))
-
-(defalias 'e 'esn-plt-graphics)
 (defun esn-plt-graphics (&optional a)
   "Creates a graphics script based on control stream values"
   (interactive)

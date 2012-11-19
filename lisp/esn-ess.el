@@ -25,7 +25,7 @@
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
@@ -268,8 +268,6 @@ VAL is the string to be quoted."
      (esn-R (esn-R-add-if-not-in-list-cmd ".ctl" (buffer-file-name) (esn-R-quote mod)))
      (esn-R (esn-R-add-if-not-in-list-cmd ".lst" (buffer-file-name) (esn-R-quote lst))))))
 
-(defalias 'e 'esn-R-get-sum)
-
 (defun esn-R-get-sum ()
   "Gets summary of run and stores in R list."
   (interactive)
@@ -285,8 +283,6 @@ VAL is the string to be quoted."
   (if (string-match "TRUE" (esn-R ".xpose4;"))
       t
     nil))
-
-(defalias 'e 'esn-R-get-xpose4)
 (defun esn-R-get-xpose4 ()
   "Puts ouput data into an xpose object"
   (interactive)

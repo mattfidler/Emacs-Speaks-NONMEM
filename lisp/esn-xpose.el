@@ -576,7 +576,7 @@ If no-reg is non-nil, then return the input line list.
   :table-name esn-xpose-catab-table-name
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
-  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-other (esn-subset-regexp :categorical t)
   :add-id t)
 
@@ -584,7 +584,7 @@ If no-reg is non-nil, then return the input line list.
   :table-name esn-xpose-cotab-table-name
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
-  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-other (esn-subset-regexp :continuous t)
   :add-id t)
 
@@ -592,7 +592,7 @@ If no-reg is non-nil, then return the input line list.
   :table-name esn-xpose-patab-table-name
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
-  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-par-iov t
   :require-population t
   :require-individual t
@@ -603,7 +603,7 @@ If no-reg is non-nil, then return the input line list.
   :table-name esn-xpose-sdtab-table-name
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
-  :condition (and esn-xpose-generate-tables (esn-use-xpose-p))
+  :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-par-res t
   :add-id t)
 
