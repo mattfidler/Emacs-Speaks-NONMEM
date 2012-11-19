@@ -265,6 +265,12 @@
   (set (make-local-variable 'comment-start-skip) ";\\W*")
   ;; Call the after-save-function.
   (esn-after-save-function)
+  ;; Turn on completion modes.
+  (cond
+   ((= 2 esn-completion-type)
+    (auto-complete-mode))
+   ((= 1 esn-completion-type)
+    (company-mode)))
   ;;
   ;; Column Wrapping length
   ;;

@@ -123,11 +123,9 @@
 (defun esn-complete-is-known-option-value (rec opt what)
   "* Determines if the completion is a known record option value"
   ;; Values, Requires a space or equals
-  (let (
-        (opt-val (esn-rec3 (concat (upcase opt) "=")))
+  (let ((opt-val (esn-rec3 (concat (upcase opt) "=")))
         tmp
-        ret
-        )
+        ret)
     (setq tmp (assoc rec esn-current-record-complete-option-values))
     (when tmp
       (setq tmp (cadr tmp))
@@ -197,10 +195,8 @@
   "* Returns a list of all the previously defined variables for this line"
   (interactive)
   (save-excursion
-    (let (
-          (ret '())
-          tmp
-          )
+    (let ((ret '())
+          tmp)
       (beginning-of-line)
       (while (re-search-backward "^[ \t]*\\([A-Z0-9a-z_]+\\)[ \t]*=" nil t)
         (setq tmp (upcase (match-string 1)))
@@ -215,8 +211,7 @@
   "Wraps based on chars position.  This is to wrap comments that
 are completed so they don't go over the `esn-character-limit'
 character limit."
-  (let* (
-         (tackon " ;")
+  (let* ((tackon " ;")
          (spl (split-string extra "[, \t\n;]+"))
          (i 0)
          (len (length spl))
@@ -255,10 +250,8 @@ The estimate (0, 1, FIXED) becomes (1, FIXED) and (0, 1, 3, FIXED) becomes (1, F
   (save-match-data
     (save-excursion
       (save-restriction
-        (let (
-              (case-fold-search 't)
-              pt1 pt2
-              )
+        (let ((case-fold-search 't)
+              pt1 pt2)
           (cond 
            ( (re-search-backward "([^)]*\\=" nil t)
              (cond 
