@@ -69,20 +69,16 @@
   "* Indents a line in EsN"
   (interactive)
   (when esn-mode-auto-indent
-    (let (
-          (case-fold-search 't)
+    (let ((case-fold-search 't)
           (curi 0)
           (deindent nil)
-          p1
-          )
+          p1 )
       (unless (save-excursion ;; indentation 0 for records & comments starting at the zero column.
                 (goto-char (point-at-bol))
-                (looking-at "\\([ \t]*[$]\\|;\\)")
-                )
+                (looking-at "\\([ \t]*[$]\\|;\\)"))
         (cond 
          ( (string-match (esn-reg-record-exp esn-mode-auto-indent-force-zero-indent) (esn-get-current-rec))
-           (setq curi 0)
-           )
+           (setq curi 0))
          ( (save-excursion (skip-chars-backward " \t\n") (esn-is-abbrev-p))
            ;; Abbreviated records
            (if (save-excursion
@@ -90,11 +86,8 @@
                  (skip-chars-forward " \t") 
                  (or 
                   (looking-at esn-mode-deindent-keyword-regexp)
-                  (looking-at esn-mode-deindent-indent-keyword-regexp)
-                  )
-                 )
-               (setq deindent 't)
-             )
+                  (looking-at esn-mode-deindent-indent-keyword-regexp)))
+               (setq deindent 't))
            (save-excursion
              (setq p1 (point-at-eol)) 
              (forward-line -1) 
@@ -139,20 +132,15 @@
 
 (defun esn-indent-line-to (w)
   "Insert spaces rather than tabs."
-  (let (
-        (case-fold-search 't)
+  (let ((case-fold-search 't)
         (what w))
     (if (< what 0)
-        (setq what 0)
-      )
+        (setq what 0))
     (save-excursion
       (beginning-of-line)
       (if (looking-at "^[ \t]*")
-          (replace-match (make-string what ? ))
-        )
-      )
-    )
-  )
+          (replace-match (make-string what ? ))))))
+
 (provide 'esn-indent)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; esn-indent.el ends here

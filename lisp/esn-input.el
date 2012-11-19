@@ -112,12 +112,12 @@
 
 (defun esn-add-drop-if-appropriate (header)
   "* Define =DROP,DV=,TIME= rules"
-  (let (
-        (comp (split-string header))
+  (let ((comp (split-string header))
         (known-vars (esn-subset-regexp :categorical t :continuous t :age t :dose t
                                        :fed t :formulation t :gender t :group t
                                        :height t :id t :iov t :ntime t
-                                       :race t :tad t :weight t))
+                                       :race t :tad t :weight t
+                                       :input t))
         (dv-vars (format "^%s$" (regexp-opt esn-mode-dv-vars 't)))
         (time-vars (format "^%s$" (regexp-opt esn-mode-time-vars 't)))
         (date-vars (format "^%s$" (regexp-opt esn-mode-date-vars 't)))
@@ -164,8 +164,7 @@
 (defun esn-input-before-data ()
   "* Puts the data statment right after the input statement."
   (save-restriction
-    (let (
-          (esn-dat "")
+    (let ((esn-dat "")
           (dmn nil)
           (dmx nil)
           (case-fold-search 't)
@@ -207,8 +206,7 @@
 (defun esn-add-ignore-data (header)
   "* Function that adds IGNORE= to the data file when not present."
   (save-restriction
-    (let (
-          (ignore header)
+    (let ((ignore header)
           (case-fold-search 't))
       (when (string-match "^ *\"?\\([A-Za-z]\\)" ignore)
         (setq ignore (concat " IGNORE=" (match-string 1 header)))
@@ -258,8 +256,7 @@
               (unless no-message
                 (esn-message "Input file too large to open with emacs  (causes a long wait).  Consider finding header information with GNU 'head' command.  Use Cygwin or equivalent.")
                 (setq header "")
-                ""
-                )
+                "")
             (unless no-message
               (esn-message "Find Header information faster with GNU 'head' command.  Use Cygwin or equivalent for Windows."))
             (find-file data)

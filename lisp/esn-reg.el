@@ -96,69 +96,49 @@ file-name associated with the second element of the match.  When partial is sele
     (if (and (eq (type-of rec) 'string)
              (string-match (eval-when-compile (regexp-quote "\\|")) rec))
         (symbol-value 'rec)
-      (let (
-            lst
+      (let (lst
             opt-lst
-            ret
-            )
+            ret )
         (if (eq (type-of rec) 'string)
             (setq lst (list rec))
-          (setq lst rec)
-          )
+          (setq lst rec))
         (mapc
          (lambda(x)
            (cond
             ( (string= (esn-rec3 x) "DAT")
               ;; Look for data or infile
               (add-to-list 'opt-lst "$DAT#")
-              (add-to-list 'opt-lst "$INFI#")
-              )
+              (add-to-list 'opt-lst "$INFI#"))
             ( (string= (esn-rec3 x) "INF")
               (add-to-list 'opt-lst "$INFN#")
-              (add-to-list 'opt-lst "$INF#")
-              )
+              (add-to-list 'opt-lst "$INF#"))
             ( (string= (esn-rec3 x) "AES0")
               (add-to-list 'opt-lst "$AES0#")
-              (add-to-list 'opt-lst "$AESI#")
-              )
+              (add-to-list 'opt-lst "$AESI#"))
             ( (string= (esn-rec3 x) "INC")
               (add-to-list 'opt-lst "$INC#")
-              (add-to-list 'opt-lst "INC#")
-              )
+              (add-to-list 'opt-lst "INC#"))
             ( (or (string= (esn-rec3 x) "BIN") (string= x "INP"))
               (add-to-list 'opt-lst (format "$%s#" (esn-rec3 x)))
-              (add-to-list 'opt-lst (format "$%s!" (esn-rec3 x)))
-              )
+              (add-to-list 'opt-lst (format "$%s!" (esn-rec3 x))))
             ( 't
-              (add-to-list 'opt-lst (format "$%s#" (esn-rec3 x)))
-              )
-            )
-           )
-         lst
-         )
+              (add-to-list 'opt-lst (format "$%s#" (esn-rec3 x))))))
+         lst)
         (setq ret (format "\\<%s%s\\>"
                           (regexp-opt opt-lst (not no-match) )
                           (if skip-spaces-tabs-and-returns
                               "[ \t\n]*"
-                            ""
-                            )
-                          )
-              )
+                            "")))
         (while (string-match (format "\\(%s\\|%s\\)" 
                                      (regexp-quote "[#!]")
                                      (regexp-quote "[!#]")
                                      ) ret)
           (setq ret (replace-match "[A-Z0-9_]*~*" nil nil ret)))
         (while (string-match "[#]" ret)
-          (setq ret (replace-match "[A-Z0-9_]*" nil nil ret))
-          )
+          (setq ret (replace-match "[A-Z0-9_]*" nil nil ret)))
         (while (string-match "!" ret)
           (setq ret (replace-match "[A-Z0-9_]*~*" nil nil ret)))
-        (symbol-value 'ret)
-        )
-      )
-    )
-  )
+        (symbol-value 'ret)))))
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Generate Cookies Quote
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

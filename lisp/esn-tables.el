@@ -41,7 +41,7 @@
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
@@ -390,7 +390,6 @@ For example, defining the PLT Tools Table AllRecords.txt, you may use:
                   (add-to-list 'add-p x))))
               inputs)
              ;; Filter what is added (if needed)
-             
              (if (not (and req-p (< 0 (length req-p))))
                  (esn-remove-table tab-name) ;; Remove if needed.
                (setq current-table (split-string (esn-get-table-variables tab-name)))
@@ -430,7 +429,8 @@ For example, defining the PLT Tools Table AllRecords.txt, you may use:
                  (cond
                   ((or (= 0 (length current-table)) ;; nothing's left
                        (and (= (length current-table) (length add-p)) ;; All that left is optional.
-                            (equal (sort add-p 'string<) (sort current-table 'string<))))
+                            (equal (sort add-p 'string<)
+                                   (sort current-table 'string<))))
                    ;; Delete table.  Nothing of note is left.
                    (esn-remove-table tab-name))
                   (t
@@ -902,15 +902,15 @@ Would return the following list:
     (if (and (member "DV" var)
              (member "PRED" var)
              (member "WRES" var)
-             (member "RES" var)
-             )
+             (member "RES" var))
         (setq new-var (delete-if (lambda(x) (member x '("DV" "PRED" "WRES" "RES" "NOAPPEND"))) new-var))
       (setq new-var (append new-var '("NOAPPEND"))))
     ;; Create table text
     (setq tab (format "$TABLE %s %s FILE=%s\n" (mapconcat (lambda(x) x) new-var " ")
                       opt name))
     (save-excursion
-      (esn-insert-after tab (append esn-insert-table-after (list "SIM" "EST" "NON")) 't))))
+      (esn-insert-after tab (append esn-insert-table-after (list "SIM" "EST" "NON")) 't)
+      (esn-align-tab-hook))))
 
 (defun esn-modify-table (name add del opt)
   "Modify Table NAME adding ADD deleting the regular expression DEL and adding OPT if not present."
@@ -938,7 +938,8 @@ Would return the following list:
               (replace-match "")))
           (goto-char (point-min))
           (while (re-search-forward "  +" nil t)
-            (replace-match " ")))))))
+            (replace-match " "))
+          (esn-align-tab-hook))))))
 
 (defun esn-remove-table (name)
   "Removes the output table NAME"

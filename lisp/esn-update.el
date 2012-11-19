@@ -31,7 +31,7 @@
 ;; 17-Sep-2010    Matthew L. Fidler  
 ;;    Last-Updated: Fri Sep 17 11:27:10 2010 (-0500) #308 (Matthew L. Fidler)
 ;;    Added bug fix for add-header-to-file when buffer is not associated with file.
-;; 24-Aug-2010    Matthew L. Fidler  
+;; 24-Aug-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Aug 24 11:57:22 2010 (-0500) #258 (Matthew L. Fidler)
 ;;    Made a prompt for a version update the regular expressions.
 ;; 13-Jul-2010    Matthew L. Fidler
@@ -2010,18 +2010,21 @@ If an absolute path is smaller, use it."
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward
-            (format "^.\\{%s,\\}$" (+ 1 esn-character-limit)) nil t)
+            (format "^.\\{%s,\\}" (+ 0 esn-character-limit)) nil t)
       (save-excursion
-        (unless (save-match-data
-                  (string-match
-                   (format "^%s$" (regexp-opt esn-records-not-wrapped 't))
-                   (esn-get-current-record)))
-          (esn-magic-wrap nil nil 't))))))
+        (if (save-match-data (string-match "^\\(TAB\\|INP\\|BIN\\)"
+                                           (esn-get-current-record)))
+            (progn
+              (esn-align-tab-hook))
+          (unless (save-match-data
+                    (string-match
+                     (format "^%s$" (regexp-opt esn-records-not-wrapped 't))
+                     (esn-get-current-record)))
+            (esn-magic-wrap nil nil 't)))))))
 
 (defun esn-update-essentials ()
   "Update header essentials."
   (interactive)
-  (esn-wrap-80)
   (when esn-wfn-extended
     (esn-fix-numbering))
   (when esn-wfn-caps
@@ -2059,8 +2062,7 @@ If an absolute path is smaller, use it."
   (save-excursion
     (save-excursion
       (if (esn-xpose-save) nil
-        (let (
-              (inhibit-read-only 't)
+        (let ((inhibit-read-only 't)
               (inhibit-point-motion-hooks 't)
               (case-fold-search 't)
               (bs (buffer-substring (point-min) (point-max)))
@@ -2191,6 +2193,7 @@ If an absolute path is smaller, use it."
     (setq esn-commit-last-version nil)
     ;; (when (and (esn-use-xpose-p) esn-mode-xpose-summary-document)
     ;;   (esn-mode-xpose-gen-summary))
+    (esn-wrap-80)
     (if esn-table-split-pred
         (progn
           (esn-table-split)))

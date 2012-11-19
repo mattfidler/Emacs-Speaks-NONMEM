@@ -111,137 +111,136 @@ Skil=nil no skip."
 		(esn-backward-w)
 		(setq on-line (re-search-backward "\n *\\=" nil t)))))
 	(if (and (<= pt1 cp) (<= cp pt2)) 
-	      (progn
-		(if (not (string-match "\n" what))
-		    (goto-char pt1) ; No spacing for current point.
-		  ;; Fix spacing for other line.
-		  (goto-char pt1)
-		  (end-of-line)
-		  (setq ptR (point))
-		  (if (and (<= pt1 cp) (<= cp ptR)) ; point on first line.
-		      (progn
-			(save-excursion
-			  (beginning-of-line)
-			  (if (looking-at "^\\(.*?\\);")
-			      (setq cont-len (length (match-string 1)))
-			    (setq cont-len 0))
-			  (end-of-line)
-			  (when (> cont-len  0)
-			    (when (looking-at (format "\n \\{%s\\};\\(?:[|!C%s]\\)? *" cont-len esn-sub-begin))
-			      (unless (looking-at (format "\n \\{%s\\};[;C] *" cont-len))
-				(looking-at (format "\n \\{%s\\};\\(?:%s\\|!\\|C\\)? *" cont-len esn-sub-begin))
-				(setq md (match-data))
-				(when (string-match (format ";%s" esn-sub-begin) (match-string 0))
-				  ;; Remove last |;
-				  (when (re-search-backward
-					 (format "%s; *\n?\\=" esn-sub-end))
-				    (replace-match "")))
-				(set-match-data md)
-				(replace-match " ")))))
-			(goto-char pt1))
-		    ;; Try to fix comments for the keystrokes space/backspace if you press a space on a comment line only.
-		    (setq is-continuation nil)
-		    (save-excursion
-		      (skip-chars-forward " \t\n")
-		      (beginning-of-line)
-		      (if (not (looking-at "\\( +\\);")) nil
-			(setq tmp (match-string 1))
-			(setq cont-len (length tmp))
-			(forward-line -1)
-			(beginning-of-line)
-			(while (looking-at (format "\\( \\{%s,%s\\}\\);"
-						   (max 0 (- cont-len 1))
-						   (+ cont-len 1)))
-			  (if (looking-at (format "\\( \\{%s,%s\\}\\);[;C]"
-						  (max 0 (- cont-len 1))
-						  (+ cont-len 1)))
-			      nil
-			    (looking-at (format "\\\( \\{%s,%s\\}\\);"
-						(max 0 (- cont-len 1))
-						(+ cont-len 1)))
-			    (replace-match (concat (make-string cont-len ? ) ";")))
-			  (forward-line -1)
-			  (beginning-of-line))
-			(if (not (looking-at (format "\\(.\\{%s,%s\\}\\);"
-						     (max 0 (- cont-len 1))
-						     (+ cont-len 1)))) nil
-			  (if (looking-at (format "\\(.\\{%s,%s\\}\\);[;C]"
-						  (max 0 (- cont-len 1))
-						  (+ cont-len 1))) nil
-			    (looking-at (format "\\(.\\{%s,%s\\}\\);"
-						(max 0 (- cont-len 1))
-						(+ cont-len 1)))
-			    (setq tmp (match-string 1))
-			    (if (> cont-len  (length tmp))
-				(progn
-				  (replace-match (concat "\\1" (make-string (- cont-len (length tmp)) ? ) ";"))
-				  (setq is-continuation 't)
-				  (setq skip 1))
-			      (if (< cont-len (length tmp))
-				  (progn
-				    (if (not (looking-at "\\(.*?\\)\\( +\\);")) nil
-				      (replace-match (concat "\\1" (make-string (- (length (match-string 2)) 1) ? ) ";"))
-				      (setq is-continuation 't)
-				      (setq skip 2)))))))))
-		    (skip-chars-backward " \n")
-		    (if (not (and is-continuation (looking-at "[ \n]*; *"))) nil
-		      (progn 
-			(if (looking-at "[ \n]*;[;C]") nil
-			  (looking-at "[ \n]*;")
-			  (replace-match " "))))
-		    (setq is-continuation nil))))
-	    (goto-char cp)
-	    (save-excursion
-	      (goto-char pt1)
-	      (if (not (string-match "\n" what))
-		  (progn
-		    (if at-comment nil
-		      (if (looking-at "[ \n]+")
-			  (replace-match " "))))
-		;; Returns.
-		(if (and at-comment comment-eol)
-		    (progn
-		      (if (looking-at "[ \n]+;[ \n]*") ; Continuation comment. 
-			  (progn
-			    (setq is-continuation nil)
-			    (save-excursion
-			      (beginning-of-line)
-			      (if (not (looking-at "\\(.+?\\)\\( +[^ ]+ *\\)?;")) nil
-				(forward-line 1)
-				(beginning-of-line)
-				(if (not (looking-at (format " \\{%s,%s\\};" 
-							     (- (length (match-string 1)) 1)
-							     (+ (length (match-string 1)) 
-								(+ 1 (length (match-string 2)))))))  nil
-				  (setq is-continuation 't))))
-			    (if (not (and is-continuation (looking-at "[ \n]+;[ \n]*"))) nil
-			      (if (looking-at "[ \n]+;[;C][ \n]*") nil
-				(looking-at "[ \n]+;[ \n]*")
-				(replace-match " ")
-				(skip-chars-backward " \n"))))))
-		  (if comment-eol
-		      (progn
-			(if (looking-at "[ \n]+") ;End of comment.
-			    (replace-match eol)))
-		    (if at-comment 
-			(progn
-			  )
-		      ;; Replace with space.
-		      (if (looking-at "[ \n]+")
-			  (if (or only-one on-line)
-			      (replace-match eol)
-			    (replace-match " ")))))))
-	      (setq pt2 (point)))
-	    (setq cp (point))
-	    (goto-char pt1)
-	    (skip-chars-backward "[ \t\n]+"))))
+            (progn
+              (if (not (string-match "\n" what))
+                  (goto-char pt1) ; No spacing for current point.
+                ;; Fix spacing for other line.
+                (goto-char pt1)
+                (end-of-line)
+                (setq ptR (point))
+                (if (and (<= pt1 cp) (<= cp ptR)) ; point on first line.
+                    (progn
+                      (save-excursion
+                        (beginning-of-line)
+                        (if (looking-at "^\\(.*?\\);")
+                            (setq cont-len (length (match-string 1)))
+                          (setq cont-len 0))
+                        (end-of-line)
+                        (when (> cont-len  0)
+                          (when (looking-at (format "\n \\{%s\\};\\(?:[|!C%s]\\)? *" cont-len esn-sub-begin))
+                            (unless (looking-at (format "\n \\{%s\\};[;C] *" cont-len))
+                              (looking-at (format "\n \\{%s\\};\\(?:%s\\|!\\|C\\)? *" cont-len esn-sub-begin))
+                              (setq md (match-data))
+                              (when (string-match (format ";%s" esn-sub-begin) (match-string 0))
+                                ;; Remove last |;
+                                (when (re-search-backward
+                                       (format "%s; *\n?\\=" esn-sub-end))
+                                  (replace-match "")))
+                              (set-match-data md)
+                              (replace-match " ")))))
+                      (goto-char pt1))
+                  ;; Try to fix comments for the keystrokes space/backspace if you press a space on a comment line only.
+                  (setq is-continuation nil)
+                  (save-excursion
+                    (skip-chars-forward " \t\n")
+                    (beginning-of-line)
+                    (if (not (looking-at "\\( +\\);")) nil
+                      (setq tmp (match-string 1))
+                      (setq cont-len (length tmp))
+                      (forward-line -1)
+                      (beginning-of-line)
+                      (while (looking-at (format "\\( \\{%s,%s\\}\\);"
+                                                 (max 0 (- cont-len 1))
+                                                 (+ cont-len 1)))
+                        (if (looking-at (format "\\( \\{%s,%s\\}\\);[;C]"
+                                                (max 0 (- cont-len 1))
+                                                (+ cont-len 1)))
+                            nil
+                          (looking-at (format "\\\( \\{%s,%s\\}\\);"
+                                              (max 0 (- cont-len 1))
+                                              (+ cont-len 1)))
+                          (replace-match (concat (make-string cont-len ? ) ";")))
+                        (forward-line -1)
+                        (beginning-of-line))
+                      (if (not (looking-at (format "\\(.\\{%s,%s\\}\\);"
+                                                   (max 0 (- cont-len 1))
+                                                   (+ cont-len 1)))) nil
+                        (if (looking-at (format "\\(.\\{%s,%s\\}\\);[;C]"
+                                                (max 0 (- cont-len 1))
+                                                (+ cont-len 1))) nil
+                          (looking-at (format "\\(.\\{%s,%s\\}\\);"
+                                              (max 0 (- cont-len 1))
+                                              (+ cont-len 1)))
+                          (setq tmp (match-string 1))
+                          (if (> cont-len  (length tmp))
+                              (progn
+                                (replace-match (concat "\\1" (make-string (- cont-len (length tmp)) ? ) ";"))
+                                (setq is-continuation 't)
+                                (setq skip 1))
+                            (if (< cont-len (length tmp))
+                                (progn
+                                  (if (not (looking-at "\\(.*?\\)\\( +\\);")) nil
+                                    (replace-match (concat "\\1" (make-string (- (length (match-string 2)) 1) ? ) ";"))
+                                    (setq is-continuation 't)
+                                    (setq skip 2)))))))))
+                  (skip-chars-backward " \n")
+                  (if (not (and is-continuation (looking-at "[ \n]*; *"))) nil
+                    (progn 
+                      (if (looking-at "[ \n]*;[;C]") nil
+                        (looking-at "[ \n]*;")
+                        (replace-match " "))))
+                  (setq is-continuation nil))))
+          (goto-char cp)
+          (save-excursion
+            (goto-char pt1)
+            (if (not (string-match "\n" what))
+                (progn
+                  (if at-comment nil
+                    (if (looking-at "[ \n]+")
+                        (replace-match " "))))
+              ;; Returns.
+              (if (and at-comment comment-eol)
+                  (progn
+                    (if (looking-at "[ \n]+;[ \n]*") ; Continuation comment. 
+                        (progn
+                          (setq is-continuation nil)
+                          (save-excursion
+                            (beginning-of-line)
+                            (if (not (looking-at "\\(.+?\\)\\( +[^ ]+ *\\)?;")) nil
+                              (forward-line 1)
+                              (beginning-of-line)
+                              (if (not (looking-at (format " \\{%s,%s\\};" 
+                                                           (- (length (match-string 1)) 1)
+                                                           (+ (length (match-string 1)) 
+                                                              (+ 1 (length (match-string 2)))))))  nil
+                                (setq is-continuation 't))))
+                          (if (not (and is-continuation (looking-at "[ \n]+;[ \n]*"))) nil
+                            (if (looking-at "[ \n]+;[;C][ \n]*") nil
+                              (looking-at "[ \n]+;[ \n]*")
+                              (replace-match " ")
+                              (skip-chars-backward " \n"))))))
+                (if comment-eol
+                    (progn
+                      (if (looking-at "[ \n]+") ;End of comment.
+                          (replace-match eol)))
+                  (if at-comment 
+                      (progn
+                        )
+                    ;; Replace with space.
+                    (if (looking-at "[ \n]+")
+                        (if (or only-one on-line)
+                            (replace-match eol)
+                          (replace-match " ")))))))
+            (setq pt2 (point)))
+          (setq cp (point))
+          (goto-char pt1)
+          (skip-chars-backward "[ \t\n]+"))))
     (goto-char cp)
     (symbol-value 'skip)))
 
 (defun esn-wrap-narrowed-record (len)
   "This function finishes wraping the record after everything has been ``dewraped''"
-  (let* (
-	 (case-fold-search 't)
+  (let* ((case-fold-search 't)
 	 (sp (make-string len ? ))
 	 (eol (concat "\n" sp))
 	 (lngth 0)
@@ -344,63 +343,63 @@ Skil=nil no skip."
 	  (end-of-line)
 	  (setq lngth 0)))
       (goto-char (point-min)))))
+
 ;;;###autoload
 (defun esn-fill-record (&optional r)
   (interactive)
   (save-restriction
-  (let (
-	(case-fold-search 't)
-	(len 0)
-	(updated 't)
-	(rec (or r (esn-get-current-record)))
-	(cont-len 0)
-	(skip nil)
-	(al nil)
-	(num 0))
-    (save-excursion
-      (setq updated (esn-narrow-rec))
-      (save-restriction
-        (when esn-use-symbols
-          (decompose-region (point-min) (point-max)))
-        (if (not updated) nil
-          ;; Turn off indenting if esn-mode-auto-indent is off.
-          (setq len updated)
-          (if (not esn-mode-auto-indent)
-              (setq len 0))
-          (if (string-match (concat "\\(" (regexp-opt esn-mode-auto-indent-force-zero-indent)
-                                    "\\)") rec)
-              (setq len 0))
-          (setq skip (esn-dewrap-narrowed-record len))
-          (save-excursion
-            (goto-char (point-max))
-            (skip-chars-backward " \t\n")
-            (skip-chars-forward " \t")
-            (if (looking-at "[ \t\n]*")
-                (replace-match "")))
-          (esn-wrap-narrowed-record len))
-        (cond
-         ((string= rec "MSF") ; Hack for MSFI spacing.  Make SURE the
-                              ; file name is on the same line.  It
-                              ; won't work otherwise.
-          (goto-char (point-min))
-          (when (re-search-forward (eval-when-compile (esn-reg-record-exp "MSF")) nil t)
-            
-            (delete-region (point) (progn (skip-chars-forward " \t\n") (point)))
-            (insert " "))))
-        (when esn-use-symbols
-          (esn-compose-region (point-min) (point-max)))
-        ))
-    (if (not (and skip (= skip 2))) nil 
-      (end-of-line))
-    (if (not skip) nil
-      (skip-chars-forward " \n")
-      (beginning-of-line)
-      (skip-chars-forward " \n"))
-    ; Hack for BLOCK(#) spacing.
-    (if (not (re-search-backward "BLOCK *\\(( *[0-9]+ *)\\)?\\=" nil t)) nil
-      (re-search-forward "\\=BLOCK *\\(( *[0-9]+ *)\\)? ?" nil t))
-
-    (symbol-value 'updated))))
+    (let ((case-fold-search 't)
+          (len 0)
+          (updated 't)
+          (rec (or r (esn-get-current-record)))
+          (cont-len 0)
+          (skip nil)
+          (al nil)
+          (num 0))
+      (save-excursion
+        (setq updated (esn-narrow-rec))
+        (save-restriction
+          (when esn-use-symbols
+            (decompose-region (point-min) (point-max)))
+          (if (not updated) nil
+            ;; Turn off indenting if esn-mode-auto-indent is off.
+            (setq len updated)
+            (if (not esn-mode-auto-indent)
+                (setq len 0))
+            (if (string-match (concat "\\(" (regexp-opt esn-mode-auto-indent-force-zero-indent)
+                                      "\\)") rec)
+                (setq len 0))
+            (setq skip (esn-dewrap-narrowed-record len))
+            (save-excursion
+              (goto-char (point-max))
+              (skip-chars-backward " \t\n")
+              (skip-chars-forward " \t")
+              (if (looking-at "[ \t\n]*")
+                  (replace-match "")))
+            (esn-wrap-narrowed-record len))
+          (cond
+           ((string= rec "MSF") ; Hack for MSFI spacing.  Make SURE the
+                                        ; file name is on the same line.  It
+                                        ; won't work otherwise.
+            (goto-char (point-min))
+            (when (re-search-forward (eval-when-compile (esn-reg-record-exp "MSF")) nil t)
+              
+              (delete-region (point) (progn (skip-chars-forward " \t\n") (point)))
+              (insert " "))))
+          (when esn-use-symbols
+            (esn-compose-region (point-min) (point-max)))
+          ))
+      (if (not (and skip (= skip 2))) nil 
+        (end-of-line))
+      (if (not skip) nil
+        (skip-chars-forward " \n")
+        (beginning-of-line)
+        (skip-chars-forward " \n"))
+                                        ; Hack for BLOCK(#) spacing.
+      (if (not (re-search-backward "BLOCK *\\(( *[0-9]+ *)\\)?\\=" nil t)) nil
+        (re-search-forward "\\=BLOCK *\\(( *[0-9]+ *)\\)? ?" nil t))
+      
+      (symbol-value 'updated))))
 
 
 (provide 'esn-fill)

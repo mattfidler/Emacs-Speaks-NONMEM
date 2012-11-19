@@ -80,17 +80,14 @@
 ;;
 (defun esn-fix-subroutine-text (txt)
   "Fixes the nonmem subroutine comment buffer."
-  (let (
-	(case-fold-search 't)
-        (tmp txt)
-        )
+  (let ((case-fold-search 't)
+        (tmp txt))
     (while (string-match "^[ \t]*;;" tmp)
       (setq tmp (replace-match (concat ";" (regexp-quote esn-sub-begin)) nil nil tmp)))
     (while (string-match ";;[ \t]*$" tmp)
       (setq tmp (replace-match (concat (regexp-quote esn-sub-end) ";") nil nil tmp)))
-    (symbol-value 'tmp)
-    )
-  )
+    (symbol-value 'tmp)))
+
 ;;;###autoload
 (defun esn-desc-subroutines (&rest ignored)
   "Adds descriptive text to subroutines ADVAN/TRANS combinations."
@@ -164,8 +161,8 @@
 			    (skip-chars-backward " \t\n")
 			    (goto-char (point-at-bol))))
 			(when (looking-back (format "\\([ \t]*;%s.*%s;[ \t]*\n?\\)+[ \t\n]*"
-                                             (regexp-quote esn-sub-begin)
-                                             (regexp-quote esn-sub-end)) nil t)
+                                                    (regexp-quote esn-sub-begin)
+                                                    (regexp-quote esn-sub-end)) nil t)
 			  (delete-region (match-beginning 0) (match-end 0)))
 			(insert desc))
 		    (goto-char (esn-point-at-bor))

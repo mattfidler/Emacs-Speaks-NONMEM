@@ -11,8 +11,8 @@ AST	Aspartate Aminotransferase	(U/L)					1
 BIL	Bilirubin	(mg/dL)					1																				
 BLOCKS						1																					
 BMI	Body Mass Index	(unitless)					1																				
-BSA	Body Surface Area	(m^2)					1																				
 BOV#																	1										
+BSA	Body Surface Area	(m^2)					1																				
 BUN	"Urea nitrogen, blood"	(mg/dL)					1																				
 CALL	Call 		"(0: Normal, 1: Error, 2: Pk, 3: PK & Error, 10: Advan9, 11: Advan9&Error, 12: Advan9 & PK, 13: Advan9 PK & Error)"															1									
 CDEN_						1																					
@@ -31,16 +31,16 @@ CPREDI_	"Conditional Estimation, eta-epsilon interaction Prediction"												
 CRCL	Creatinine Clearance	(mL/min)					1																				
 CRES	Conditional Estimation Residuals																						1	1			
 CRES_						1																					
-CRESI_						1																					
 CRESI	Conditional Estimation eta-epsilon interaction Residuals																						1	1			
+CRESI_						1																					
 CT						1																					
 CTDS	Dose	AMT					1	1																			
 CTLO						1																					
 CTUP						1																					
 CWRES	Conditional Weighted Residuals																						1	1			
 CWRES_						1																					
-CWRESI_						1																					
 CWRESI	Conditional Weighted eta-epilon interation Residuals																						1	1			
+CWRESI_						1																					
 DAT1	Date		DD/MM/YY															1									
 DAT2	Date		YY/MM/DD															1									
 DAT3	Date		YY/DD/MM															1									
@@ -57,27 +57,28 @@ DOSREC						1
 DOSTIM						1																					
 DSE	Dose	AMT					1	1																			
 DV	Dependent Variable																	1						1			
-ECWRES_						1																					
 ECWRES	Monte-Carlo Conditional Weighted Residuals																						1	1			
-EPRED_						1																					
+ECWRES_						1																					
 EPRED	Monte-Carlo Prediction																						1	1			
+EPRED_						1																					
 EPS						1																					
 EPS(#)	Eps variable								1																		
-ERES_						1																					
 ERES	Monte-Carlo Residuals																						1	1			
+ERES_						1																					
 ETA						1																1					
 ETA#	Eta varaibility									1																	
 ETA(#)	Eta varaibility									1																	
 ETHN	Ethnicity		RACE		1																						
 EVID	Event Identification		"(0: Obs., 1: dose, 2: other, 3: reset, 4: reset & dose)"															1						1			
 EVTREC						1																					
-EWRES_						1																					
 EWRES	Monte-Carlo Weighted Residuals																						1	1			
+EWRES_						1																					
 F_FLAG						1																					
 FAST	Food		"(0: Fed, 1: Fasted)"		1						1																
 FED	Food		"(0: Fasted, 1: Fed)"		1						1																
 FIN	Finish Record																	1									
 FORM	Formulation											1															
+FREQ	Frequncy of Dosing				1																						
 FRML	Formulation											1															
 FST	Food		"(0: Fed, 1: Fasted)"		1						1																
 GEND	Gender		SEX		1								1														
@@ -145,21 +146,21 @@ NINDR						1
 NIREC						1																					
 NMNL	Nominal Time																				1						
 NMTM	Nominal Time																				1						
-NPDE_						1																					
 NPDE	Normalized Probibility Distribution Error																						1	1			
+NPDE_						1																					
 NPRED	Non-conditional Estimation Prediction																						1	1			
 NPRED_						1																					
 NPROB						1																					
 NREP						1																					
-NRES_						1																					
 NRES	Non-conditional Estimation Residuals																						1	1			
+NRES_						1																					
 NTHES_						1																					
 NTME	Nominal Time																				1						
 NUM	Observation Number															1											
 NVNT						1																					
 NWIND						1																					
-NWRES_						1																					
 NWRES	Non-conditional Weighted Residuals																						1	1			
+NWRES_						1																					
 OBJECT						1																					
 OBS	Observation Number															1											
 OCC	Occasion													1										1			
@@ -175,16 +176,16 @@ PR_Y						1
 PRDFL						1																					
 PRED	Predicted																						1	1			
 PRED_						1																					
-PREDI_						1																					
 PREDI	"Non-conditional estimation, eta-epislon interaction prediction"																					1	1	1			
+PREDI_						1																					
 RACE	Race		RACE		1																						
 RATE	Rate																	1									
 RAW_	Raw data average?		"(0: Not Template, 1: Template)"															1									
 REMP	Renal Impairment						1																				
 RES	Residuals																						1	1			
 RES_						1																					
-RESI_						1																					
 RESI	"Non-conditional estimation, eta-epislon interaction residuals"																						1	1			
+RESI_						1																					
 RINP	Renal Impairment				1																						
 RPT_	Repeat or Repititon Base		"(0: Not Repition Base, 1,2,3,4,5)"															1									
 RPTI						1																					
@@ -228,8 +229,8 @@ VST	Visit													1										1
 WGHT	Weight	(kg)					1																				1
 WRES	Weighted Residuals																						1	1			
 WRES_						1																					
-WRESI_						1																					
 WRESI	"Non-conditional estimation, eta-epislon interaction weighted residuals"																						1	1			
+WRESI_						1																					
 WT	Weight	(kg)					1																				1
 WTKG	Weight	(kg)					1																				1
 WTLB	Weight	(lb)					1																				1

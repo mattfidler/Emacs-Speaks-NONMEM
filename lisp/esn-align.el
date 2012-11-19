@@ -182,8 +182,7 @@
   "* Take out the TV in TVCL type parameters for variable labels"
   :type 'boolean
   :group 'esn-spacing-and-alignment
-  :group 'esn-$theta-options
-  )
+  :group 'esn-$theta-options)
 
 (defcustom esn-display-variable-name-in-labels nil
   "* Display variable name in THETA/OMEGA/SIGMA labels"
@@ -191,43 +190,38 @@
   :group 'esn-spacing-and-alignment
   :group 'esn-$theta-options
   :group 'esn-$omega-options
-  :group 'esn-$sigma-options
-  )
+  :group 'esn-$sigma-options)
 
 
 (defcustom esn-add-eta-number-to-labels nil
   "* Determines if ETA numbers are added to labels"
   :type 'boolean
   :group 'esn-spacing-and-alignment
-  :group 'esn-$omega-options
-  )
+  :group 'esn-$omega-options)
 
 (defcustom esn-align-matrices 't
   "* Defines if alignment for matrices is implemented."
   :type 'boolean
   :group 'esn-spacing-and-alignment
   :group 'esn-$sigma-options
-  :group 'esn-$omega-options
-  )
+  :group 'esn-$omega-options)
+
 (defcustom esn-align-at-equals 't
   "* Defines if align at Equals is implemented."
   :type 'boolean
   :group 'esn-mode
-  :group 'esn-spacing-and-alignment
-  )
+  :group 'esn-spacing-and-alignment)
 
 (defcustom esn-align-add-comma 't
   "* Add a `,' to separate THETA estimates.  Fixes a PsN 2.2.5 bug."
   :type 'boolen
   :group 'esn-spacing-and-alignment
-  :group 'esn-$theta-options
-  )
+  :group 'esn-$theta-options)
 
 
 (defun esn-align-input-bind-get-bind (&optional destructive)
   "* Gets BIND from the narrowed region and returns a list"
-  (let (
-        (bin (esn-rec "BIN" 't nil destructive))
+  (let ((bin (esn-rec "BIN" 't nil destructive))
         start
         (ret '()))
     (with-temp-buffer
@@ -239,8 +233,7 @@
 
 (defun esn-align-input-bind-get-input (&optional destructive)
   "* Gets input from the narrowed region and returns a list"
-  (let (
-        (inp (esn-rec "INP" 't nil destructive))
+  (let ((inp (esn-rec "INP" 't nil destructive))
         (tmp "")
         (tmp2 "")
         (ret '()))
@@ -261,15 +254,13 @@
 
 (defun esn-align-input-bind-space (inp-q bind-q inp-b &optional bind-current)
   "* Make the spacing the same between $INPUT and $BIND items"
-  (let (
-        (len1 (length (symbol-value inp-q)))
+  (let ((len1 (length (symbol-value inp-q)))
         (len2 (length (symbol-value bind-q)))
         (i 0)
         (lst1 '())
         (lst2 '())
         (overs '())
-        pt
-        )
+        pt)
     (save-restriction
       (when bind-current
         (esn-narrow-rec)
@@ -280,8 +271,7 @@
       (setq lst1 
             (mapcar
              (lambda(x)
-               (let (
-                     (y (nth i (if (symbol-value inp-b) 
+               (let ((y (nth i (if (symbol-value inp-b) 
                                    (symbol-value inp-q) 
                                  (symbol-value bind-q))))
                      yl
@@ -289,8 +279,7 @@
                      (zl (length x))
                      bin
                      inp
-                     spaces
-                     )
+                     spaces)
                  (setq yl (length y))
                  (when bind-current
                    (if inp-b
@@ -349,8 +338,7 @@
   "* Returns an output list of $INPUT records to interleave with bind.  
 If second-space is true, later records are just indented with spaces.
 If is-bind is true, produces $BIND records"
-  (let (
-        (rec (if is-bind "$BIND " "$INPUT"))
+  (let ((rec (if is-bind "$BIND " "$INPUT"))
         (ret-lst '())
         (cur-line "")
         (lst prior-lst)
@@ -359,8 +347,7 @@ If is-bind is true, produces $BIND records"
         (inp-replace (eval-when-compile (concat "$D " (make-string 1 616)))) ; i with stroke
         p0
         pm
-        ps
-        )
+        ps)
     (save-restriction
       (save-excursion
         (widen)
@@ -403,8 +390,7 @@ If is-bind is true, produces $BIND records"
                      (setq cur-line tmp)))
                   (when lst
                     (search-forward x nil 't))))
-              input
-              )
+              input)
         (push cur-line ret-lst)
         (setq ret-lst (reverse ret-lst))
         (when lst
@@ -422,12 +408,10 @@ If is-bind is true, produces $BIND records"
         (symbol-value 'ret-lst)))))
 (defun esn-align-input-bind-interleave (input bind &optional input-bigger)
   "* Puts input and bind into one interleaved list"
-  (let (
-        (ret '())
+  (let ((ret '())
         (i 0)
         (space (make-string 6 ? ))
-        pt
-        )
+        pt)
     (mapc (lambda(x)
             (let (
                   (inp (if input-bigger (nth i input) x))
@@ -437,14 +421,14 @@ If is-bind is true, produces $BIND records"
               (setq ret (push bin ret))))
           (if input-bigger 
               bind
-            input
-            ))
+            input))
     (while (< i (if input-bigger (length input) (length bind)))
       ;; Remove $BIND or $INPUT record information...
       (setq ret (push (concat space (substring (nth i (if input-bigger input bind)) 6)) ret))
       (setq i (+ i 1)))
     (setq ret (reverse ret))
     (symbol-value 'ret)))
+
 (defun esn-align-input-bind-finish-wrap ()
   "* Finishes wrapping of the record"
   (interactive)
@@ -460,26 +444,11 @@ If is-bind is true, produces $BIND records"
   (unless esn-started-align-input-bind
     (setq esn-started-align-input-bind 't)
                                         ;    (condition-case nil
-    (let (
-          p1
-          p2
-          p3
-          p4
-          inp-pre
-          bin-pre
-          inp-post
-          bin-post
-          current
-          input-bigger
-          over-lst
-          pre-txt
-          (i 0)
-          (rec (esn-get-current-rec))
-          (debug-on-error 't)
-          (bin-replace (eval-when-compile (concat "$D "(make-string 1 595)))) ; beta with hook
-          (inp-replace (eval-when-compile (concat "$D " (make-string 1 616)))) ; i with stroke
-          only-one
-          )
+    (let (p1 p2 p3 p4 inp-pre bin-pre inp-post bin-post current input-bigger
+             over-lst pre-txt (i 0) (rec (esn-get-current-rec))
+             (bin-replace (eval-when-compile (concat "$D "(make-string 1 595)))) ; beta with hook
+             (inp-replace (eval-when-compile (concat "$D " (make-string 1 616)))) ; i with stroke
+             only-one)
       (save-restriction
         (save-excursion
           (esn-narrow-to-current-problem)
@@ -612,8 +581,7 @@ If is-bind is true, produces $BIND records"
                              (concat "$" (esn-get-current-record))))
           (save-excursion
             (let
-                ( 
-                 (pm (point-min)) 
+                ((pm (point-min)) 
                  (buf-mod (buffer-modified-p)))
               (esn-narrow-rec)
               (unless (= pm (point-min))
@@ -818,8 +786,7 @@ If is-bind is true, produces $BIND records"
               (re-search-backward "\\<\\$" nil t)
               (end-of-line)
               (esn-narrow-rec))
-            (let (
-                  (align-to-tab-stop nil)
+            (let ((align-to-tab-stop nil)
                   (case-fold-search 't)
                   (add-it nil)
                   (pmx (point-max))
@@ -989,9 +956,7 @@ If is-bind is true, produces $BIND records"
       (replace-match (format "%s" val))))))
 (defun esn-est-tmp-rep (n what var-types var fpe same)
   "* Subroutine that changes numbering"
-  (let (
-        tmp
-        )
+  (let (tmp)
     (when (and (esn-use-pdx-p) esn-mode-use-omega-sigma-var-type-labels
                (or (string= what "OME")
                    (string= what "SIG")))
@@ -1200,11 +1165,6 @@ If is-bind is true, produces $BIND records"
                                             (progn
                                               (setq j (+ j 1))
                                               (esn-est-tmp-rep j what var-types var fpe same))
-                                        ;                   (unless (looking-at "[ \t]*$")
-                                        ;                     (unless (looking-at ".*;")
-                                        ;                       (insert "\n")
-                                        ;                       )
-                                        ;                     )
                                           (setq j (+ j 1)))))))
                               (setq lblk 0)
                               (while (re-search-forward est nil t)
@@ -1274,6 +1234,8 @@ If is-bind is true, produces $BIND records"
   "Alignment & Wrap function for $TABLE, $BIND and $INPUT"
   (save-excursion
     (save-restriction
+      (re-search-backward (eval-when-compile (esn-reg-record-exp '("BIN" "INP" "TAB"))) nil t)
+      (goto-char (match-end 0))
       (when (esn-narrow-rec)
         (let (lst rec num fill last-point i
                   (align-to-tab-stop nil))
@@ -1338,7 +1300,7 @@ If is-bind is true, produces $BIND records"
 (defvar esn-align-tab-timer nil)
 
 (defun esn-align-tab-hook ()
-  "Hook for PK alignment function."
+  "Hook for Table alignment function."
   (remove-hook 'esn-exit-record-hook 'esn-align-tab-hook 't)
   (when esn-align-tab-timer
     (cancel-timer esn-align-tab-timer))

@@ -1026,125 +1026,124 @@
                    (or (not yap) (and yap (= 0 (length yap)))))))
     (unless esn-skip-wrap
       (when (eq major-mode 'esn-mode)
-        ;; Wrapping when:
-        ;; (1) Current column is greater than fill column
-        ;; (2) End of line is greater than fill column
-        ;; (3) This column is smaller than next column, and not the beginning of a new record.
-        (let (end-column-1 end-column-2)
-          (when (or
-                 (> (current-column) fill-column)
-                 (> (save-excursion (end-of-line) (setq end-column-1 (current-column)) (symbol-value 'end-column-1))
-                    fill-column)
-                 (< end-column-1 (save-excursion (forward-line 1) (beginning-of-line)
-                                                 (if (looking-at "[ \t]$") (symbol-value 'end-column-1)
-                                                   (end-of-line) (setq end-column-2 (current-column)) (symbol-value 'end-column-2)))))
-            (let (
-                  (case-fold-search 't)
-                  (rec (or rec (esn-get-current-record)))
-                  (comment nil)
-                  (updated nil)
-                  ;; comment wrapping
-                  (tmp nil)
-                  (semi nil)
-                  (point1 (point))
-                  (point2 nil)
-                  (spaced nil)
-                  (ext (regexp-opt (append
-                                    (mapcar (lambda (what)
-                                              (substring what 1 (length what))
-                                              ) esn-default-extension)
-                                    (list
-                                     (substring esn-table-extension 1 (length esn-table-extension))
-                                     (substring esn-msfo-est 1 (length esn-msfo-est))
-                                     (substring esn-msfo-non 1 (length esn-msfo-non)))))))
+        (if (or (string= (esn-current-rec) "TAB")
+                (string= (esn-current-rec) "INP")
+                (string= (esn-current-rec) "BIN"))
+            (progn
+              (save-restriction
+                (esn-narrow-rec)
+                (message "%s" (buffer-string)))
+              (esn-align-tab-hook))
+          
+          ;; Wrapping when:
+          ;; (1) Current column is greater than fill column
+          ;; (2) End of line is greater than fill column
+          ;; (3) This column is smaller than next column, and not the beginning of a new record.
+          (let (end-column-1 end-column-2)
+            (when (or
+                   (> (current-column) fill-column)
+                   (> (save-excursion (end-of-line) (setq end-column-1 (current-column)) (symbol-value 'end-column-1))
+                      fill-column)
+                   (< end-column-1 (save-excursion (forward-line 1) (beginning-of-line)
+                                                   (if (looking-at "[ \t]$") (symbol-value 'end-column-1)
+                                                     (end-of-line) (setq end-column-2 (current-column)) (symbol-value 'end-column-2)))))
+              (let (
+                    (case-fold-search 't)
+                    (rec (or rec (esn-get-current-record)))
+                    (comment nil)
+                    (updated nil)
+                    ;; comment wrapping
+                    (tmp nil)
+                    (semi nil)
+                    (point1 (point))
+                    (point2 nil)
+                    (spaced nil)
+                    (ext (regexp-opt (append
+                                      (mapcar (lambda (what)
+                                                (substring what 1 (length what))
+                                                ) esn-default-extension)
+                                      (list
+                                       (substring esn-table-extension 1 (length esn-table-extension))
+                                       (substring esn-msfo-est 1 (length esn-msfo-est))
+                                       (substring esn-msfo-non 1 (length esn-msfo-non)))))))
                                         ;    (message "%s" rec)
-              (setq point1 nil)
-              (setq point2 nil)
-              (if esn-fix-records
-                  (save-excursion
-                    (cond
-                     (
-                      (save-excursion
-                        (beginning-of-line)
-                        (looking-at (eval-when-compile (format "^\\([ \t]+\\)%s" (esn-reg-records 't))))
-                        )
-                      (if (looking-at "[ \t]+")
-                          (replace-match ""))
-                      )
-                     ( (re-search-backward "[ \t]+[$].*?\\=" nil t)
-                       (when (looking-at "[ \t]+")
-                         (replace-match "\n"))))))
-              ;; Space the following before wrap.
-              (when (string= "INP" rec)
-                (setq spaced (esn-space-input rec))
-                )
-              (when (string= "SUB" rec)
-                (setq spaced (or spaced (esn-desc-subroutines rec)))
-                )
-              (save-excursion
-                (if (re-search-backward
-                     (format "\\(;+\\(?:%s\\|!\\)? *\\)?.*\\=" esn-sub-begin) nil t)
-                    (setq comment (match-string 1))))
-              (if char
-                  (insert char))
-              (if (or (and
-                       esn-wrapping-of-records
-                       (or force
-                           (not
-                            (string-match
-                             (concat "^\\(\\|"
-                                     (regexp-opt  esn-records-not-wrapped)
-                                     "\\)$") rec)))
-                       )
-                      (or
-                       (and esn-update-theta (string= rec "THE"))
-                       (and esn-update-omega (string= rec "OME"))
-                       )
-                      )
-                  (progn
-                    (setq updated (esn-fill-record rec))
-                    )
-                )
-              (if (and comment (not updated))
-                  (save-excursion
-                    (beginning-of-line)
-                    (if (not (looking-at "^.*$")) nil
-                      (if (<= (length (match-string 0)) esn-character-limit)
-                          (progn
-                            )
-                        (if (looking-at "^\\([^;\n]*?\\);")
-                            (progn
-                              (setq tmp (make-string (length (match-string 1)) ? ))
-                              )
-                          (setq tmp "")
-                          )
+                (setq point1 nil)
+                (setq point2 nil)
+                (if esn-fix-records
+                    (save-excursion
+                      (cond
+                       (
                         (save-excursion
                           (beginning-of-line)
-                          (setq point1 (point))
+                          (looking-at (eval-when-compile (format "^\\([ \t]+\\)%s" (esn-reg-records 't))))
                           )
-                        (forward-char esn-character-limit)
-                        (if (not (re-search-backward "[/\\\\][^\n ]*\\=" nil t))
-                            (esn-backward-w)
-                          (skip-chars-forward "/\\"))
-                        (skip-chars-backward " \t")
-                        (if (not (looking-at ext)) nil
-                          (skip-chars-backward ".")
+                        (if (looking-at "[ \t]+")
+                            (replace-match ""))
+                        )
+                       ( (re-search-backward "[ \t]+[$].*?\\=" nil t)
+                         (when (looking-at "[ \t]+")
+                           (replace-match "\n"))))))
+                ;; Space the following before wrap.
+                (when (string= "INP" rec)
+                  (setq spaced (esn-space-input rec))
+                  )
+                (when (string= "SUB" rec)
+                  (setq spaced (or spaced (esn-desc-subroutines rec)))
+                  )
+                (save-excursion
+                  (if (re-search-backward
+                       (format "\\(;+\\(?:%s\\|!\\)? *\\)?.*\\=" esn-sub-begin) nil t)
+                      (setq comment (match-string 1))))
+                (if char
+                    (insert char))
+                (if (or (and
+                         esn-wrapping-of-records
+                         (or force
+                             (not
+                              (string-match
+                               (concat "^\\(\\|"
+                                       (regexp-opt  esn-records-not-wrapped)
+                                       "\\)$") rec))))
+                        (or
+                         (and esn-update-theta (string= rec "THE"))
+                         (and esn-update-omega (string= rec "OME"))))
+                    (progn
+                      (setq updated (esn-fill-record rec))))
+                (if (and comment (not updated))
+                    (save-excursion
+                      (beginning-of-line)
+                      (if (not (looking-at "^.*$")) nil
+                        (if (<= (length (match-string 0)) esn-character-limit)
+                            (progn
+                              )
+                          (if (looking-at "^\\([^;\n]*?\\);")
+                              (progn
+                                (setq tmp (make-string (length (match-string 1)) ? ))
+                                )
+                            (setq tmp ""))
+                          (save-excursion
+                            (beginning-of-line)
+                            (setq point1 (point)))
+                          (forward-char esn-character-limit)
                           (if (not (re-search-backward "[/\\\\][^\n ]*\\=" nil t))
                               (esn-backward-w)
-                            ;;(backward-word)
-                            (skip-chars-forward "/\\\\")
-                            )
-                          )
-                        (save-excursion
-                          (beginning-of-line)
-                          (setq point2 (point))
-                          )
-                        (if (not (= point1 point2)) nil
-                          (if (looking-at "[ \t]*")
-                              (replace-match ""))
-                          (insert (concat "\n" tmp comment " "))
-                          (if (looking-at "[ \t]*")
-                              (replace-match ""))))))))))))))
+                            (skip-chars-forward "/\\"))
+                          (skip-chars-backward " \t")
+                          (if (not (looking-at ext)) nil
+                            (skip-chars-backward ".")
+                            (if (not (re-search-backward "[/\\\\][^\n ]*\\=" nil t))
+                                (esn-backward-w)
+                              ;;(backward-word)
+                              (skip-chars-forward "/\\\\")))
+                          (save-excursion
+                            (beginning-of-line)
+                            (setq point2 (point)))
+                          (if (not (= point1 point2)) nil
+                            (if (looking-at "[ \t]*")
+                                (replace-match ""))
+                            (insert (concat "\n" tmp comment " "))
+                            (if (looking-at "[ \t]*")
+                                (replace-match "")))))))))))))))
 
 (defun esn-upcase-char-self-insert (&optional pre)
   "Inserts uppercase when appropriate."
