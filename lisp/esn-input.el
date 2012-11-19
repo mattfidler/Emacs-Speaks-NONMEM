@@ -114,25 +114,10 @@
   "* Define =DROP,DV=,TIME= rules"
   (let (
         (comp (split-string header))
-        (known-vars (format "^%s$" (regexp-opt (append
-                                                esn-xpose-cotab
-                                                esn-xpose-catab
-                                                esn-xpose-mutab
-                                                esn-xpose-extra
-                                                esn-xpose-sdtab
-                                                esn-xpose-mytab
-                                                esn-xpose-xptab
-                                                esn-xpose-sim-cotab
-                                                esn-xpose-sim-catab
-                                                esn-xpose-sim-mutab
-                                                esn-xpose-sim-extra
-                                                esn-xpose-sim-sdtab
-                                                esn-xpose-sim-mytab
-                                                esn-xpose-sim-xptab
-                                                esn-mode-dv-vars
-                                                esn-mode-time-vars
-                                                esn-mode-reserved-vars
-                                                ) 't)))
+        (known-vars (esn-subset-regexp :categorical t :continuous t :age t :dose t
+                                       :fed t :formulation t :gender t :group t
+                                       :height t :id t :iov t :ntime t
+                                       :race t :tad t :weight t))
         (dv-vars (format "^%s$" (regexp-opt esn-mode-dv-vars 't)))
         (time-vars (format "^%s$" (regexp-opt esn-mode-time-vars 't)))
         (date-vars (format "^%s$" (regexp-opt esn-mode-date-vars 't)))
@@ -252,10 +237,10 @@
             (header (if esn-w32
                         ;; Use Cygwin paths when needed...
                         (let ((head (executable-find "head")) (f data))
-                            (when (string-match "cygwin" head)
-                              (when (string-match "^\\([A-Z]\\):/" f)
-                                (setq f (replace-match (concat "/cygdrive/" (downcase (match-string 1 data)) "/") t t f))))
-                            (concat head " -n1 " f))
+                          (when (string-match "cygwin" head)
+                            (when (string-match "^\\([A-Z]\\):/" f)
+                              (setq f (replace-match (concat "/cygdrive/" (downcase (match-string 1 data)) "/") t t f))))
+                          (concat head " -n1 " f))
                       (concat "head -n1 " data)))
             (p1 (point))
             (p2 (point)))
