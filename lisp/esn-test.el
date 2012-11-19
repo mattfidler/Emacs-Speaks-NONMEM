@@ -389,11 +389,6 @@ Group3PeriodLabel        <- c()
 ########################################
 "))
     ))
-;;;###autoload
-(defun esn-test ()
-  "Test Specific Issues that have come up."
-  (interactive)
-  (message "Issue #1: %s" (esn-test-1)))
 
 (defvar esn-test-control-3
   "$PROBLEM  THEOPHYLLINE   SINGLE SUBJECT DATA
@@ -487,6 +482,19 @@ $SCAT           (RES WRES) VS TIME BY ID
 ")
 
 
+;;;###autoload
+(defun esn-test ()
+  "Test Specific Issues that have come up."
+  (interactive)
+  (let (ret cur)
+    (setq cur (esn-test-1))
+    (message "Issue #1: %s" cur)
+    (setq ret cur)
+    (setq cur (esn-test-11))
+    (message "Issue #11: %s" cur)
+    (setq ret (and ret cur))
+    (message "Overall Test: %s" ret)))
+
 
 (defun esn-test-1 ()
   "Tests Issue #1"
@@ -502,7 +510,30 @@ $OMEGA
 ")
       (setq var-names (esn-get-variable-names "OME")))
     (setq ret (equal var-names '("E_V1" "E_V2" "E_V3")))
-    (message "%s = (E_V1 E_V2 E_V3); %s" var-names ret)))
+    (message "%s = (E_V1 E_V2 E_V3); %s" var-names ret)
+    (symbol-value 'ret)))
+
+(defun esn-test-11 ()
+  "Tests Issue #11"
+  (let ((esn-var-names '())
+        var-names ret)
+    (with-temp-buffer
+      (insert "
+$THETA (0, 1) ;C THETA(1) - IC50
+       (0, 1) ;C THETA(2) -  Gamma
+       (0, 1) ;C THETA(3) - Imax
+       (0, 1) ;C THETA(4) - Additive Error
+
+$OMEGA 1.84  ;C ETA(1) - eIC50
+       0.121 ;C ETA(2) - eImax
+")
+      (setq var-names (esn-get-variable-names "THE"))
+      (setq ret (equal var-names '("IC50" "Gamma" "Imax" "Additive")))
+      (message "%s = (IC50 Gamma Imax Additive); %s" var-names ret)
+      (setq var-names (esn-get-variable-names "OME"))
+      (setq ret (and ret (equal var-names '("eIC50" "eImax"))))
+      (message "%s = (eIC50 eImax); %s" var-names ret)
+      (symbol-value 'ret))))
 
 (provide 'esn-test)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

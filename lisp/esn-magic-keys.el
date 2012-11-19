@@ -1030,9 +1030,6 @@
                 (string= (esn-current-rec) "INP")
                 (string= (esn-current-rec) "BIN"))
             (progn
-              (save-restriction
-                (esn-narrow-rec)
-                (message "%s" (buffer-string)))
               (esn-align-tab-hook))
           
           ;; Wrapping when:
