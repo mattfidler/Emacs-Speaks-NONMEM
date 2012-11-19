@@ -201,6 +201,7 @@
 (esn-r 'esn-yas)
 (esn-r 'esn-help)
 (esn-r 'esn-tab-pred)
+(esn-r 'esn-completion)
 
 (require 'org-table-comment nil t)
 
