@@ -446,10 +446,8 @@
     ))
 
 (with-temp-buffer
-  (let (
-        (case-fold-search 't)
-        (i 0)
-        )
+  (let ((case-fold-search 't)
+        (i 0))
     (while (< i (length esn-default-extension))
       (insert (format "(add-to-list 'auto-mode-alist '(\"\\\\%s\\\\'\" . esn-mode))"  (nth i esn-default-extension)))
       (setq i (+ i 1))))

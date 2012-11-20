@@ -660,7 +660,7 @@ statement"
 (defun esn-extended-update-labels-run ()
   "Update labels"
   (when esn-update-wfn-labels-when-editing
-    (let ((esn-var-names esn-saved-var-names))
+    (let ((esn-var-names nil))
       (esn-get-variable-names "THE")
       (esn-get-variable-names "OME")
       (esn-get-variable-names "SIG")
