@@ -124,6 +124,7 @@
 ;;
 ;;; Code:
 (require 'esn-start)
+(require 'esn-80)
 (setq toggle nil)
 ;; Do version control and admin stuff.  Then menu should be FINISHED...
 (require 'esn-options)
