@@ -154,7 +154,7 @@
 (declare-function esn-company-start "esn-company")
 (declare-function esn-cui-start "esn-cui")
 (declare-function esn-ac-start "esn-ac")
-
+(require 'cl)
 
 (defvar esn-mode-ver 0.13)
 (setq esn-last-time (float-time))
@@ -275,6 +275,7 @@
     (esn-r 'esn-company)
     (esn-company-start))
    (t
+    (esn-r 'esn-comint)
     (esn-comint-complete)))
   ;;
   ;; Column Wrapping length

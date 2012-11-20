@@ -49,18 +49,19 @@
 ;;; Code:
 
 (declare-function esn-complete-candidates "esn-company")
-
 (require 'esn-start)
 (require 'comint)
 (require 'esn-ac-sources)
 (require 'esn-completion)
+(require 'esn-company)
 (defun esn-comint-complete ()
   (interactive)
   (let ((prefix (esn-complete-prefix))
         lst)
     (setq lst (esn-complete-candidates prefix))
-    (when (eq 'sole 
-              (comint-dynamic-simple-complete (esn-complete-prefix) lst))
+    (when (and lst
+               (eq 'sole 
+                   (comint-dynamic-simple-complete (esn-complete-prefix) lst)))
       (when (re-search-backward "[ \t]\\=" nil t)
         (replace-match ""))
       (esn-after-completion (nth 0 (all-completions prefix lst))))))

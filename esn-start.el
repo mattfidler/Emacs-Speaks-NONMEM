@@ -10,7 +10,7 @@
 ;;           By: Matthew L. Fidler
 ;;     Update #: 36
 ;; URL:
-;; Keywords:
+;; Keywords:'
 ;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,12 +108,10 @@
           (string :tag "Extension for NONMEM model"))
   :group 'esn-mode)
 
-(defcustom esn-nonmem-output-extension '(
-                                         ".lst"
+(defcustom esn-nonmem-output-extension '(".lst"
                                          ".rpt"
                                          ".out"
-                                         ".res"
-                                         )
+                                         ".res")
   "* Default extension for NONMEM reports."
   :type '(repeat
           (string :tag "Extension for NONMEM report"))

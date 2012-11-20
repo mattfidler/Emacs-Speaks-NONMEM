@@ -129,22 +129,13 @@ step (used for hybrid)."
                           nil t)
                     (unless (string= (downcase tmp) (downcase var))
                       (replace-match tmp 't)
-                      (setq tmp "")
-                      )
-                    )
-                  )
-                )
-              (setq i (+ i 1))
-              )
+                      (setq tmp "")))))
+              (setq i (+ i 1)))
             (goto-char (point-max))
-            (widen)
-            )
+            (widen))
           (goto-char (point-max))
-          (widen)
-          )
-        )
-      )
-    ))
+          (widen))))))
+
 (defun esn-undo-mu-x (reg var num)
   ;; Make sure that the replacements are only in appropriate records AND not in
   ;; a comment.
@@ -179,38 +170,22 @@ step (used for hybrid)."
                             t))
                           (insert var)
                         (forward-char (- (length (match-string 0)) 1))
-                        (delete-char 1)
-                        )
-                      )
-                    )
-                  )
-                )
+                        (delete-char 1))))))
               (goto-char (point-max))
-              (widen)
-              )
-            )
-          )
-        )
-      )
-    )
-  )
+              (widen))))))))
+
 (defun esn-undo-region-tos (lst what dups v)
   (save-restriction
     (save-excursion
-      (let (
-            (case-fold-search 't)
+      (let ((case-fold-search 't)
             (reg esn-current-abbrev-records-regexp)
             (used '())
             (name "")
             (is-dup nil)
             (var (or v ""))
             (num nil)
-            tmp
-            )
+            tmp)
         (goto-char (point-min))
-                                        ;    (when (string= what "ETA")
-                                        ;      (esn-undo-mu-x reg tmp num)
-                                        ;      )
         (while (re-search-forward reg nil t)
           (esn-narrow-rec)
           (goto-char (point-min))
@@ -230,28 +205,12 @@ step (used for hybrid)."
                     (unless (or (esn-in-comment-p)
                                 (save-excursion
                                   (backward-char (length (match-string 0)))
-                                  (esn-in-comment-p)
-                                  )
-                                )
+                                  (esn-in-comment-p)))
                       (unless (string= (downcase tmp) (downcase var))
                         (progn
-                          (replace-match tmp 't)
-                          )
-                                        ;                   (hlt-highlight-region (- (point) (length tmp)) (point)
-                                        ;                                         'font-lock-keyword-face)
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
+                          (replace-match tmp 't)))))))))
           (goto-char (point-max))
-          (widen)
-          )
-        )
-      )
-    ))
+          (widen))))))
 
 (defun esn-fix-numbering (&optional the ome sig hi var)
   "Change symbols to appropriate values.
@@ -259,57 +218,44 @@ step (used for hybrid)."
 Only change var if var is non-nil
 "
   (interactive)
-  (let (
-        (tvar (or the (esn-get-variable-names "THE")))
+  (let ((tvar (or the (esn-get-variable-names "THE")))
         (avar (or ome (esn-get-variable-names "OME")))
         (svar (or sig (esn-get-variable-names "SIG")))
         (dups '())
         (there "")
         (ob (current-buffer))
         (case-fold-search 't)
-        (ndup "")
-        )
+        (ndup ""))
     (mapc (lambda(x)
             (if (string-match (format "\\<%s\\>" x) there)
                 (add-to-list 'dups (downcase x))
-              (setq there (concat there " " x))
-              )
-            )
+              (setq there (concat there " " x))))
           (append tvar avar svar))
     ;; Get Ndups
     (mapc (lambda(x)
-            (let (
-                  (is-new 't)
-                  )
+            (let ((is-new 't))
               (mapc (lambda(y)
                       (when (string= (downcase y) (downcase x))
-                        (setq is-new nil)
-                        )
-                      )
+                        (setq is-new nil)))
                     esn-wfn-dups)
               (when is-new
-                (setq ndup x)))
-            )
+                (setq ndup x))))
           dups)
     (setq esn-wfn-dups dups)
-    (esn-fix-numbering-tos tvar avar svar dups hi var ndup)
-    )
-  )
+    (esn-fix-numbering-tos tvar avar svar dups hi var ndup)))
+
 (defun esn-fix-numbering-tos (tvar avar svar dups &optional hi var ndup)
   "This is a function that changes known symbols to their appropriate values."
   (esn-fix-numbering-region-tos tvar "THETA" dups hi var ndup)
   (esn-fix-numbering-region-tos avar "ETA" dups hi var ndup)
   (esn-fix-numbering-region-tos svar "EPS" dups hi var ndup)
   (when esn-wfn-extended-zero
-    (esn-fix-numbering-zero avar dups hi var ndup)
-    )
-  )
+    (esn-fix-numbering-zero avar dups hi var ndup)))
+
 (defun esn-fix-numbering-mu-x (reg var num)
   (interactive)
   (when esn-wfn-mu-var
-    (let (
-          (nm-ver (esn-update-get-version))
-          )
+    (let ((nm-ver (esn-update-get-version)))
       (when (string= "-1" nm-ver)
         (setq nm-ver esn-assumed-version))
       (unless (>= (string-to-number nm-ver) 7)
@@ -325,9 +271,7 @@ Only change var if var is non-nil
               (unless (esn-in-comment-p)
                 (backward-char (length (match-string 1)))
                 (delete-char (length (match-string 1)))
-                (insert (number-to-string num))
-                )
-              )
+                (insert (number-to-string num))))
             (goto-char (point-min))
             (while (re-search-forward
                     (format "\\<mu\\([ \t]*\\+[ \t]*\\(?:%s\\|ETA(%s)\\)\\)" var num)
@@ -335,36 +279,26 @@ Only change var if var is non-nil
               (unless (esn-in-comment-p)
                 (backward-char (length (match-string 1)))
                 (insert (format "_%s" num))
-                (forward-char (length (match-string 1)))
-                )
-              )
+                (forward-char (length (match-string 1)))))
             (goto-char (point-min))
             (while (re-search-forward
                     (format "\\(?:%s\\|ETA(%s)\\)[ \t]*\\+[ \t]*MU\\>" var num)
                     nil
                     t)
               (unless (esn-in-comment-p)
-                (insert (format "_%s" num))
-                )
-              )
-            (widen)
-            )
-          )
-        )
-      )
-    ))
+                (insert (format "_%s" num))))
+            (widen)))))))
+
 (defun esn-fix-numbering-zero (lst dups &optional hi var ndup)
   "This fixes the numbering for the ZERO= in the estimatino step (used for hybrid)."
   (save-excursion
-    (let (
-          (case-fold-search 't)         ;
+    (let ((case-fold-search 't)         ;
           (reg "\n\\$\\(EST\\)[A-Z]*[ \n\t]")
           (zero "ZERO? *= *\\(([^)]*)\\|[0-9]+\\)")
           (rep "")
           (i  0)
           (is-dup nil)
-          tmp
-          )
+          tmp)
       (goto-char (point-min))
       (while (re-search-forward reg nil t)
         (setq i 0)
@@ -391,28 +325,16 @@ Only change var if var is non-nil
                       ;; Var is defined only replace that variable.
                       ;; Ignore all others.
                       (when (string= (downcase (match-string 0)) (downcase var))
-                        (replace-match tmp)
-                        )
-                      )
-                    )
+                        (replace-match tmp))))
                                         ;                 (hlt-highlight-region (- (point) (length (match-string 0))) (point)  'font-lock-keyword-face)
-                  (setq tmp "")
-                  )
-                )
-              )
-            (setq i (+ i 1))
-            )
+                  (setq tmp ""))))
+            (setq i (+ i 1)))
           (goto-char (point-max))
-          (widen)
-          )
+          (widen))
         (goto-char (point-max))
-        (widen)
-        )
-      )
-    )
-  )
-(defun esn-wfn-tmp-rep (
-                        ;; unquoted
+        (widen)))))
+
+(defun esn-wfn-tmp-rep (;; unquoted
                         lst
                         hi
                         var
@@ -422,8 +344,7 @@ Only change var if var is non-nil
                         pmax-q
                         prev-q
                         md-q
-                        used-q
-                        )
+                        used-q)
   "Temporary function to replace appropriate items."
   (goto-char (point-min))
   (while (re-search-forward (format "\\<%s\\>" (regexp-quote (nth i lst))) nil t)
@@ -456,9 +377,7 @@ Only change var if var is non-nil
                               (when (string= (downcase what) "eta")
                                 (esn-fix-numbering-mu-x reg
                                                         (nth i lst)
-                                                        (+ i 1))
-                                )
-                              )
+                                                        (+ i 1))))
                           ;; Var defined, only replace it.
                           (when (string= (downcase (match-string 0)) (downcase var))
                             (message "spot 2")
@@ -505,12 +424,12 @@ Only change var if var is non-nil
                             (esn-fix-numbering-mu-x reg
                                                     (nth i lst)
                                                     (+ i 1)))))))))))))))
+
 (defun esn-fix-numbering-region-tos (lst what dups &optional hi var ndup)
   "This fixes the numbering for extended control streams for a specific variable."
   (save-restriction
     (save-excursion
-      (let (
-            (reg esn-current-abbrev-records-regexp)
+      (let ((reg esn-current-abbrev-records-regexp)
             (i 0)
             (used '())
             (case-fold-search 't)
@@ -526,9 +445,7 @@ Only change var if var is non-nil
             (ndupn -1)
             (found-decomp nil)
             (all-dups '())
-            (found-dups '())
-            )
-	
+            (found-dups '()))
         (goto-char (point-min))
         (while (re-search-forward reg nil t)
           (esn-narrow-rec)
@@ -536,14 +453,11 @@ Only change var if var is non-nil
           (while (< i (length lst))
             (setq is-dup nil)
             (mapc (lambda(x)
-                    (setq is-dup (or is-dup (string= (downcase (nth i lst)) x)))
-                    ) dups)
+                    (setq is-dup (or is-dup (string= (downcase (nth i lst)) x)))) dups)
             (unless is-dup
-              (esn-wfn-tmp-rep lst hi var reg 'pmin 'pmax 'prev 'md 'used)
-              )
+              (esn-wfn-tmp-rep lst hi var reg 'pmin 'pmax 'prev 'md 'used))
             (when (and (not (string= (or ndup "") ""))
-                       (string= (downcase (or ndup "")) (downcase (nth i lst)))
-                       )
+                       (string= (downcase (or ndup "")) (downcase (nth i lst))))
               ;; Now look to see if the THETA/ETA/EPS is present in the file.
               ;; If the variable is NOT present, then assign it to be the
               ;; duplicate that needs to be replaced.
@@ -551,35 +465,25 @@ Only change var if var is non-nil
                 (goto-char (point-min))
                 (setq found-decomp (re-search-forward
                                     (format "\\<%s(%s)"
-                                            what (+ i 1)
-                                            )
-                                    nil t))
-                )
+                                            what (+ i 1))
+                                    nil t)))
               (add-to-list 'all-dups i)
               (when found-decomp
-                (add-to-list 'found-dups i))
-              )
-            (setq i (+ i 1))
-            )
+                (add-to-list 'found-dups i)))
+            (setq i (+ i 1)))
           (goto-char (point-max))
           (widen)
           (mapc (lambda(x)
-                  (let (
-                        (is-new 't)
-                        )
+                  (let ((is-new 't))
                     (mapc (lambda(y)
                             (when (= y x)
-                              (setq is-new nil)
-                              )
-                            )
+                              (setq is-new nil)))
                           found-dups)
                     (when is-new
-                      (setq ndupn x))
-                    ))
+                      (setq ndupn x))))
                 all-dups))
         (when (and (not (string= (or ndup "") ""))
-                   (not (= ndupn -1))
-                   )
+                   (not (= ndupn -1)))
           (setq var nil)
           (setq hi nil)
           (setq i ndupn)
@@ -594,6 +498,8 @@ Only change var if var is non-nil
 
 (defvar esn-var-names '()
   "Defines a list of saved variable names.  Used to speed up before and after commands.")
+(defvar esn-saved-var-names '()
+  "Saved variable names.")
 
 ;;;###autoload
 (defun esn-get-variable-names (&optional what cm cmsame)
@@ -748,182 +654,38 @@ statement"
         (add-to-list `esn-var-names (list what ret))
         (symbol-value 'ret)))))
 
-(defun esn-fix-variable-label (arg &optional killp undo pt)
-  "Before inserting deleting, etc. checks to see if the labels
-  are affected."
-  (interactive "*p\nP")
-  (when (and esn-update-wfn-labels-when-editing
-             esn-wfn-extended)
-    (let ((deactivate-mark nil)
-          (case-fold-search 't)
-          pt1 pt2 )
-      (save-excursion
-        (when pt
-          (goto-char pt))
-                                        ;    (message "%s,%s" this-command undo)
-        (let ((inserting (memq this-command '(self-insert-command
-                                              esn-upcase-char-self-insert
-                                              esn-magic-quote
-                                              esn-magic-$
-                                              esn-magic-semi
-                                              esn-magic-space)))
-              (deleting (memq this-command '(esn-magic-bs-del
-                                             delete-char
-                                             backward-delete-char-untabify
-                                             delete-backward-char)))
-              (in-comment nil)
-              (rec nil)
-              (in-var nil)
-              (p1 nil)
-              (p2 nil)
-              (this-command this-command))
-          (if (not (or inserting deleting))
-              (if undo
-                  (esn-undo-numbering)
-                ;; Now check for kill-word and the like.
-                (cond
-                 ;; Viper modes
-                 ((and (boundp 'viper-mode) viper-mode)
-                  (message "Viper")
-                  ;; For viper mode, just undo the numbering whenever we
-                  ;; are in a comment.
-                  (setq in-comment (save-excursion
-                                     (re-search-backward "\\;.*\\=" nil t)))
-                  (when in-comment
-                    (setq rec (esn-get-current-record))
-                    (when (or (string= rec "THE")
-                              (string= rec "OME")
-                              (string= rec "SIG"))
-                      (save-excursion
-                        (setq pt1 (point))
-                        (when (re-search-backward ";")
-                          (re-search-forward "\\=;[;C]*" nil t)
-                          (re-search-forward "\\=[ \t]*\\[[PFApfa]\\]" nil t)
-                          (re-search-forward
-                           (eval-when-compile
-                             (format "\\=[ \t]*%s"
-                                     (regexp-opt '(
-                                                   "THETA"
-                                                   "ETA"
-                                                   "OMEGA"
-                                                   "EPS"
-                                                   "ERR"
-                                                   "SIGMA"
-                                                   )
-                                                 't))) nil t)
-                          (if (not (and
-                                    (re-search-forward
-                                     "\\=.*?\\([A-Z][A-Za-z0-9_.]*\\)" nil t)))
-                              (progn
-                                (setq in-var nil)
-                                (esn-undo-numbering))
-                            ;; Update point.
-                            (setq this-command 'esn-upcase-char-self-insert)
-                            (setq p1 (save-excursion
-                                       (goto-char (point))
-                                       (backward-char (length (match-string 1)))
-                                       (point)))
-                            (esn-undo-numbering)))))))
-                 ;; Yank
-                 ((member this-command '(yank-pop
-                                         yank
-                                         cua-paste
-                                         transpose-chars
-                                         transpose-words
-                                         ))
-                  (setq this-command 'esn-upcase-char-self-insert)
-                  (setq p1 (point)))
-                 ;; Kill
-                 ((member this-command '(kill-word))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq p2 (progn (forward-word arg) (point))))
-                 ((member this-command '(backward-kill-word))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq p2 (progn (forward-word (- arg)) (point))))
-                 ;; Delete whole line doesn't change variable labels, just (possibly) rearranges them.
-                 ((member this-command '(kill-line
-                                         backward-delete-char-untabify
-                                         ))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq pt (save-excursion
-                             (end-of-line)
-                             (re-search-backward ";.*\\=" nil t)
-                             (re-search-forward "\\=;[;C]*" nil t)
-                             (re-search-forward "\\=[ \t]*\\[[PFApfa]\\]" nil t)
-                             (re-search-forward
-                              (eval-when-compile
-                                (format "\\=[ \t]*%s"
-                                        (regexp-opt '(
-                                                      "THETA"
-                                                      "ETA"
-                                                      "OMEGA"
-                                                      "EPS"
-                                                      "ERR"
-                                                      "SIGMA"
-                                                      )
-                                                    't))) nil t)
-                             (re-search-forward "\\=.*?[A-Z]" nil t)
-                             (point))))
-                 
-                 ((member this-command '(kill-region
-                                         cua-cut-region))
-                  (setq this-command 'esn-magic-bs-del)
-                  (setq p1 (point))
-                  (setq p2 (mark 't))
-                  (unless p2
-                    (setq p1 nil))))
-                (when (or p1 p2)
-                  ;; (message "%s,%s" p1 p2)
-                  )
-                (when p1
-                  (esn-fix-variable-label nil nil nil p1))
-                (when p2
-                  (esn-fix-variable-label nil nil nil p2))
-                (unless (or p1 p2)
-                  (esn-undo-numbering)))
-            ;; Inserting...
-            (setq in-comment (save-excursion
-                               (re-search-backward "\\;.*\\=" nil t)))
-            (when in-comment
-              (setq rec (esn-get-current-record))
-              (when (or (string= rec "THE")
-                        (string= rec "OME")
-                        (string= rec "SIG"))
-                (save-excursion
-                  (setq pt1 (point))
-                  (when (re-search-backward ";")
-                    (re-search-forward "\\=;[;C]*" nil t)
-                    (re-search-forward "\\=[ \t]*\\[[PFApfa]\\]" nil t)
-                    (re-search-forward
-                     (eval-when-compile
-                       (format "\\=[ \t]*%s"
-                               (regexp-opt '("THETA" "ETA" "OMEGA" "EPS" "ERR" "SIGMA")
-                                           't)))
-                     nil t)
-                    (if (not (re-search-forward
-                              "\\=.*?\\([A-Z][A-Za-z0-9_.]*\\)" nil t))
-                        (setq in-var nil)
-                      (when (and (<= pt1 (point))
-                                        ;                            (>= pt1 (- (point) (length (match-string 1)))
-                                 )
-                        (setq in-var (match-string 1))))))))
-            (if  in-var
-                (progn
-                  (unless killp
-                    (message "Changing Label, move away from label to reapply (%s)"
-                             in-var))
-                  (esn-fix-numbering nil nil nil nil in-var))
-              (esn-undo-numbering))))))))
 
-(esn-tos-post-hook (lambda()
-                     (condition-case error
-                         (progn
-                           (esn-fix-variable-label nil 't))
-                       (error
-                        (message "Fix variable label Post-command error: %s" (error-message-string error))))))
+(defvar esn-extended-update-labels-running nil)
+
+(defun esn-extended-update-labels-run ()
+  "Update labels"
+  (when esn-update-wfn-labels-when-editing
+    (let ((esn-var-names esn-saved-var-names))
+      (esn-get-variable-names "THE")
+      (esn-get-variable-names "OME")
+      (esn-get-variable-names "SIG")
+      (message "%s\n%s" esn-var-names esn-saved-var-names)
+      (unless (equal esn-var-names esn-saved-var-names)
+        (message "Update labels #1")
+        (unless esn-extended-update-labels-running
+          (message "Update labels")
+          (set (make-local-variable 'esn-extended-update-labels-running) t)
+          (setq esn-var-names esn-saved-var-names)
+          (esn-fix-numbering)
+          (setq esn-var-names '())
+          (esn-undo-numbering)
+          (set (make-local-variable 'esn-extended-update-labels-running) nil))))
+    (remove-hook 'esn-exit-record-hook 'esn-extended-update-labels-run 't)))
+
+(defvar esn-extended-update-labels-timer nil)
+
+(defun esn-extended-update-labels ()
+  (when esn-extended-update-labels-timer
+    (cancel-timer esn-extended-update-labels-timer))
+  (add-hook 'esn-exit-record-hook 'esn-extended-update-labels-run 't 't)
+  (setq esn-extended-update-labels-timer (run-with-idle-timer 1 nil 'esn-extended-update-labels-run)))
+
+(esn-tos-post-hook 'esn-extended-update-labels)
 
 (provide 'esn-extended)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -46,7 +46,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (defmacro esn-rec-post-hook (record function &optional append local)

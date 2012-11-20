@@ -534,43 +534,43 @@ interfere with reserved NONMEM variables."
   (let (
         (ret format-string)
         (case-fold-search nil)
-        (fmts     (list
-                   (list "%D" "%m/%d/%y")
-                   (list "%R" "%H:%M")
-                   (list "%T" "%H:%M:%S")
-                   (list "%r" "%I:%M%S %p")
-                   (list "%Y" "[0-9]\\\\\\\\{4\\\\\\\\}")
-                   (list "%y" "[0-9]\\\\\\\\{2\\\\\\\\}")
-                   (list "%C" "[0-9]\\\\\\\\{2\\\\\\\\}")
-                   (list "%G" "[0-9]\\\\\\\\{4\\\\\\\\}")
-                   (list "%g" "[0-9]\\\\\\\\{2\\\\\\\\}")
-                   (list "%m" "[0-9]\\\\\\\\{2\\\\\\\\}")
-                   (list "%b" "[^ \n].*?")
-                   (list "%h" "[^ \n].*?")
-                   (list "%B" "[^ \n].*?")
-                   (list "%d" "[0-3][0-9]")
-                   (list "%e" "[ 1-3]?[0-9]")
-                   (list "%u" "[1-7]")
-                   (list "%w" "[0-6]")
-                   (list "%a" "[^ \n].*?")
-                   (list "%A" "[^ \n].*?")
-                   (list "%U" "[ 0-5]?[0-9]")
-                   (list "%W" "[ 0-5]?[0-9]")
-                   (list "%V" "[ 0-5]?[0-9]")
-                   (list "%j" "[ 0-3]?[ 0-9]?[0-9]")
-                   (list "%H" "[0-2][0-9]")
-                   (list "%I" "[0-1][0-9]")
-                   (list "%k" "[ 1-2][0-9]")
-                   (list "%l" "[ 1][0-9]")
-                   (list "%p" "[^ \n].*?")
-                   (list "%M" "[0-6][0-9]")
-                   (list "%S" "[0-6][0-9]")
-                   (list "%Z" "[^ \n].*?")
-                   (list "%z" "[0-9]+")
-                   (list "%s" "[0-9]+")
-                   (list "%c" "[^ \n].*?")
-                   (list "%x" "[^ \n].*?")
-                   (list "%X" "[^ \n].*?"))))
+        (fmts (list
+               (list "%D" "%m/%d/%y")
+               (list "%R" "%H:%M")
+               (list "%T" "%H:%M:%S")
+               (list "%r" "%I:%M%S %p")
+               (list "%Y" "[0-9]\\\\\\\\{4\\\\\\\\}")
+               (list "%y" "[0-9]\\\\\\\\{2\\\\\\\\}")
+               (list "%C" "[0-9]\\\\\\\\{2\\\\\\\\}")
+               (list "%G" "[0-9]\\\\\\\\{4\\\\\\\\}")
+               (list "%g" "[0-9]\\\\\\\\{2\\\\\\\\}")
+               (list "%m" "[0-9]\\\\\\\\{2\\\\\\\\}")
+               (list "%b" "[^ \n].*?")
+               (list "%h" "[^ \n].*?")
+               (list "%B" "[^ \n].*?")
+               (list "%d" "[0-3][0-9]")
+               (list "%e" "[ 1-3]?[0-9]")
+               (list "%u" "[1-7]")
+               (list "%w" "[0-6]")
+               (list "%a" "[^ \n].*?")
+               (list "%A" "[^ \n].*?")
+               (list "%U" "[ 0-5]?[0-9]")
+               (list "%W" "[ 0-5]?[0-9]")
+               (list "%V" "[ 0-5]?[0-9]")
+               (list "%j" "[ 0-3]?[ 0-9]?[0-9]")
+               (list "%H" "[0-2][0-9]")
+               (list "%I" "[0-1][0-9]")
+               (list "%k" "[ 1-2][0-9]")
+               (list "%l" "[ 1][0-9]")
+               (list "%p" "[^ \n].*?")
+               (list "%M" "[0-6][0-9]")
+               (list "%S" "[0-6][0-9]")
+               (list "%Z" "[^ \n].*?")
+               (list "%z" "[0-9]+")
+               (list "%s" "[0-9]+")
+               (list "%c" "[^ \n].*?")
+               (list "%x" "[^ \n].*?")
+               (list "%X" "[^ \n].*?"))))
     (mapc (lambda(x)
             (let (
                   (var (regexp-quote (nth 0 x)))
@@ -2090,8 +2090,7 @@ If an absolute path is smaller, use it."
           (when esn-update-add-header-if-not-present
             (when (and
                    (esn-update-redo-header-if-cp)
-                   cp
-                   )
+                   cp)
               (esn-remove-header))
             (setq fattr (esn-mode-add-header-to-file))
             (when fattr
@@ -2172,8 +2171,7 @@ If an absolute path is smaller, use it."
     (esn-update-save-variables)
     ;; Add to version control.
     (if (and esn-vc-upon-new-modification-log-line
-             esn-updated-modification-line
-             )
+             esn-updated-modification-line)
         (setq esn-commit-last-version 't)
       (if (esn-is-cp)
           (setq esn-commit-last-version 't)))
@@ -2237,9 +2235,11 @@ If an absolute path is smaller, use it."
         (esn-table-pred-undo-split))
     (if esn-wfn-extended
         (progn
+          (esn-r 'esn-extended)
           (if esn-wfn-prefer-lc
               (esn-downcase-buffer))
-          (esn-undo-numbering)))
+          (esn-undo-numbering)
+          (set (make-local-variable 'esn-saved-var-names) esn-var-names)))
     (esn-hide-header)
     (when esn-use-hyperlinks
       (esn-make-link-overlays))
@@ -2251,8 +2251,7 @@ If an absolute path is smaller, use it."
 
 (defun esn-fix-header-list-colon-name-wrap (txt &optional ln)
   "Fixes header wrapping issues for colon lists.  If ln is a line, then skip looking for the colon and use ln as the line break."
-  (let (
-        (ret txt)
+  (let ((ret txt)
         (tmp "")
         (findColon ln)
         (line (or ln "\n;")))
@@ -2302,8 +2301,7 @@ If an absolute path is smaller, use it."
 
 (defun esn-fix-header-file-name-wrap (txt)
   "Fixes header wrapping issues for file names."
-  (let (
-        (tmp "")
+  (let ((tmp "")
         (tmp2 "")
         (itxt txt)
         (win esn-w32))
@@ -2352,8 +2350,7 @@ If an absolute path is smaller, use it."
   (when (or esn-update-table
             esn-pdx-generate-tables
             esn-plt-generate-tables
-            esn-generate-one-table
-            )
+            esn-generate-one-table)
     (esn-table-split 't))
   (when esn-update-msfo
     (esn-update-msfo))

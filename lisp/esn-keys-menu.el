@@ -1060,10 +1060,8 @@
      ["Bootstrap Summary (CSV)" esn-plt-bootstrap-summary-csv :active (and esn-w32 (fboundp 'w32-browser))]
      ["Bootstrap Graphics (PDF)" esn-plt-graphics-bootstrap-pdf :active (and esn-w32 (fboundp 'w32-browser))]
      ["All Bootstrap Files" esn-plt-bootstrap :active (and esn-w32 (fboundp 'w32-browser))]
-     )
-    )
-  "PLT menu for use in `esn-mode'."
-  )
+     ))
+  "PLT menu for use in `esn-mode'.")
 
 (defvar esn-extended-lst
   '("Extended"

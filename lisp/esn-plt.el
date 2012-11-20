@@ -870,8 +870,7 @@ rep = Script rep place."
               (mapconcat (lambda(x) x) exp-eta ", ")))))
 (defun esn-plt-theta (th num-cmt hl)
   "* Get Theta portion of Graphics script"
-  (let* (
-         (esn-var-names '())
+  (let* ((esn-var-names '())
          (ret "")
          (tn "THETANUMBER        <- c(\"")
          (pnm "PARAMNONMEM       <- c(\"")
@@ -1403,11 +1402,11 @@ Work-abcd-plta/
                               (setq id i)))
                         inputs)
                   (flet ((get-delim (arg)
-                                (let* ((hs (split-string header arg 't))
-                                       (same (= (length hs) (length inputs))))
-                                  (when same
-                                    (setq id-alias (nth id hs)))
-                                  same)))
+                                    (let* ((hs (split-string header arg 't))
+                                           (same (= (length hs) (length inputs))))
+                                      (when same
+                                        (setq id-alias (nth id hs)))
+                                      same)))
                     (cond
                      ((get-delim ",") "Comma")
                      ((get-delim "\t") "Tab")
