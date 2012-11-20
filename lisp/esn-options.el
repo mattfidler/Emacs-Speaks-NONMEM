@@ -2233,7 +2233,7 @@ MU_1 doesn't match ETA(2), so this is highlighted"
   :group 'esn-extended
   :group 'esn-changes-on-save
   )
-(defcustom esn-update-wfn-labels-when-editing 't
+(defcustom esn-update-wfn-labels-when-editing nil 
   "When typing labels during editing THETA SIGMA and OMEGA
 records, keep labels in model blocks up to date?  Requires
 `esn-wfn-extended' to be true."
