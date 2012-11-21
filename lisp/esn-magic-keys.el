@@ -195,15 +195,16 @@
 ;;;###autoload
 (defun esn-before-change-functions-hook (beg end)
   "Called when in EsN mode on change of buffer."
-  (when (or (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
+  (when (and (eq major-mode 'esn-mode)
+             (or (not (or (fboundp 'yas--snippets-at-point)
+                          (fboundp 'yas/snippets-at-point)))
+                 (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+                     (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+                 (and (or yas/minor-mode yas-minor-mode)
+                      (let ((yap (if (fboundp 'yas/snippets-at-point)
+                                     (yas/snippets-at-point 'all-snippets)
+                                   (yas--snippets-at-point 'all-snippets))))
+                        (or (not yap) (and yap (= 0 (length yap))))))))
     (unless esn-run-save-fn
       (condition-case error
           (save-excursion
