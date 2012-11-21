@@ -664,9 +664,7 @@ statement"
       (esn-get-variable-names "THE")
       (esn-get-variable-names "OME")
       (esn-get-variable-names "SIG")
-      (message "%s\n%s" esn-var-names esn-saved-var-names)
       (unless (equal esn-var-names esn-saved-var-names)
-        (message "Update labels #1")
         (unless esn-extended-update-labels-running
           (message "Update labels")
           (set (make-local-variable 'esn-extended-update-labels-running) t)

@@ -125,10 +125,8 @@
   "* Function to be run before executing..."
   (when (esn-use-xmind-p)
     (esn-xmind-start-ctl-map)
-    (esn-xmind-start-map)
-    )
-  (esn-kill-buffer-hook)
-  )
+    (esn-xmind-start-map))
+  (esn-kill-buffer-hook))
 
 (defun esn-error (&rest args)
   "* Applies message, and optionally sends to todochiku"
@@ -136,10 +134,8 @@
       (if (featurep 'todochiku)
           (todochiku-message "EsN-mode"
                              (apply 'format args)
-                             (todochiku-icon 'alert))
-        )
-    (error nil)
-    )
+                             (todochiku-icon 'alert)))
+    (error nil))
   (apply 'error args))
 
 ;;;###autoload
@@ -149,10 +145,8 @@
       (if (featurep 'todochiku)
           (todochiku-message "EsN-mode"
                              (apply 'format args)
-                             (todochiku-icon 'alert))
-        )
-    (error nil)
-    )
+                             (todochiku-icon 'alert)))
+    (error nil))
   (apply 'message args))
 
 ;;;###autoload
@@ -185,8 +179,7 @@
     (insert " ")
     (insert (esn-xmind-default-map-name))
     (insert "\n")
-    (insert "\n================================================================================\n")
-    )
+    (insert "\n================================================================================\n"))
   (start-process-shell-command "*esn-xmind*"
                                "*esn-xmind*"
                                (concat 
@@ -199,8 +192,7 @@
                                       (setq f (concat f ".xmind"))
                                       (symbol-value 'f)
                                       )
-                                  (esn-xmind-default-map-name)
-                                  )))
+                                  (esn-xmind-default-map-name))))
   )
 
 ;;;###autoload
@@ -208,9 +200,7 @@
   "Starts Xmind control file summary."
   (interactive)
   (esn-xmind-start-ctl-map)
-  (let (
-        (xmind esn-xmind-exe)
-        )
+  (let ((xmind esn-xmind-exe))
     (if (not (and xmind (file-exists-p xmind)))
         (progn
           (if esn-w32
@@ -240,9 +230,7 @@
   "Starts Xmind project."
   (interactive)
   (esn-xmind-start-map)
-  (let (
-        (xmind esn-xmind-exe)
-        )
+  (let ((xmind esn-xmind-exe))
     (if (not (and (not (string= "" xmind)) (file-exists-p xmind)))
         (if esn-w32
             (progn
@@ -252,25 +240,17 @@
                   (esn-error "Xmind is not specified, and cannot be loaded.")
                 (customize-save-variable 'esn-xmind-exe esn-xmind-exe)
                 (customize-save-customized)
-                (esn-xmind-cmd esn-xmind-exe)
-                )
-              )
-          (esn-error "Xmind is not specified and cannot be loaded.")
-          )
-      (esn-xmind-cmd xmind)
-      )
-    )
-  )
+                (esn-xmind-cmd esn-xmind-exe)))
+          (esn-error "Xmind is not specified and cannot be loaded."))
+      (esn-xmind-cmd xmind))))
 
 ;; Setup g77 environmental variables on windows, if not already setup.
 (when esn-w32
   (when esn-exec-g77-base
     (unless (string-match "\\([/\\\\][gG]77[/\\\\]bin\\|[Gg]77[Pp]]ortable[/\\\\][Aa]pp[/\\\\]bin\\)" (getenv "path"))
       (setenv "PATH" (concat esn-exec-g77-base "\\bin;" (getenv "PATH")))
-      (setenv "LIBRARY_PATH" (concat esn-exec-g77-base "\\lib;" (getenv "LIBRARY_PATH")))
-      )
-    )
-  )
+      (setenv "LIBRARY_PATH" (concat esn-exec-g77-base "\\lib;" (getenv "LIBRARY_PATH"))))))
+
 ;;;###autoload
 (defun esn-nmfe-cmd (nmfe &rest ARGS)
   "Runs nmfe6 command"
@@ -278,16 +258,12 @@
                    (insert (getenv "path"))
                    (goto-char (point-min))
                    (while (search-forward "/" nil t)
-                     (replace-match "\\" nil t)
-                     )
-                   (buffer-substring (point-min) (point-max))
-                   ))
+                     (replace-match "\\" nil t))
+                   (buffer-substring (point-min) (point-max))))
   (when (buffer-modified-p)
     (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
         (save-buffer)
-      (esn-error "Buffer must be saved to run NONMEM.")
-      )
-    )
+      (esn-error "Buffer must be saved to run NONMEM.")))
   (get-buffer-create "*esn-nm*")
   (switch-to-buffer-other-window "*esn-nm*")
   (insert "================================================================================\n")
@@ -303,8 +279,7 @@
          nmfe
          ARGS)
   (set-process-sentinel (get-buffer-process (current-buffer))
-                        #'esn-finish-with-R)
-  )
+                        #'esn-finish-with-R))
 (defun esn-nmqual-cmd (nmqual &rest ARGS)
   "Runs NMQual command"
   (setenv "PATH" (with-temp-buffer
@@ -318,9 +293,7 @@
   (when (buffer-modified-p)
     (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
         (save-buffer)
-      (esn-error "Buffer must be saved to run NmQual.")
-      )
-    )
+      (esn-error "Buffer must be saved to run NmQual.")))
   (get-buffer-create "*esn-nmqual*")
   (switch-to-buffer-other-window "*esn-nmqual*")
   (insert "================================================================================\n")
@@ -337,21 +310,17 @@
          "perl"
          (append (list nmqual) ARGS))
   (set-process-sentinel (get-buffer-process (current-buffer))
-                        #'esn-finish-with-R)
-  )
+                        #'esn-finish-with-R))
 ;;;###autoload
 (defun esn-nmqual-submit ()
   "Submits run to WFN to run."
   (interactive)
   (esn-before-exec)
-  (let (
-        (run (esn-psn-runname))
+  (let ((run (esn-psn-runname))
         (runlst (concat (esn-runname-noext) esn-nonmem-default-output-extension))
-        (nmqual esn-exec-nmqual)
-        )
-    (esn-nmqual-cmd nmqual run runlst)
-    )
-  )
+        (nmqual esn-exec-nmqual))
+    (esn-nmqual-cmd nmqual run runlst)))
+
 ;;;###autoload
 (defun esn-plt-submit ()
   "Submits run to PLT Tools to run."
@@ -363,21 +332,17 @@
         (progn
           (w32-browser (if (fboundp 'w32-short-file-name)
 			   (w32-short-file-name (esn-plt-auto-now 't))
-			 (esn-plt-auto-now 't)))
-          )
-      (if (not (esn-use-plt-p)
-               )
+			 (esn-plt-auto-now 't))))
+      (if (not (esn-use-plt-p))
           (esn-error "Cannot run PLT tools because:\n\t(1) PLT is not installed\n\t(2) PLT tools is not enabled, or \n\t(3) Control stream is not in a directory containing WORK\n")
-        (let (
-              (plta (esn-plt-auto-now 't))
+        (let ((plta (esn-plt-auto-now 't))
               (dir esn-exec-plt)
               (opath (getenv "PATH"))
               (cmd (if (and esn-exec-plt esn-w32)
                        (if (fboundp 'w32-short-file-name)
 			   (w32-short-file-name esn-exec-plt)
 			 esn-exec-plt)
-                     esn-exec-plt))
-              )
+                     esn-exec-plt)))
           (setq plta (file-truename plta))
           (when esn-w32
             (setq plta (if (fboundp 'w32-short-file-name)
@@ -404,7 +369,7 @@
                                                 (while (string-match "/" x)
                                                   (setq x (replace-match "\\" nil 't))
                                                   )
-
+                                                
                                                 )
                                               )
                                             )
@@ -415,13 +380,10 @@
                 (when (buffer-modified-p)
                   (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
                       (save-buffer)
-                    (esn-error "Buffer must be saved to run NONMEM.")
-                    )
-                  )
+                    (esn-error "Buffer must be saved to run NONMEM.")))
                 (get-buffer-create "*esn-plt-tools*")
                 (when (string-match "[/\\\\][^/\\\\]*$" dir)
-                  (setq dir (replace-match "" 't 't dir))
-                  )
+                  (setq dir (replace-match "" 't 't dir)))
                 (switch-to-buffer-other-window "*esn-plt-tools*")
                 (setq default-directory dir)
                 (insert "================================================================================\n")
@@ -435,14 +397,9 @@
                                              (concat
                                               cmd
                                               " "
-                                              plta)
-                                             )
-                )
-              )
-            )
-          (setenv "PATH" opath)
-          )
-        ))))
+                                              plta)))))
+          (setenv "PATH" opath))))))
+
 ;;;###autoload
 (defun esn-nm-submit ()
   "Submits run to nmfe to run."
@@ -451,61 +408,46 @@
   (if esn-current-run
       (esn-error "Already running %s" esn-current-run)
     (setq esn-current-run (esn-runname-noext))
-    (let (
-          (run (esn-psn-runname))
+    (let ((run (esn-psn-runname))
           (runlst (concat (esn-runname-noext) esn-nonmem-default-output-extension))
-          (nmfe esn-exec-nm)
-          )
+          (nmfe esn-exec-nm))
       (esn-clean-nm-files (esn-runname-noext))
       ;; (when (and (not (file-exists-p (concat (esn-runname-noext) ".R"))) (esn-use-xpose-p) esn-mode-xpose-summary-document)
       ;;   (esn-mode-xpose-gen-summary-now))
-      (esn-nmfe-cmd nmfe run runlst)
-      )
-    )
-  )
+      (esn-nmfe-cmd nmfe run runlst))))
+
 ;;;###autoload
 (defun esn-finish-with-R (process event &optional buffer)
   "* Finishes the submission with R -- requires Ess."
   (interactive)
   ;;  (message "%s, %s" process event)
-  (let (
-        (ess-installed nil)
-        (buf (or buffer (buffer-name (current-buffer))))
-        )
+  (let ((ess-installed nil)
+        (buf (or buffer (buffer-name (current-buffer)))))
     (esn-move-nm-files esn-current-run)
     (if (not  (boundp 'inferior-R-program-name))
         (progn
           (setq esn-current-run nil)
           (insert "================================================================================\n")
           (insert "Done\n")
-          (insert "================================================================================\n")
-
-          )
-      (let (
-            (R (executable-find inferior-R-program-name))
+          (insert "================================================================================\n"))
+      (let ((R (executable-find inferior-R-program-name))
             (rscript (concat esn-current-run ".R"))
             (rout (concat esn-current-run ".Rout"))
-            (tail (executable-find "tail"))
-            )
+            (tail (executable-find "tail")))
         (if (not (and rscript (file-exists-p rscript)))
             (progn
               (setq esn-current-run nil)
               (insert "================================================================================\n")
               (insert "Done\n")
-              (insert "================================================================================\n")
-
-              )
+              (insert "================================================================================\n"))
           (unless R
-            (setq R (ess-find-newest-R))
-            )
+            (setq R (ess-find-newest-R)))
           (if (not R)
               (progn
                 (message "Sorry, R could not be found on your system.")
-                (setq esn-current-run nil)
-                )
+                (setq esn-current-run nil))
             (when (string-match "Rterm" R)
-              (setq R (replace-match "R" nil nil R))
-              )
+              (setq R (replace-match "R" nil nil R)))
             ;; Now execute R.
             (insert "================================================================================\n")
             (insert (format "%s CMD BATCH %s\n" R rscript))
@@ -521,21 +463,14 @@
                      "tail"
                      (list "--follow=name"
                            "--retry"
-                           rout))
-              )
-            )
-          )
-        )
-      )
-    )
-  )
+                           rout)))))))))
+
 ;;;###autoload
 (defun esn-rm-file (file)
   "Removes file if exists"
   (when (and file (file-exists-p file))
-    (delete-file file)
-    )
-  )
+    (delete-file file)))
+
 ;;;###autoload
 (defun esn-clean-nm-files (run)
   "Cleans NONMEM files before submission"
@@ -553,16 +488,13 @@
   )
 (defun esn-move-nm-files (run)
   "Clean Up NONMEM files after submission."
-  (let (
-        (gzip (executable-find "gzip"))
-        )
+  (let ((gzip (executable-find "gzip")))
     (when esn-w32
       (setq gzip (if (fboundp 'w32-short-file-name)
 		     (w32-short-file-name gzip)
 		   gzip)))
     (mapc (lambda(x)
-            (esn-rm-file x)
-            )
+            (esn-rm-file x))
           (list
            "FCON"
            "FCON2"
@@ -574,32 +506,21 @@
            "nonmem.exe"
            "G77COMPILE.BAT"
            (concat run ".tex")
-           (concat run ".ptex")
-           )
-          )
+           (concat run ".ptex")))
     (mapc (lambda(x)
             (when (and x (file-exists-p x))
               (rename-file x (concat run "." x) t)
               (when gzip
-                (insert (esn-command-to-string (concat gzip " -v -9 "  run "." x)))
-                )
-              )
-            )
+                (insert (esn-command-to-string (concat gzip " -v -9 "  run "." x))))))
           (list
            "FMSG"
-           "PRDERR"
-           )
-          )
-    )
-  )
+           "PRDERR"))))
 ;;;###autoload
 (defun esn-R-finished (process event)
   "Let user know that R process is completed."
-  (let (
-        (proc (get-buffer-process (current-buffer)))
+  (let ((proc (get-buffer-process (current-buffer)))
         (run esn-current-run)
-        (gzip (executable-find "gzip"))
-        )
+        (gzip (executable-find "gzip")))
     (when esn-w32
       (setq gzip (if (fboundp 'w32-short-file-name)
 		     (w32-short-file-name gzip)
@@ -609,20 +530,15 @@
     (condition-case nil
         (while (not (string-match "no process" (format "%s" proc)))
           (delete-process proc)
-          (setq proc (get-buffer-process (current-buffer)))
-          )
-      (error nil)
-      )
+          (setq proc (get-buffer-process (current-buffer))))
+      (error nil))
     (when (and gzip (and run (file-exists-p (concat run ".Rout"))))
-      (insert (esn-command-to-string (concat gzip " -v -9 "  run ".Rout")))
-      )
+      (insert (esn-command-to-string (concat gzip " -v -9 "  run ".Rout"))))
     (esn-move-nm-files esn-current-run)
     (insert "================================================================================\n")
     (insert "Done\n")
     (insert "================================================================================\n")
-    (setq esn-current-run nil)
-    )
-  )
+    (setq esn-current-run nil)))
 
 (provide 'esn-exec)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
