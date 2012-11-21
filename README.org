@@ -1,5 +1,147 @@
 #+TITLE: Emacs Speaks NONMEM
 #+AUTHOR: Matthew L. Fidler
+* Introduction
+Emacs Speaks NONMEM(R) is an Emacs extension that makes editing NONMEM
+control streams easier.  Among other things, Emacs Speak NONMEM supports:
+
+ - [[id:451f1a0f-4de1-412a-befa-84bdd4c184d9][Code Highlighting]]
+ - Automatic Capitalization
+ - Count number of input items
+ - Count number of output items & Spit into multiple files if necessary
+ - Display of 80 characters on line, and also automatic alignment and "wrapping"
+   of records
+ - Extended Control Stream Support
+ - Tab Completion
+ - Updating table names on copy or save-as
+ - Ensuring a different purpose for each copy of the file.
+
+Emacs Speaks NONMEM also integrates with the following programs:
+
+ - Census
+ - NMQual (submitting jobs only)
+ - PLT Tools
+ - Perl Speaks NONMEM (psn)
+ - Pirana
+ - Wings for NONMEM
+ - Xpose
+
+* Code Highlighting
+:PROPERTIES:
+:ID: 451f1a0f-4de1-412a-befa-84bdd4c184d9
+:END:
+Code highlighting is a standard feature of many development
+platforms.  Highlighting implements context sensitive highlighting, and extended
+variable highlighting.
+** Version Based Highlighting
+Now Emacs Speaks NONMEM does code highlighting based on the version of NONMEM
+that the author is assumed to be using.  
+** Adaptive Font Lock
+With Emacs Speaks NONMEM, code highlighting may be
+implemented with context sensitivity or context insensitivity.
+
+For most editors highlighting statements like =ADVAN= would work in
+both the =$INPUT= and =$SUBROUTINES= block.  However, with adaptive
+font lock on, this is highlighted only in the appropriate record (=$SUB=)
+
+#+BEGIN_SRC esn
+  $INPUT ADVAN=
+  $SUBROUTINES ADVAN=
+#+END_SRC
+
+
+
+
+
+** Highlighting unknown records
+When enabled, EsN highlights unknown records (based on NONMEM version selected).
+** Highlighting known options
+When enabled, EsN highlights known option values (Based on NONMEM version selected)
+
+** Highlight Input items over 4 characters
+When using NONMEM 6 and below, highlight input items over 4 characters in
+length.  This may be toggled.
+
+** Highlight Input Items Over The Number of Data Items allowed
+When using CSV files, highlight $INPUT data items that are OVER the number of
+data items required.  This may be toggled.
+** Highlight Operators 
+When the option "highlighting operators" is enabled, operators and functions
+such as =DEXP= are highlighted appropriately:
+** Highlight Known/Reserved Variables on Left Handed Side of equations
+This highlights known or reserved variables on the left handed side of equations
+(Like =DADT(#)= in =$DES=)
+** Highlight Known/Reserved Variables on Right Handed Side of Equations
+Highlight known/reserved variables (like =THETA(1)=) on the right-handed side of
+an equation in abbreviated code (like =$PK=).
+** Highlight variables that should not be assigned
+This Highlights variables that should not be assigned (Like =THETA(1)=) in =$PK=.
+** Highlight Forbidden Variables
+Highlight forbidden variables in abbreviated code.  For example, the =DADT(#)= is
+forbidden in the =$PK= block.
+** Highlight Mu_# not corresponding to ETA(#)
+Highlights MU_# variables that do not match the eta(#) when =MU_#+ETA(#)= is specified.
+
+For example, when enabled, the =MU_3= would be highlighted as a "bad" mu in the
+following code:
+#+BEGIN_SRC esn
+  $PK
+    MU_1 = DLOG(THETA(1))
+    TVCL = EXP(MU_1)
+    CL   = DEXP(MU_1+ETA(1))
+    
+    MU_3 = DLOG(THETA(2))   ; Should be MU_2
+    TVV  = EXP(MU_3)
+    V    = DEXP(MU_3+ETA(2))
+    
+    TVQ  = THETA(3)
+    Q    = TVQ*DEXP(ETA(3))
+    MU_5 = DLOG(TVQ) ; Should me MU_3
+    
+#+END_SRC
+
+
+** Highlight Undefined variables in abbreviated code
+When toggled, this will highlight variables that are undefined in the
+control stream.  This option may be annoying to some people since
+until you type the correct variable, the typing is red.  For example:
+
+ #+BEGIN_SRC esn
+       $PK
+         TVCL = THETA(1)
+         CL   = TVC 
+     #+END_SRC
+     would be abbreviated in red while typing, until the full =TVCL= is specified as in:
+
+     #+BEGIN_SRC esn
+       $pk
+         TVCL = THETA(1)
+         CL   = TVCL
+     #+END_SRC
+
+** Highlighting known commons variables
+With this enabled, EsN highlights known common variables like =THETA= when they
+occur in the appropriate abbreviated record.  For example:
+#+BEGIN_SRC esn
+  $INFN 
+        IF (ICALL.EQ.3) THEN 
+        OPEN(50,FILE= 'cwtab1.est') 
+        WRITE(50,*) 'ETAS' 
+        DO WHILE(DATA) 
+        IF (NEWIND.LE.1) WRITE (50,*) ETA 
+        ENDDO 
+        WRITE(50,*) 'THETAS' 
+        WRITE(50,*) THETA 
+        WRITE(50,*) 'OMEGAS' 
+        WRITE(50,*) OMEGA(BLOCK) 
+        WRITE(50,*) 'SIGMAS' 
+        WRITE(50,*) SIGMA(BLOCK)
+        ENDIF 
+#+END_SRC
+With it disabled, =THETA= is not highlighted:
+
+** Highlight Extended Control Stream Variables
+When enabled, EsN highlights extended control stream variables when the
+occur in a control stream
 * Hacking Emacs Speaks NONMEM
 ** Adding customized tables
 You may add customized tables that will be generated by using =esn-deftable=
@@ -7,11 +149,10 @@ You may add customized tables that will be generated by using =esn-deftable=
 - =esn-exit-record-hook= :: Hook to run when exiting a record
 - =(esn-tos-post-hook 'hook)= :: Add 'hook to =$THETA= =$OMEGA= and
      =$SIGMA= blocks.
-a
 
 
-esn-enter-record-hook
-esn-exit-record-hook
+- esn-enter-record-hook
+- esn-exit-record-hook
 
 esn-rec-pre-command-hook
 esn-rec-post-command-hook
