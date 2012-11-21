@@ -293,8 +293,8 @@
   (setq esn-var-names '())
   (setq esn-wfn-dups '())
   (set (make-local-variable 'max-lisp-eval-depth) 10000000)
-  (setq esn-mode 't)
-  )
+  (setq esn-mode 't))
+
 (defun esn-mode--build-new ()
   (when (and esn-build-new-buffer (zerop (buffer-size)))
     (esn-insert-new-buffer-strings)

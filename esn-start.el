@@ -108,7 +108,7 @@
           (string :tag "Extension for NONMEM model"))
   :group 'esn-mode)
 
-(defcustom esn-nonmem-output-extension '(".lst"
+(defcustom esn-nonmem-output-extension '("o.lst"
                                          ".rpt"
                                          ".out"
                                          ".res")
@@ -155,6 +155,7 @@
   "Turns on a check for a recognized Control stream in .txt files and the like."
   (interactive)
   (add-hook 'post-command-hook 'esn-recheck-mode-hook nil t))
+
 (add-hook 'text-mode-hook 'esn-turn-on-check)
 (add-hook 'fundamental-mode-hook 'esn-turn-on-check)
 (require 'esn-autoloads)

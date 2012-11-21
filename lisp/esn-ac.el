@@ -71,8 +71,9 @@
   (interactive)
   (when (fboundp 'auto-complete-mode)
     (esn-completion-off)
-    ;; (make-local-variable 'ac-modes)
-    ;; (add-to-list 'ac-modes 'esn-mode)
+    (when (boundp 'ac-modes)
+      (make-local-variable 'ac-modes)
+      (add-to-list 'ac-modes 'esn-mode))
     ;; Add trigger commands
     (add-to-list 'ac-trigger-commands 'esn-upcase-char-self-insert)
     (add-to-list 'ac-trigger-commands 'esn-magic-$)
