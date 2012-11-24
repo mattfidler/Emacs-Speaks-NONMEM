@@ -830,7 +830,7 @@ For example, if the following =$OMEGA= block is defined,
 $OMEGA 0.5 ; etaE0
 $OMEGA 0.5 ; etaEMAX
 $OMEGA 0.5 ; etaEC50
-</src>
+#+END_SRC 
 
 The following table details the translations that may occur:
 
