@@ -108,7 +108,7 @@
           (string :tag "Extension for NONMEM model"))
   :group 'esn-mode)
 
-(defcustom esn-nonmem-output-extension '("o.lst"
+(defcustom esn-nonmem-output-extension '(".lst"
                                          ".rpt"
                                          ".out"
                                          ".res")
