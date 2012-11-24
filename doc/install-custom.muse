@@ -1,3 +1,0 @@
-#title Custom Installer
-* Custom Installer
-

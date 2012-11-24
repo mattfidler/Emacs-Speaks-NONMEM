@@ -1,7 +1,0 @@
-#title Install Cygwin/MSYS
-* Cygwin
-#cygwin
-* MSYS
-#msys
-
-
