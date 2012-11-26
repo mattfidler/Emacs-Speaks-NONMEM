@@ -495,8 +495,9 @@ $SCAT           (RES WRES) VS TIME BY ID
     (setq cur (esn-test-20))
     (message "Issue #20: %s" cur)
     (setq ret (and ret cur))
+    (setq cur (esn-test-21))
+    (message "Issue #21: %s" cur)
     (message "Overall Test: %s" ret)))
-
 
 (defun esn-test-1 ()
   "Tests Issue #1"
@@ -543,6 +544,13 @@ $OMEGA 1.84  ;C ETA(1) - eIC50
         (run (esn-xpose-run-number "c:/run007.nmctl")))
     (setq ret (string= run "007"))
     (message "%s = 007; %s" run ret)
+    (symbol-value 'ret)))
+
+(defun esn-test-21 ()
+  "Tests Issue #21"
+  (let (ret (re (esn-subset-regexp :sdtab t)))
+    (setq ret (string-match re "IDV"))
+    (message "%s:IDV:%s" re  ret)
     (symbol-value 'ret)))
 
 (provide 'esn-test)

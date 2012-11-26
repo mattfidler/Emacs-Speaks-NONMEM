@@ -54,6 +54,7 @@
 (declare-function esn-fix-numbering "esn-extended")
 (declare-function esn-get-current-rec "esn-narrow")
 (declare-function esn-narrow-rec "esn-narrow")
+
 (eval-when-compile
   (require 'cl)
   (require 'esn-options)

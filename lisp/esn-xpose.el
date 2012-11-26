@@ -106,8 +106,8 @@
 (declare-function esn-narrow-to-current-problem "esn-narrow")
 
 
-					; Implements Xpose Specific features as well as all automatic tables
-                                        ; and file naming conventions.
+;; Implements Xpose Specific features as well as all automatic tables
+;; and file naming conventions.
 
 (require 'esn-vars) 
 (require 'esn-options)
@@ -134,8 +134,7 @@
 
 (defun esn-xpose-run-number (&optional file)
   "* Returns the run number."
-  (let (
-	(case-fold-search 't)
+  (let ((case-fold-search 't)
   	(fn (or file (buffer-file-name)))
 	(run nil)
         (padding (or esn-xpose-choose-file-name-padding esn-xpose-choose-file-name-no-run
@@ -160,8 +159,7 @@
 
 (defun esn-xpose-get-all-variables ()
   "* Gets every variable."
-  (let (
-        (varlst '("DV" "PRED" "WRES" "RES" "MDV"))
+  (let ((varlst '("DV" "PRED" "WRES" "RES" "MDV"))
         (ret "")
         (case-fold-search 't)
         (orphan-tvs '())
@@ -174,8 +172,7 @@
     (mapc
      (lambda(x)
        (setq predpk (concat predpk (esn-rec x 't) "\n")))
-     esn-current-abbrev-records
-     )
+     esn-current-abbrev-records)
     (with-temp-buffer
       (insert predpk)
       (goto-char (point-min))
@@ -297,8 +294,7 @@ If no-reg is non-nil, then return the input line list.
      (esn-runname-noext 't)
      (if (esn-use-pdx-p)
          ".tab"
-       esn-table-extension
-       ))
+       esn-table-extension))
     (append ;List of variables that should be updated.
      esn-xpose-tbl
      (when esn-update-table-continuous-covariates
@@ -625,6 +621,7 @@ If no-reg is non-nil, then return the input line list.
   :group 'esn-xpose-tables
   :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-par-res t
+  :reqiure-other (esn-subset-regexp :sdtab t)
   :add-id t)
 
 

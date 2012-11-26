@@ -101,6 +101,7 @@ ICLR	Iris Color				1
 ID	NONMEM Identification															1		1									
 IDEFA						1																					
 IDEFD						1																					
+IDV	Independent Variable																							1			
 IERC						1																					
 IERE						1																					
 II	Interdose interval	TIME																1									

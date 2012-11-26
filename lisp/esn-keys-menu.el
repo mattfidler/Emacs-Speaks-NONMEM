@@ -40,7 +40,7 @@
 ;; 25-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Oct 25 14:29:00 2010 (-0500) #408 (Matthew L. Fidler)
 ;;    Added toggle variable for bug fix.  Need to track down where this comes from.
-;; 27-Sep-2010    Matthew L. Fidler  
+;; 27-Sep-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Sep 27 12:26:09 2010 (-0500) #391 (Matthew L. Fidler)
 ;;    Made header menu part of the automation menu.
 ;; 20-Sep-2010    Matthew L. Fidler  
