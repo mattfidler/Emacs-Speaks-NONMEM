@@ -449,6 +449,9 @@ $TABLE          ID DOSE WT TIME
 $SCAT           (RES WRES) VS TIME BY ID
 ")
 
+(defvar esn-test-control-4-idv
+  (replace-regexp-in-string "^[$]TAB.*" "" (replace-regexp-in-string "\\<TIME\\>" "IDV" esn-test-control-4)))
+
 (defvar esn-test-control-5
   "$PROB  THEOPHYLLINE   POPULATION DATA
 $INPUT      ID DOSE=AMT TIME CP=DV WT
@@ -486,6 +489,8 @@ $SCAT           (RES WRES) VS TIME BY ID
 (defun esn-test ()
   "Test Specific Issues that have come up."
   (interactive)
+  (with-temp-buffer
+    (esn-mode))
   (let (ret cur)
     (setq cur (esn-test-1))
     (message "Issue #1: %s" cur)
@@ -497,6 +502,8 @@ $SCAT           (RES WRES) VS TIME BY ID
     (setq ret (and ret cur))
     (setq cur (esn-test-21))
     (message "Issue #21: %s" cur)
+    (setq cur (esn-test-21-a))
+    (setq ret (and ret cur))
     (message "Overall Test: %s" ret)))
 
 (defun esn-test-1 ()
@@ -552,6 +559,33 @@ $OMEGA 1.84  ;C ETA(1) - eIC50
     (setq ret (string-match re "IDV"))
     (message "%s:IDV:%s" re  ret)
     (symbol-value 'ret)))
+
+(defun esn-test-21-a ()
+  "Try to reproduce byg #21 -- Part A"
+  (let ((esn-xpose-generate-tables t)
+        (f (format "%srun001.mod" temporary-file-directory))
+        (rec "")
+        ret)
+    
+    (save-excursion
+      (set-buffer (find-file-noselect f))
+      (delete-region (point-min) (point-max)))
+    
+    
+    (save-excursion
+      (set-buffer (find-file-noselect f))
+      (insert esn-test-control-4-idv)
+      (save-buffer)
+      (goto-char (point-min))
+      (if (not (re-search-forward "sdtab001"))
+          (setq rec "Record Not Found")
+        (save-restriction
+          (esn-narrow-rec)
+          (setq rec (buffer-string))))
+      (message "Record:\n%s" rec)
+      (setq ret (string-match "\\<IDV\\>" rec))
+      (message "Found IDV: %s" ret)
+      (symbol-value 'ret))))
 
 (provide 'esn-test)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
