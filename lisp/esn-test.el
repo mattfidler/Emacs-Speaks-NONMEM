@@ -492,6 +492,8 @@ $SCAT           (RES WRES) VS TIME BY ID
     (setq ret cur)
     (setq cur (esn-test-11))
     (message "Issue #11: %s" cur)
+    (setq cur (esn-test-20))
+    (message "Issue #20: %s" cur)
     (setq ret (and ret cur))
     (message "Overall Test: %s" ret)))
 
@@ -534,6 +536,14 @@ $OMEGA 1.84  ;C ETA(1) - eIC50
       (setq ret (and ret (equal var-names '("eIC50" "eImax"))))
       (message "%s = (eIC50 eImax); %s" var-names ret)
       (symbol-value 'ret))))
+
+(defun esn-test-20 ()
+  "Tests Issue #20"
+  (let ((esn-xpose-tables-for-non-xpose-ctl-streams t)
+        (run (esn-xpose-run-number "c:/run007.nmctl")))
+    (setq ret (string= run "007"))
+    (message "%s = 007; %s" run ret)
+    (symbol-value 'ret)))
 
 (provide 'esn-test)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

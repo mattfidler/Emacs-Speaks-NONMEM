@@ -152,7 +152,7 @@
           (if (string-match (format "\\([0-9]+\\)%s$"
 				    (regexp-opt esn-default-extension)) fn)
               (progn
-                (setq run (number-to-string (string-to-number (match-string 1 fn)))))
+                (setq run (match-string 1 fn)))
             (if (esn-use-pdx-p)
                 (setq run "")
               (setq run "0"))))))
@@ -161,9 +161,9 @@
 (defun esn-xpose-get-all-variables ()
   "* Gets every variable."
   (let (
-	(varlst '("DV" "PRED" "WRES" "RES" "MDV"))
-	(ret "")
-	(case-fold-search 't)
+        (varlst '("DV" "PRED" "WRES" "RES" "MDV"))
+        (ret "")
+        (case-fold-search 't)
         (orphan-tvs '())
         (mu-tvs '())
         tmp
@@ -198,7 +198,7 @@
                    (not (save-match-data (looking-at ".*\\<ETA([0-9]+).*$")))
                    (save-match-data (string-match "TV.*$" tmp)))
           (add-to-list 'mu-tvs tmp-mu))
-	(add-to-list 'varlst (upcase (match-string 1))))
+        (add-to-list 'varlst (upcase (match-string 1))))
       (unless (= 0 (length orphan-tvs))
         (setq tmp (downcase (format "^%s$" (regexp-opt orphan-tvs 't))))
         (setq orphan-tvs '())
@@ -393,7 +393,7 @@ If no-reg is non-nil, then return the input line list.
 (defun esn-xpose-fish-run-number ()
   "* Fishes for a version that is not already there..."
   (let ((cver 1)
-	(pwd (esn-get-pwd))
+        (pwd (esn-get-pwd))
         (padding (or esn-xpose-choose-file-name-padding
                      esn-xpose-choose-file-name-no-run-padding
                      esn-pdx-choose-file-name-padding
@@ -440,11 +440,11 @@ If no-reg is non-nil, then return the input line list.
 (defun esn-xpose-save-run-number (num)
   "* A save function that saves the file appropriately to a new run."
   (let ((inhibit-read-only 't)
-	(inhibit-point-motion-hooks 't)
-	(fn (buffer-file-name))
-	(cver (number-to-string num))
-	(pwd (esn-get-pwd))
-	(case-fold-search 't)
+        (inhibit-point-motion-hooks 't)
+        (fn (buffer-file-name))
+        (cver (number-to-string num))
+        (pwd (esn-get-pwd))
+        (case-fold-search 't)
         (nm (number-to-string num))
         (padding (or esn-xpose-choose-file-name-padding
                      esn-xpose-choose-file-name-no-run-padding
@@ -465,26 +465,26 @@ If no-reg is non-nil, then return the input line list.
         (setq cver (concat "0" cver))))
     (if (not (file-exists-p (format "%s%s%s%s" pwd run nm (if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension)))) nil
       (if (not (file-exists-p (format "%s%s%s%s" pwd run nm (if (esn-use-pdx-p) ".res" esn-xpose-default-output))))
-	  (if (and
-	       (not (string-match (regexp-quote (format "%s%s%s%s" run pwd nm (if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension))) fn))
-	       (file-exists-p
-		(format "%s%s%s%s" pwd run
-			nm
-			(if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension))))
-	      (progn
-		(setq cver (esn-xpose-fish-run-number))))
-	(if (file-newer-than-file-p
-	     (format "%s%s%s%s" pwd run nm (if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension))
-	     (format "%s%s%s%s" pwd run nm (if (esn-use-pdx-p) ".res" esn-xpose-default-output))) nil
-	  (if (y-or-n-p (format "Run %s exists, and successfully sumbited. Create new run? " nm))
-	      (save-excursion
-		
-		(setq cver (esn-xpose-fish-run-number)))
-	    ;; Version control it.
-	    ;; Before save use RCS to add the previous version to the RCS log (via
-	    ;; command line)
-	    (when 't
-	      (setq esn-commit-last-version 't))))))
+          (if (and
+               (not (string-match (regexp-quote (format "%s%s%s%s" run pwd nm (if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension))) fn))
+               (file-exists-p
+                (format "%s%s%s%s" pwd run
+                        nm
+                        (if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension))))
+              (progn
+                (setq cver (esn-xpose-fish-run-number))))
+        (if (file-newer-than-file-p
+             (format "%s%s%s%s" pwd run nm (if (esn-use-pdx-p) ".ctl" esn-xpose-default-extension))
+             (format "%s%s%s%s" pwd run nm (if (esn-use-pdx-p) ".res" esn-xpose-default-output))) nil
+          (if (y-or-n-p (format "Run %s exists, and successfully sumbited. Create new run? " nm))
+              (save-excursion
+                
+                (setq cver (esn-xpose-fish-run-number)))
+            ;; Version control it.
+            ;; Before save use RCS to add the previous version to the RCS log (via
+            ;; command line)
+            (when 't
+              (setq esn-commit-last-version 't))))))
     (setq cver (format "%s%s%s%s" pwd run cver
                        (if (esn-use-pdx-p)
                            ".ctl"
@@ -494,10 +494,10 @@ If no-reg is non-nil, then return the input line list.
 (defun esn-xpose-save-to-other-file (fn)
   "* Saves the str to a new file, reverts and kills current file."
   (let (
-	(pt (point))
-	(str (buffer-substring (point-min) (point-max)))
-	(ofn (buffer-file-name))
-	(inhibit-read-only 't))
+        (pt (point))
+        (str (buffer-substring (point-min) (point-max)))
+        (ofn (buffer-file-name))
+        (inhibit-read-only 't))
     (unless (string= ofn fn)
       (text-mode)
       (if (not (file-exists-p ofn)) nil
@@ -598,9 +598,9 @@ If no-reg is non-nil, then return the input line list.
   :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-other (esn-subset-regexp :categorical t :race t :gender t
                                     :dose t :fed t :group t :race t)
-    :add-id t)
+  :add-id t)
 
-  (esn-deftable esn-xpose-cotab
+(esn-deftable esn-xpose-cotab
   :table-name esn-xpose-cotab-table-name
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
