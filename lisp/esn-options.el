@@ -1851,7 +1851,7 @@ Parameters Estimate near its boundary."
   :type 'boolean
   :group 'esn-psn-execute)
 
-(defcustom esn-mode-psn-ex-summarize 't
+(defcustom esn-mode-psn-ex-summarize nil
   "Defines if PsN will summarize output for each model run."
   :type 'boolean
   :group 'esn-psn-execute)

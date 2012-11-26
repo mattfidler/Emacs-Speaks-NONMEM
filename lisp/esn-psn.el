@@ -468,7 +468,7 @@
     (when (buffer-modified-p)
       (if (y-or-n-p (format "Run %s modified; save it? " (buffer-name)))
           (save-buffer)
-        (esn-error "Buffer must be saved to run Wings For NONMEM.")))
+        (esn-error "Buffer must be saved to run Perl Speaks NONMEM.")))
     
     (if esn-mode-psn-clean
         (add-to-list 'args "--clean=1")
