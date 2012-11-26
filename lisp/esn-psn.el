@@ -498,15 +498,23 @@
       (add-to-list 'args "--verbose"))
     (when esn-mode-psn-sde
       (add-to-list 'args "--sde"))
+    (when esn-mode-psn-specify-directory
+      (add-to-list 'args (concat "--directory=" (esn-psn-dirname))))
     (setq args (append args (list run)))
     (apply 'esn-psn-cmd esn-mode-psn-execute-command args)))
 
-(defun esn-psn-runname ()
+(defmacro esn-psn-dirname ( &optional extra)
   "Gets run-name, based on the current buffer."
-  (let ((fn (buffer-file-name)))
-    (if (string-match "[\\\\/]\\([^\\\\/]*\\)$" fn)
-        (setq fn (match-string 1 fn)))
-    (symbol-value 'fn)))
+  (if (buffer-file-name)
+      (concat (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))
+              (or extra ""))
+    nil))
+
+(defmacro esn-psn-runname ()
+  "Gets run-name, based on the current buffer."
+  (if (buffer-file-name)
+      (file-name-nondirectory (buffer-file-name))
+    nil))
 
 
 (provide 'esn-psn)

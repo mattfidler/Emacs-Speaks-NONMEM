@@ -1109,8 +1109,7 @@ rcs     = RCS
   "* Defines if PsN naming convention is assumed.  If it is assumed, output the estimate file in ../../.  This will allow Xpose to calculate conditional weighted residuals."
   :type 'boolean
   :group 'esn-cwres
-  :group 'esn-psn
-  )
+  :group 'esn-psn)
 
 
 
@@ -1119,8 +1118,7 @@ rcs     = RCS
   :type 'string
   :group 'esn-cwres
   :group 'esn-code-generation
-  :group 'esn-general-options
-  )
+  :group 'esn-general-options)
 
 (defcustom esn-cwres-estimate-extension ".est"
   "* Defines the default extension for the ETA, THETA, OMEGA, and SIGMA output file used to calculate CWRES"
@@ -1733,8 +1731,13 @@ AllRecords.txt.  Disables prompting for these variables."
   )
 
 (defgroup esn-psn nil
-  "* EsN PsN options"
+  "EsN PsN options"
   :group 'esn-mode)
+
+(defcustom esn-mode-psn-specify-directory 't
+  "Specify Directory that PsN will run from by using `esn-psn-dirname'"
+  :type 'boolean
+  :group 'esn-psn)
 
 (defgroup esn-psn-bootstrap nil
   "PsN options for Bootstrapping."
