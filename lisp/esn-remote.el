@@ -124,17 +124,15 @@
           (setq method (tramp-file-name-method td))
           (setq user (tramp-file-name-user td))
           (setq host (tramp-file-name-host td))
-          (cond
-           ((string= method "plinkx")
-            ;; Assumes plink = ssh
-            (setq ret (get-buffer (concat "*" host ":" (file-name-directory localname) "*")))
-            (unless ret
-              (let ((default-directory esn-path))
-                (setq ret (get-buffer-create  (concat "*" host ":" (file-name-directory localname) "*")))
-                ;; So that ssh doesn't try to use things from TRAMP.
-                (ssh (concat host) (concat "*" host ":" (file-name-directory localname) "*")))
-              (message "%s" ret)
-              (esn-remote-command (format "cd %s" (shell-quote-argument (file-name-directory localname))) ret)))))))
+          (setq ret (get-buffer (concat "*" host ":" (file-name-directory localname) "*")))
+          (unless ret
+            (let ((default-directory esn-path))
+              (setq ret (get-buffer-create  (concat "*" host ":" (file-name-directory localname) "*")))
+              ;; So that ssh doesn't try to use things from TRAMP.
+              (ssh (concat (if (and user (not (string= user "")))
+                               (concat user "@")) host) (concat "*" host ":" (file-name-directory localname) "*")))
+            (message "%s" ret)
+            (esn-remote-command (format "cd %s" (shell-quote-argument (file-name-directory localname))) ret)))))
     (symbol-value 'ret)))
 
 (provide 'esn-remote)
