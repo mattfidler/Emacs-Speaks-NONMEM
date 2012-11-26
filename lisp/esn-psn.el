@@ -57,6 +57,8 @@
 
 ;; Prompt for Stratify on and samples
 
+
+
 (defun esn-psn-cmd (cmd &rest ARGS)
   "Runs a Wings for NONMEM command."
   (let ((buf (current-buffer)))
@@ -69,6 +71,9 @@
     (get-buffer-create "*esn-psn*")
     (switch-to-buffer-other-window "*esn-psn*")
     (insert "================================================================================\n")
+    (insert (if esn-use-qs
+                "qs "
+              ""))
     (insert cmd)
     (insert " ")
     (insert (mapconcat (lambda(x) x) ARGS " "))
@@ -80,11 +85,18 @@
           (insert "(Remote)\n")
           (save-excursion
             (set-buffer buf)
-            (esn-remote-command (concat cmd " "
-                                        (mapconcat (lambda(x) x) ARGS " ")))))
-      (apply 'start-process-shell-command "*esn-psn*"
-             "*esn-psn*"
-             cmd ARGS))))
+            (esn-remote-command (concat (if esn-use-qs
+                                            "qs "
+                                          "") cmd " "
+                                          (mapconcat (lambda(x) x) ARGS " ")))))
+      (if esn-use-qs
+          (apply 'start-process-shell-command "*esn-psn*"
+                 "*esn-psn*"
+                 "qs"
+                 `(,cmd ,@ARGS))
+        (apply 'start-process-shell-command "*esn-psn*"
+               "*esn-psn*"
+               cmd ARGS)))))
 
 (defun esn-psn-sumo ()
   "Summarizing of NONMEM Run"
@@ -500,19 +512,26 @@
       (add-to-list 'args "--sde"))
     (when esn-mode-psn-specify-directory
       (add-to-list 'args (concat "--directory=" (esn-psn-dirname))))
+    (when esn-mode-psn-specify-output
+      (add-to-list 'args (concat "--outputfile=\"" (esn-psn-lstname) "\"")))
     (setq args (append args (list run)))
     (apply 'esn-psn-cmd esn-mode-psn-execute-command args)))
 
+
+(defun esn-psn-lstname ()
+  "Gets the output file. Based on the assumption that run000.nmctl should produce run000.lst."
+  (esn-psn-dirname ".lst"))
+
 (defmacro esn-psn-dirname ( &optional extra)
   "Gets run-name, based on the current buffer."
-  (if (buffer-file-name)
-      (concat (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))
-              (or extra ""))
-    nil))
+  `(if (buffer-file-name)
+       (concat (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))
+               ,(or extra ""))
+     nil))
 
 (defmacro esn-psn-runname ()
   "Gets run-name, based on the current buffer."
-  (if (buffer-file-name)
+  `(if (buffer-file-name)
       (file-name-nondirectory (buffer-file-name))
     nil))
 

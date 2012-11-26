@@ -1730,14 +1730,16 @@ AllRecords.txt.  Disables prompting for these variables."
   :group 'esn-exec
   )
 
+(defcustom esn-use-qs nil
+  "Use sun grid engine's qs for submitting jobs"
+  :type 'boolean
+  :group 'esn-psn
+  :group 'esn-exec)
+
 (defgroup esn-psn nil
   "EsN PsN options"
   :group 'esn-mode)
 
-(defcustom esn-mode-psn-specify-directory 't
-  "Specify Directory that PsN will run from by using `esn-psn-dirname'"
-  :type 'boolean
-  :group 'esn-psn)
 
 (defgroup esn-psn-bootstrap nil
   "PsN options for Bootstrapping."
@@ -1832,6 +1834,16 @@ AllRecords.txt.  Disables prompting for these variables."
 (defgroup esn-psn-execute nil
   "Psn options for Submitting NONMEM jobs."
   :group 'esn-psn)
+
+(defcustom esn-mode-psn-specify-directory 't
+  "Specify Directory that PsN will run from by using `esn-psn-dirname'"
+  :type 'boolean
+  :group 'esn-psn-execute)
+
+(defcustom esn-mode-psn-specify-output 't
+  "Makes sure that PsN specifies the output to be .lst.  Useful when using other extensions other than .mod"
+  :type 'boolean
+  :group 'esn-psn-execute)
 
 (defcustom esn-mode-psn-maxevals 9999
   "Defines the Maxevals that Perl Speaks NONMEM will handle (through using a MSF file."
