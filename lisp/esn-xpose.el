@@ -592,8 +592,13 @@ If no-reg is non-nil, then return the input line list.
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
   :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
-  :require-other (esn-subset-regexp :categorical t :race t :gender t
-                                    :dose t :fed t :group t :race t)
+  :require-categorical t
+  :require-race t
+  :require-gender t
+  :require-dose t
+  :require-fed t
+  :require-group t
+  :require-race t
   :add-id t)
 
 (esn-deftable esn-xpose-cotab
@@ -601,7 +606,9 @@ If no-reg is non-nil, then return the input line list.
   :table-options "NOPRINT ONEHEADER"
   :group 'esn-xpose-tables
   :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
-  :require-other (esn-subset-regexp :continuous t :age t :height t)
+  :require-continuous t
+  :require-age t
+  :require-height t
   :add-id t)
 
 (esn-deftable esn-xpose-patab
@@ -621,7 +628,7 @@ If no-reg is non-nil, then return the input line list.
   :group 'esn-xpose-tables
   :condition (and esn-xpose-generate-tables (esn-use-xpose-p) (esn-rec "EST"))
   :require-par-res t
-  :reqiure-other (esn-subset-regexp :sdtab t)
+  :require-sdtab t
   :add-id t)
 
 

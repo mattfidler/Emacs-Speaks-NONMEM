@@ -54,7 +54,7 @@
 (declare-function esn-fix-numbering "esn-extended")
 (declare-function esn-get-current-rec "esn-narrow")
 (declare-function esn-narrow-rec "esn-narrow")
-
+(defvar esn-debug nil)
 (eval-when-compile
   (require 'cl)
   (require 'esn-options)
@@ -362,34 +362,46 @@ For example, defining the PLT Tools Table AllRecords.txt, you may use:
                                `(funcall ',table-name)
                              table-name))
                 current-table
+                known-pars-reg
                 add orphan undef delreg del)
            (when tab-name
              (message "[EsN] Determining contents of %s." tab-name)
              (setq req-reg (esn-subset-regexp ,@req-arg))
              (setq add-reg (esn-subset-regexp ,@add-arg))
-             
+             (when esn-debug
+               (message "Req Reg: %s\nOpt Reg%s" req-reg  add-reg))
              (setq req-p (esn-get-parameters ,@req-arg))
              (setq add-p (esn-get-parameters ,@add-arg))
              ;; Add customized content.
+             (setq all-p (esn-get-parameters :all t))
+             (setq inputs (esn-get-inputs))
+             (setq known-pars-reg (regexp-opt (append inputs all-p) t))
              (when ,(intern (concat (symbol-name name) "-req-table"))
                (mapc (lambda(x)
-                       (add-to-list 'req-p x))
+                       (when (string-match known-pars-reg x)
+                         (add-to-list 'req-p x)))
                      ,(intern (concat (symbol-name name) "-req-table"))))
              
              (when ,(intern (concat (symbol-name name) "-add-table"))
                (mapc (lambda(x)
-                       (add-to-list 'add-p x))
+                       (when (string-match known-pars-reg x)
+                         (add-to-list 'add-p x)))
                      ,(intern (concat (symbol-name name) "-add-table"))))
-             (setq all-p (esn-get-parameters :all t))
-             (setq inputs (esn-get-inputs))
              (mapc
               (lambda(x)
                 (cond
                  ((and (not (string= "" req-reg)) (string-match req-reg x))
+                  (when esn-debug
+                    (message "%s required" x))
                   (add-to-list 'req-p x))
                  ((and (not (string= "" add-reg)) (string-match add-reg x))
-                  (add-to-list 'add-p x))))
-              inputs)
+                  (when esn-debug
+                    (message "%s optional" x))
+                  (add-to-list 'add-p x))
+                 (t
+                  (when esn-debug
+                    (message "%s not added" x)))))
+              (append inputs all-p))
              ;; Filter what is added (if needed)
              (if (not (and req-p (< 0 (length req-p))))
                  (esn-remove-table tab-name) ;; Remove if needed.
@@ -690,14 +702,15 @@ that match the supplied regular expression.
         
         ;; Residual components should be in error.  Anything matching RES$
         ;; is considered a residual.  Currently these are in Misc
-        (delete-if (lambda(var)
-                     (if (not (member (concat "TV" var) pop))
-                         (if (not (string-match "RES$" var )) nil
-                           (add-to-list 'err (format "%s" var))
-                           t)
-                       (add-to-list 'rem-pop (concat "TV" var)) ;; Add to removed list
-                       (add-to-list 'pop (format "%s" var))
-                       t)) misc)
+        (delete-if
+         (lambda(var)
+           (if (not (member (concat "TV" var) pop))
+               (if (not (string-match "RES$" var )) nil
+                 (add-to-list 'err (format "%s" var))
+                 t)
+             (add-to-list 'rem-pop (concat "TV" var)) ;; Add to removed list
+             (add-to-list 'pop (format "%s" var))
+             t)) misc)
         (delete-if (lambda(var) (member var rem-pop)) pop)
         (dotimes (i (esn-max-eta t))
           (unless (member (format "ETA%s" (+ i 1)) iov-etas)

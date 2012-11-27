@@ -1305,15 +1305,15 @@ Work-abcd-plta/
 (require 'esn-tables)
 
 (esn-deftable esn-plt-all-records
-              :table-name "AllRecords.txt"
-              :require-par-res t
-              :require-par-iov t
-              :require-pred t
-              :require-sdtab t
-              :require-other (esn-subset-regexp :tad t :occ t :sdtab t)
-              :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
-              :group 'esn-plt-tables
-              :add-id t)
+  :table-name "AllRecords.txt"
+  :require-par-res t
+  :require-par-iov t
+  :require-pred t
+  :require-sdtab t
+  :require-other (esn-subset-regexp :tad t :occ t :sdtab t)
+  :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
+  :group 'esn-plt-tables
+  :add-id t)
 
 ;; First Records
 
@@ -1333,14 +1333,14 @@ Work-abcd-plta/
 
 
 (esn-deftable esn-plt-first-records
-              :table-name "FirstRecords.txt"
-              :table-options "NOPRINT FIRSTONLY"
-              :require-population t
-              :require-individual t
-              :require-eta t
-              :group 'esn-plt-tables
-              :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
-              :add-id t)
+  :table-name "FirstRecords.txt"
+  :table-options "NOPRINT FIRSTONLY"
+  :require-population t
+  :require-individual t
+  :require-eta t
+  :group 'esn-plt-tables
+  :condition (and esn-plt-generate-tables (esn-use-plt-p) (esn-rec "EST"))
+  :add-id t)
 
 
 (esn-deftable esn-plt-cwtab-deriv

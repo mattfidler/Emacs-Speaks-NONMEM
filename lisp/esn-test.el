@@ -564,18 +564,26 @@ $OMEGA 1.84  ;C ETA(1) - eIC50
   "Try to reproduce byg #21 -- Part A"
   (let ((esn-xpose-generate-tables t)
         (f (format "%srun001.mod" temporary-file-directory))
+        (esn-debug t)
         (rec "")
+        tmp
+        buf
         ret)
-    
     (save-excursion
       (set-buffer (find-file-noselect f))
       (delete-region (point-min) (point-max)))
     
     
     (save-excursion
-      (set-buffer (find-file-noselect f))
+      (setq buf (find-file-noselect f))
+      (set-buffer buf)
       (insert esn-test-control-4-idv)
+      (setq tmp (esn-get-inputs))
+      (message "Inputs: %s" tmp)
+      (setq tmp (esn-get-parameters :all t))
+      (message "All Parameters: %s" tmp)
       (save-buffer)
+      (message "Buffer:\n%s" (buffer-string))
       (goto-char (point-min))
       (if (not (re-search-forward "sdtab001"))
           (setq rec "Record Not Found")
@@ -585,6 +593,8 @@ $OMEGA 1.84  ;C ETA(1) - eIC50
       (message "Record:\n%s" rec)
       (setq ret (string-match "\\<IDV\\>" rec))
       (message "Found IDV: %s" ret)
+      (kill-buffer buf)
+      (delete-file f)
       (symbol-value 'ret))))
 
 (provide 'esn-test)
