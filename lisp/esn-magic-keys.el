@@ -77,12 +77,12 @@
 ;;    Updated upcase-char-insert.  Also updated upcase and downcase buffer.
 ;; 30-Aug-2010    Matthew L. Fidler
 ;;    Moved advices into esn-advices
-;; 23-Aug-2010    Matthew L. Fidler  
+;; 23-Aug-2010    Matthew L. Fidler
 
 ;;    Made newline a defalias instead of an explicit key (makes auto-complete
 ;;    mode return function correctly).
 ;; 19-Aug-2010    Matthew L. Fidler  
-;;    Tried to standardize record regular expressions. 
+;;    Tried to standardize record regular expressions.
 ;; 27-Jul-2010    Matthew L. Fidler  
 ;;    Added magic ? that opens help when esn-nm-help-dir is defined.
 ;; 21-Jul-2010    Matthew L. Fidler  
@@ -284,8 +284,10 @@
                   ;; Run Exit record hook first.
                   (condition-case error
                       (progn
-                        (when (and esn-last-record-start esn-last-record-name
-                                   (not (string= (esn-current-rec) esn-last-record-name)))
+                        (when (and esn-last-record-start
+                                   esn-last-record-name
+                                   (or (not (string= (esn-current-rec) esn-last-record-name))
+                                       (not (= esn-last-record-start esn-get-current-record-start))))
                           (save-excursion
                             (let (p1
                                   p2
