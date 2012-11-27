@@ -451,7 +451,7 @@ remEmpty = delete empty record.
         snip
         p0
         )
-
+    
     (save-excursion
       (setq p0 (point))
       (if (eq esn-lastlst lst)
@@ -587,87 +587,6 @@ remEmpty = delete empty record.
         (setq md2 (set-match-data)))
       ;; Now check to see which was the last estimate
       )))
-
-;; TODO need to handle THETA(2) or cases where the previous line is a $THETA definition.
-(defun esn-theta-up (&optional what)
-  "Defines the alt-up swapping in $theta block"
-  (interactive)
-  (esn-number-est what) ;; Force numbering of estimates
-  (let ((line (buffer-substring (point-at-bol) (point-at-eol)))
-        (theta (cond
-                ((not what) "THETA")
-                ((string= what "OME") "ETA")
-                ((string= what "SIG") "EPS")))
-        theta1 theta2)
-    (if (not (or (string= "THETA" theta) (not (esn-is-block-p))))
-        (error "Have to be outside of a BLOCK.")
-      (if  (not (string-match (concat "\\<" theta "(\\([0-9]+\\))") line))
-          (error "THETA(#) must be specified in comment line")
-        (setq theta1 (match-string 1 line))
-        (if (string= "1" theta1)
-            (error "Cannot Change %s(1) to %s(0)..." theta theta)
-          (save-excursion
-            (goto-char (point-min))
-            (while (re-search-forward (format "\\<%s(%s)" theta theta1) nil t)
-              (replace-match (concat theta "(#######)") t t))
-            (setq theta1 (- (string-to-number theta1) 1))
-            (goto-char (point-min))
-            (while (re-search-forward (format "\\<%s(%s)" theta theta1) nil t)
-              (replace-match (format "%s(%s)" theta (+ 1 theta1))))
-            (goto-char (point-min))
-            (while (re-search-forward (concat "\\<" theta "(#######)") nil t)
-              (replace-match (format "%s(%s)" theta theta1))))
-          (save-excursion
-            (forward-line -1)
-            (setq line (buffer-substring (- (point-at-bol) 1) (+ 0 (point-at-eol))))
-            (delete-region (- (point-at-bol) 1) (+ 0 (point-at-eol))))
-          (save-excursion
-            (goto-char (point-at-eol))
-            (insert line))
-          (esn-number-est what))))))
-
-                                        ; Need to handle THETA(1) or points where $THETA is defined.
-;;;###autoload
-(defun esn-theta-down (&optional what)
-  "Defines the alt-down swapping in $theta block"
-  (interactive)
-  (esn-number-est what) ;; Force numbering of estimates
-  (let ((line (buffer-substring (point-at-bol) (point-at-eol)))
-        (theta (cond
-                ((not what) "THETA")
-                ((string= what "OME") "ETA")
-                ((string= what "SIG") "EPS")))
-        (mx (cond
-             ((not what) (esn-max-theta))
-             ((string= what "OME") (esn-max-eta))
-             ((string= what "SIG") (esn-max-eps))))
-        theta1 theta2)
-    (if (not (or (string= "THETA" theta) (not (esn-is-block-p))))
-        (error "Have to be outside of a BLOCK.")
-      (if  (not (string-match (concat "\\<" theta "(\\([0-9]+\\))") line))
-          (error "%s(#) must be specified in comment line" theta)
-        (setq theta1 (match-string 1 line))
-        (if (string= (format "%s" mx) theta1)
-            (error "Cannot Change past the maximum %s(%s)..." theta mx)
-          (save-excursion
-            (goto-char (point-min))
-            (while (re-search-forward (format "\\<%s(%s)" theta theta1) nil t)
-              (replace-match (concat theta "(#######)") t t))
-            (setq theta1 (string-to-number theta1))
-            (goto-char (point-min))
-            (while (re-search-forward (format "\\<%s(%s)" theta (+ 1 theta1)) nil t)
-              (replace-match (format "%s(%s)" theta theta1)))
-            (goto-char (point-min))
-            (while (re-search-forward (concat "\\<" theta "(#######)") nil t)
-              (replace-match (format "%s(%s)" theta (+ 1 theta1)))))
-          (save-excursion
-            (forward-line 1)
-            (setq line (buffer-substring (- (point-at-bol) 0) (+ 1 (point-at-eol))))
-            (delete-region (- (point-at-bol) 0) (+ 1 (point-at-eol))))
-          (save-excursion
-            (goto-char (point-at-bol))
-            (insert line))
-          (esn-number-est what))))))
 
 ;;;###autoload
 (defun esn-renumber-theta ()
