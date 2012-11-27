@@ -129,30 +129,32 @@
   (require 'esn-macros)
   (require 'esn-fun))
 (require 'esn-rec-hooks)
+
 (defvar esn-align-equals-fun-timer nil
-  "* Alignment timer")
+  "Alignment timer")
+
 (defvar esn-align-matrix-timer nil
-  "* Defines a matrix alignment timer"
-  )
+  "Defines a matrix alignment timer")
+
 (defvar esn-number-theta-timer nil
-  "* Alignment timer")
+  "Alignment timer")
+
 (defvar esn-number-eta-timer nil
-  "* Alignment timer")
+  "Alignment timer")
+
 (defvar esn-number-eps-timer nil
-  "* Alignment timer")
+  "Alignment timer")
 
 
 (defgroup esn-spacing-and-alignment nil
   "* EsN's spacing and alignment options"
-  :group 'esn-changes-while-editing
-  )
+  :group 'esn-changes-while-editing)
 
 (defcustom esn-update-theta nil
   "* If not nil, then esn-mode will align and space the theta record."
   :type 'boolean
   :group 'esn-spacing-and-alignment
-  :group 'esn-$theta-options
-  )
+  :group 'esn-$theta-options)
 
 (defcustom esn-update-omega nil
   "* If not nil, then esn-mode will align and space the omega record."
@@ -406,6 +408,7 @@ If is-bind is true, produces $BIND records"
               (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
               (insert (concat "\n" (if is-bind "\n" "") (pop lst) "\n")))))
         (symbol-value 'ret-lst)))))
+
 (defun esn-align-input-bind-interleave (input bind &optional input-bigger)
   "* Puts input and bind into one interleaved list"
   (let ((ret '())
@@ -434,9 +437,11 @@ If is-bind is true, produces $BIND records"
   (interactive)
   ;; Placeholder for now.
   )
+
 (defvar esn-started-align-input-bind nil
   "* To stop recursive calls to esn-align-input-bind"
   )
+
 (defun esn-align-input-bind ()
   "* Aligns and interleaves BIND and INPUT records"
   (interactive)
@@ -542,6 +547,7 @@ If is-bind is true, produces $BIND records"
              (message "Input record")))))
                                         ;          (error nil))
       (setq esn-started-align-input-bind nil))))
+
 (defun esn-align-equals-fun-hook ()
   "Hook for PK alignment function."
   (when esn-align-equals-fun-timer 
@@ -558,7 +564,7 @@ If is-bind is true, produces $BIND records"
   (when (and esn-align-at-equals
              (string-match esn-current-abbrev-records-regexp (concat "$" (esn-get-current-record))))
     (setq esn-align-equals-fun-timer (run-with-idle-timer 1 nil 'esn-align-equals-fun-hook))
-    (add-hook 'esn-exit-record-hook 'esn-align-equals-fun-hook 't)))
+    (add-hook 'esn-exit-record-hook 'esn-align-equals-fun-hook t t)))
 
 (esn-abbrev-post-hook 'esn-align-equals-fun)
 
@@ -953,6 +959,7 @@ If is-bind is true, produces $BIND records"
       (re-search-forward "[^)\n]*)" nil t))
      ((looking-at (format "%s" num))
       (replace-match (format "%s" val))))))
+
 (defun esn-est-tmp-rep (n what var-types var fpe same)
   "* Subroutine that changes numbering"
   (let (tmp)
@@ -1021,6 +1028,7 @@ If is-bind is true, produces $BIND records"
     (end-of-line)
     (unless same
       (while (re-search-forward "\\=\n[ \t]*;.*" nil t)))))
+
 (defun esn-number-est (&optional what var fpe)
   "Numbers commented estimates; Also replaces if var and fpe are non-nil"
   (interactive)
@@ -1307,6 +1315,7 @@ If is-bind is true, produces $BIND records"
     (esn-align-tab-internal)))
 
 (esn-rec-modification-hook "theta" 'esn-number-theta)
+
 ;;;###autoload
 (defun esn-align-tab ()
   "Defines alignment function for PK -- Creates an idle timer."
@@ -1315,7 +1324,7 @@ If is-bind is true, produces $BIND records"
     (cancel-timer esn-align-tab-timer))
   ;; Only set timer if at appropriate records
   (setq esn-align-tab-timer (run-with-idle-timer 1 nil 'esn-align-tab-hook))
-  (add-hook 'esn-exit-record-hook 'esn-align-tab-hook nil 't))
+  (add-hook 'esn-exit-record-hook 'esn-align-tab-hook nil 't 't))
 
 (esn-rec-post-hook "input" 'esn-align-tab)
 (esn-rec-post-hook "table" 'esn-align-tab)
