@@ -80,7 +80,7 @@
 
 (defmacro esn-rec-modification-hook (record function &optional append local)
   "Adds to records' post-command-hook"
-  `(add-hook (quote ,(intern (concat "esn-" (downcase (esn-rec3 record)) "-modification-hook")))
+  `(add-hook (quote ,(intern (concat "esn-" (downcase (esn-rec3 record)) "-post-modification-hook")))
              ,function ,append ,local))
 
 (defmacro esn-abbrev-modification-hook (function &optional append local)
@@ -110,6 +110,41 @@
           (mapcar (lambda(x)
                     (unless (member-ignore-case x exclude)
                       `(esn-rec-modification-hook ,x ,function ,append ,local)))
+                  esn-not-abbrev-rec)))
+
+
+(defmacro esn-rec-pre-modification-hook (record function &optional append local)
+  "Adds to records' post-command-hook"
+  `(add-hook (quote ,(intern (concat "esn-" (downcase (esn-rec3 record)) "-pre-modification-hook")))
+             ,function ,append ,local))
+
+(defmacro esn-abbrev-pre-modification-hook (function &optional append local)
+  "Adds to abbreviated record's post command hooks"
+  (append (list 'progn)
+          (mapcar (lambda(x)
+                    `(esn-rec-pre-modification-hook ,x ,function ,append ,local))
+                  esn-all-abbrev-recs)))
+
+(defmacro esn-tos-pre-modification-hook (function &optional append local)
+  "Adds to abbreviated record's post command hooks"
+  (append (list 'progn)
+          (mapcar (lambda(x)
+                    `(esn-rec-pre-modification-hook ,x ,function ,append ,local))
+                  '("theta" "omega" "sigma"))))
+
+(defmacro esn-not-abbrev-pre-modification-hook (function &optional append local)
+  "Adds to abbreviated record's post command hooks"
+  (append (list 'progn)
+          (mapcar (lambda(x)
+                    `(esn-rec-pre-modification-hook ,x ,function ,append ,local))
+                  esn-not-abbrev-rec)))
+
+(defmacro esn-not-abbrev-pre-modification-hook-2 (function exclude &optional append local)
+  "Adds to abbreviated record's post command hooks"
+  (append (list 'progn)
+          (mapcar (lambda(x)
+                    (unless (member-ignore-case x exclude)
+                      `(esn-rec-pre-modification-hook ,x ,function ,append ,local)))
                   esn-not-abbrev-rec)))
 
 

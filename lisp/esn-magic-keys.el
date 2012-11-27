@@ -191,6 +191,8 @@
 
 
 ;; Fast keys
+(defvar esn-is-modified-p nil
+  "Determines if the buffer has been modified.  Used to run the recored modification hooks in the post-command-hook.")
 
 ;;;###autoload
 (defun esn-before-change-functions-hook (beg end)
@@ -205,15 +207,17 @@
                                      (yas/snippets-at-point 'all-snippets)
                                    (yas--snippets-at-point 'all-snippets))))
                         (or (not yap) (and yap (= 0 (length yap))))))))
+    (setq esn-is-modified-p t)
     (unless esn-run-save-fn
       (condition-case error
           (save-excursion
             (save-restriction 
               (when beg
                 (goto-char beg)
+                (setq esn-is-modified-p t)
                 (let* ((rec (esn-get-current-record t))
                        (mark-active mark-active)
-                       (rec-hook (concat "esn-" (downcase rec) "-modification-hook"))
+                       (rec-hook (concat "esn-" (downcase rec) "-pre-modification-hook"))
                        (hook (intern-soft rec-hook)))
                   (when hook
                     (condition-case error
@@ -223,7 +227,7 @@
                 (goto-char end)
                 (unless (esn-last-record-same-p t)
                   (let* ((rec (esn-get-current-record))
-                         (rec-hook (concat "esn-" (downcase rec) "-modification-hook"))
+                         (rec-hook (concat "esn-" (downcase rec) "-pre-modification-hook"))
                          (hook (intern-soft rec-hook)))
                     (when hook
                       (condition-case error
@@ -256,11 +260,23 @@
                                         ;mouse-drag-region
                                            ))))
         (setq esn-var-names '())
+        (when esn-is-modified-p
+          (let* ((rec (esn-get-current-record))
+                 (mark-active mark-active)
+                 (rec-hook (concat "esn-" (downcase rec) "-post-modification-hook"))
+                 (hook (intern-soft rec-hook)))
+            (when hook
+              (condition-case error
+                  (run-hooks hook)
+                (error
+                 (message "Error running `%s': %s" rec-hook (error-message-string error))))))
+          (setq esn-is-modified-p nil))
         (let ((exit-hook esn-exit-record-hook) (enter-hook esn-enter-record-hook))
           (condition-case error
               (progn
                 (esn-get-current-rec)
                 (when (or
+                       (string= (esn-get-current-rec) "")
                        (and esn-last-record-start (not esn-get-current-record-start))
                        (and (not esn-last-record-start) esn-get-current-record-start)
                        (and esn-last-record-start esn-get-current-record-start
@@ -294,13 +310,13 @@
                                ( 't
                                  (setq no-match 't)))
                               (unless no-match
-                                (skip-chars-forward " \t\n")
+                                (skip-chars-backward " \t\n")
                                 (run-hooks 'esn-exit-record-hook))))))
                     (error
                      (message "ESN: Exit Record Hook Error: %s; Hooks: %s" (error-message-string error) exit-hook)))
                   (unless (string= "" (esn-get-current-rec))
                     (run-hooks 'esn-enter-record-hook))))
-            (error
+            (cverror
              (message "ESN: Enter Record Hook Error: %s; Hooks: %s" (error-message-string error) enter-hook))))
         (condition-case err
             (save-excursion
@@ -365,6 +381,7 @@
                    (or (not yap) (and yap (= 0 (length yap)))))))
     (unless esn-run-save-fn
       (setq esn-last-file-name (buffer-file-name))
+      
       (setq esn-last-record-name (esn-get-current-rec))
       (setq esn-last-record-start esn-get-current-record-start)
       (setq esn-pre-command-point (point))

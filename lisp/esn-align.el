@@ -28,7 +28,7 @@
 ;; 02-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  2 20:47:53 2010 (-0500) #727 (Matthew L. Fidler)
 ;;    Bug fix for aligning abbreviated code at equals sign.
-;; 02-Nov-2010    Matthew L. Fidler  
+;; 02-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  2 16:02:48 2010 (-0500) #724 (Matthew L. Fidler)
 ;;    Bug fix.
 ;; 02-Nov-2010    Matthew L. Fidler  
@@ -160,15 +160,13 @@
   "* If not nil, then esn-mode will align and space the omega record."
   :type 'boolean
   :group 'esn-spacing-and-alignment
-  :group 'esn-$omega-options
-  )
+  :group 'esn-$omega-options)
 
 (defcustom esn-update-sigma nil
   "* If not nil, then esn-mode will align and space the sigma record"
   :type 'boolean
   :group 'esn-spacing-and-alignment
-  :group 'esn-$sigma-options
-  )
+  :group 'esn-$sigma-options)
 
 
 ;;;
@@ -177,8 +175,7 @@
   "* Place Theta numbers in labels"
   :type 'boolean
   :group 'esn-spacing-and-alignment
-  :group 'esn-$theta-options
-  )
+  :group 'esn-$theta-options)
 
 (defcustom esn-take-out-tv-theta nil
   "* Take out the TV in TVCL type parameters for variable labels"
@@ -552,6 +549,7 @@ If is-bind is true, produces $BIND records"
   "Hook for PK alignment function."
   (when esn-align-equals-fun-timer 
     (cancel-timer esn-align-equals-fun-timer))
+  (remove-hook 'esn-exit-record-hook 'esn-align-equals-fun-hook 't)
   (when (eq major-mode 'esn-mode)
     (esn-align-equals-fun-actual)))
 ;;;###autoload
@@ -566,7 +564,7 @@ If is-bind is true, produces $BIND records"
     (setq esn-align-equals-fun-timer (run-with-idle-timer 1 nil 'esn-align-equals-fun-hook))
     (add-hook 'esn-exit-record-hook 'esn-align-equals-fun-hook t t)))
 
-(esn-abbrev-post-hook 'esn-align-equals-fun)
+(esn-abbrev-modification-hook 'esn-align-equals-fun)
 
 
 (defun esn-align-equals-fun-actual ()
@@ -768,7 +766,7 @@ If is-bind is true, produces $BIND records"
   (add-hook 'esn-exit-record-hook 'esn-align-matrix-hook 't 't))
 
 ;; Add alignment to THETA OMEGA and SIGMA blocks
-(esn-tos-post-hook 'esn-align-matrix)
+(esn-tos-modification-hook 'esn-align-matrix)
 
 (defun esn-align-matrix-actual-1 ()
   "Align matricies and comments.  Should not cause buffer to be modified"
@@ -909,7 +907,7 @@ If is-bind is true, produces $BIND records"
     (add-hook 'esn-exit-record-hook 'esn-number-theta-hook 't 't)
     (setq esn-number-theta-timer (run-with-idle-timer 1 nil 'esn-number-theta-hook))))
 
-(esn-rec-post-hook "theta" 'esn-number-theta)
+(esn-rec-modification-hook "theta" 'esn-number-theta)
 
 (defun esn-number-eta-hook ()
   "Hook to number ETAs."
@@ -927,7 +925,7 @@ If is-bind is true, produces $BIND records"
     (add-hook 'esn-exit-record-hook 'esn-number-eta-hook 't 't)
     (setq esn-number-eta-timer (run-with-idle-timer 1 nil 'esn-number-eta-hook))))
 
-(esn-rec-post-hook "omega" 'esn-number-eta)
+(esn-rec-modification-hook "omega" 'esn-number-eta)
 
 (defun esn-number-eps-hook ()
   "Hook to renumber EPS."
@@ -945,7 +943,7 @@ If is-bind is true, produces $BIND records"
     (add-hook 'esn-exit-record-hook 'esn-number-eps-hook 't 't)
     (setq esn-number-eps-timer (run-with-idle-timer 1 nil 'esn-number-eps-hook))))
 
-(esn-rec-post-hook "sigma" 'esn-number-eps)
+(esn-rec-modification-hook "sigma" 'esn-number-eps)
 
 
 (defun esn-number-est-change-it (val)
@@ -1324,11 +1322,11 @@ If is-bind is true, produces $BIND records"
     (cancel-timer esn-align-tab-timer))
   ;; Only set timer if at appropriate records
   (setq esn-align-tab-timer (run-with-idle-timer 1 nil 'esn-align-tab-hook))
-  (add-hook 'esn-exit-record-hook 'esn-align-tab-hook nil 't 't))
+  (add-hook 'esn-exit-record-hook 'esn-align-tab-hook nil 't))
 
-(esn-rec-post-hook "input" 'esn-align-tab)
-(esn-rec-post-hook "table" 'esn-align-tab)
-(esn-rec-post-hook "bind" 'esn-align-tab)
+(esn-rec-modification-hook "input" 'esn-align-tab)
+(esn-rec-modification-hook "table" 'esn-align-tab)
+(esn-rec-modification-hook "bind" 'esn-align-tab)
 
 (provide 'esn-align)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

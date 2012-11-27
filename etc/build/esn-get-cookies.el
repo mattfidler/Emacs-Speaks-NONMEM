@@ -65,25 +65,28 @@
 ;;
 ;;; Code:
 (require 'esn-autoloads)
+(require 'esn-reg)
 ;;(require 'esn-pk)
 (defvar esn-nm-cookie-dir nil)
 (defvar esn-nm-cookie-ver nil)
 (setq debug-on-quit 't)
+;;;###autoload
+(defalias 'esn-build 'esn-gen-cookies)
 ;;;###autoload
 (defun esn-gen-cookies ()
   "* Generate Cookies"
   (interactive)
   (let ((all-recs '())
         (all-abbrev '()))
-    (setq esn-nm-cookie-dir "~usb/Documents/NONMEM/nm7/help")
+    (setq esn-nm-cookie-dir "~usb/LiberKey/MyDocuments/NONMEM/nm7/help")
     (setq esn-nm-cookie-ver "7")
     (esn-gen-cookies-1)
     (esn-gen-help)
-    (setq esn-nm-cookie-dir "~usb/Documents/NONMEM/nmvi/help")
+    (setq esn-nm-cookie-dir "~usb/LiberKey/MyDocuments/NONMEM/nmvi/help")
     (setq esn-nm-cookie-ver "6")
     (esn-gen-cookies-1)
     (esn-gen-help)
-    (setq esn-nm-cookie-dir "~usb/Documents/NONMEM/nmv/help")
+    (setq esn-nm-cookie-dir "~usb/LiberKey/MyDocuments/NONMEM/nmv/help")
     (setq esn-nm-cookie-ver "5")
     (esn-gen-cookies-1)
     (esn-gen-help)
@@ -92,7 +95,8 @@
       (mapc (lambda(rec)
               (insert "(defvar esn-" rec "-post-command-hook nil)\n"
                       "(defvar esn-" rec "-pre-command-hook nil)\n"
-                      "(defvar esn-" rec "-modification-hook nil)\n"))
+                      "(defvar esn-" rec "-pre-modification-hook nil)\n"
+                      "(defvar esn-" rec "-post-modification-hook nil)\n"))
             all-recs)
       (insert "(defvar esn-all-abbrev-recs '(")
       (mapc (lambda(rec)
@@ -113,7 +117,7 @@
   ;; Currently get from variables.for.  The files for 6 and 7 are quite different.
   (interactive)
   (with-temp-buffer
-    (insert-file-contents "f:/Documents/NONMEM/nm7/help/variable.for")
+    (insert-file-contents "~usb/LiberKey/MyDocuments/NONMEM/nm7/help/variable.for")
     (goto-char (point-min))
     (let (
           (division nil)
@@ -176,7 +180,7 @@
                   (while (string-match "~" tmp)
                     (setq tmp (replace-match "[A-Z0-9_]*" nil nil tmp)))
                   (while (string-match "(#)" tmp)
-			 (setq tmp (replace-match "([ \t]*[0-9]+[ \t]*)" nil nil tmp)))
+                    (setq tmp (replace-match "([ \t]*[0-9]+[ \t]*)" nil nil tmp)))
                   (while (string-match "#" tmp)
                     (setq tmp (replace-match "[0-9]+" nil nil tmp)))
                   (while (string-match "!" tmp)
@@ -192,21 +196,14 @@
                   (insert (nth 0 x))
                   (insert "\" \"")
                   (insert tmp)
-                  (insert "\")\n")
-                  )
-                )
-              ret
-              )
-        (insert ") \"* NONMEM 7 built-in variables (from variables.for);  Added OMEGA and SIGMA to $INFN.  Its not defined in variables.for, but is used in CWRES code.\")\n(provide 'esn-nm-vars-7)\n")
-        )
-      )
-    )
+                  (insert "\")\n")))
+              ret)
+        (insert ") \"* NONMEM 7 built-in variables (from variables.for);  Added OMEGA and SIGMA to $INFN.  Its not defined in variables.for, but is used in CWRES code.\")\n(provide 'esn-nm-vars-7)\n"))))
   (with-temp-buffer
-    (insert-file-contents "f:/Documents/NONMEM/nmvi/help/variable.for")
+    (insert-file-contents "~usb/LiberKey/MyDocuments/NONMEM/nmvi/help/variable.for")
     (goto-char (point-min))
     (when (re-search-forward "AES" nil t)
-      (let (
-            (start (point-at-bol))
+      (let ((start (point-at-bol))
             division
             first
             next
@@ -214,8 +211,7 @@
             second-list
             ret
             recs
-            vars
-            )
+            vars)
         (setq first-list '())
         (setq second-list '())
         (setq ret '())
@@ -227,17 +223,13 @@
           (save-excursion
             (if (re-search-forward "\\<[$][A-Z]+" division 't)
                 (setq next (match-beginning 0))
-              (setq next division)
-              )
-            )
+              (setq next division)))
           
           (setq first-list '())
           (while (re-search-forward "^[ \t]+[^ \t]+[ \t]+\\(.*\\)$" next 't)
             
-            (setq first-list (append first-list (split-string (match-string 1) "[ ,\t\n]+" 't)))
-            )
-          (add-to-list 'second-list (list first first-list))
-          )
+            (setq first-list (append first-list (split-string (match-string 1) "[ ,\t\n]+" 't))))
+          (add-to-list 'second-list (list first first-list)))
         (goto-char division)
         (goto-char (point-at-eol))
         (setq ret second-list)
@@ -254,24 +246,15 @@
           (setq first-list (split-string vars nil 't))
           (mapc
            (lambda(x)
-             (let (
-                   (rec (esn-rec3 x))
-                   )
+             (let ((rec (esn-rec3 x)))
                (setq ret
                      (mapcar
                       (lambda (y)
                         (if (string= rec (nth 0 y))
                             (list rec (append (nth 1 y) first-list))
-                          y)
-                        )
-                      ret
-                      )
-                     )
-               )
-             )
-           (split-string (buffer-substring-no-properties (point-at-bol) (point-at-eol)) nil 't)
-           )
-          )
+                          y))
+                      ret))))
+           (split-string (buffer-substring-no-properties (point-at-bol) (point-at-eol)) nil 't)))
         (with-temp-file (concat esn-path "etc/cookies/esn-nm-vars-6.el")
           (insert ";; -*-no-byte-compile: t; -*-\n")
           (insert "(defvar esn-nm-vars-6 '(\n")
@@ -280,9 +263,7 @@
                         (tmp (concat "\\<" (regexp-opt (append (mapcar (lambda(x) (concat x "!")) (nth 1 x)) (list "z")
                                                                (if (string= "INF" (nth 0 x))
                                                                    (list "OMEGA" "SIGMA")
-                                                                 '()) 
-                                                               ))))
-                        )
+                                                                 '()))))))
                     (while (string-match "~" tmp)
                       (setq tmp (replace-match "[A-Z0-9_]*" nil nil tmp)))
                     (while (string-match "(#)" tmp)
@@ -292,21 +273,16 @@
                     (while (string-match "!" tmp)
                       (setq tmp (replace-match "\\\\>" nil nil tmp)))
                     (when (string-match "\\[\\([A-Z0-9_]*?\\)z\\([A-Z0-9_]*?\\)\\]" tmp)
-                      (setq tmp (replace-match "\\\\(?:[\\1\\2]\\\\|INC[A-Z0-9_]*\\\\|[$][A-Z][A-Z0-9_]*\\\\)" 't nil tmp))
-                      )
+                      (setq tmp (replace-match "\\\\(?:[\\1\\2]\\\\|INC[A-Z0-9_]*\\\\|[$][A-Z][A-Z0-9_]*\\\\)" 't nil tmp)))
                     (when (string-match "z" tmp)
-                      (setq tmp (replace-match "\\\\(?:INC[A-Z0-9_]*\\\\|[$][A-Z][A-Z0-9_]*\\\\)" 't nil tmp))
-                      )
+                      (setq tmp (replace-match "\\\\(?:INC[A-Z0-9_]*\\\\|[$][A-Z][A-Z0-9_]*\\\\)" 't nil tmp)))
                     (setq tmp (esn-gen-cookies-quote tmp))
                     (insert "(\"")
                     (insert (nth 0 x))
                     (insert "\" \"")
                     (insert tmp)
-                    (insert "\")\n")
-                    )
-                  )
-                ret
-                )
+                    (insert "\")\n")))
+                ret)
           (insert ") \"* NONMEM 6 built-in variables (from variables.for); Added OMEGA and SIGMA to $INFN.  Its not defined in variables.for, but is used in CWRES code.\")\n(provide 'esn-nm-vars-6)\n"))))))
 
 (defun esn-gen-help ()
@@ -457,14 +433,9 @@
                             (setq ret (list (nth 0 elt) 
                                             (append (nth 1 elt)
                                                     
-                                                    (list (list x text)))))
-                            )
-                          (symbol-value 'ret)
-                          )
-                        )
-                      (symbol-value list-var)
-                      )
-                     )
+                                                    (list (list x text))))))
+                          (symbol-value 'ret)))
+                      (symbol-value list-var)))
                                         ;(when (string-match "DISPLAY" opt)
                                         ;      (esn-message "%s: %s\n\n%s" opt x (symbol-value list-var)))
                 )
@@ -473,10 +444,7 @@
                                         ;                 (add-to-list list-var (list opt text))
                                         ;               )
               )
-            val
-            )
-      )
-    )
+            val)))
                                         ;    )
   )
 (defun esn-get-options ()
@@ -498,16 +466,13 @@
       ;;
       (goto-char (point-min))
       (while (re-search-forward "[ \t]*=[ \t]*" nil t)
-        (replace-match "=")
-        )
+        (replace-match "="))
       (goto-char (point-min))
       (when (re-search-forward "^ LINK\\>" nil t)
-        (replace-match "LINK, TO, AND, BY\n      Usage: LINK")
-        )
+        (replace-match "LINK, TO, AND, BY\n      Usage: LINK"))
       (goto-char (point-min))
       (while (re-search-forward "\\<\\(FROM\\|TO\\)\\>[ \t]+n" nil t)
-        (replace-match "\\1=n")
-        )
+        (replace-match "\\1=n"))
       ;; Take out change marks and hyphenation.
       (goto-char (point-min))
       (while (re-search-forward "[ \t]*|[ \t]*$" nil t)
@@ -518,8 +483,7 @@
       ;; Make each option stand on a separate line.
       (goto-char (point-min))
       (while (re-search-forward "^ \\(-?[A-Z]\\{3,\\}\\|FO\\|(format)\\)\\( .*\\)$" nil t)
-        (replace-match (format " \\1\n %s\\2" (make-string (length (match-string 1)) ? )))
-        )
+        (replace-match (format " \\1\n %s\\2" (make-string (length (match-string 1)) ? ))))
       ;; Fix $PRIOR specific problems
       (goto-char (point-min))
       (when (re-search-forward "^   ESTIMATION" nil t)
@@ -554,23 +518,19 @@
         (delete-region (point-min) (point))
         (when (re-search-forward " When DV" nil t)
           (beginning-of-line)
-          (delete-region (point) (point-max))
-          )
+          (delete-region (point) (point-max)))
         (goto-char (point-min))
         (while (re-search-forward  "\\<\\(ORD0\\|ABS0\\)\\>" nil t)
           (replace-match "\\1\n      "))
         (when (search-forward "A maximum of 900 data records" nil t)
           (replace-match "")
           (setq p1 (point))
-          (delete-region p1 (point-max))
-          )
-        (message "%s" (buffer-substring (point-min) (point-max)))
-        )
+          (delete-region p1 (point-max)))
+        (message "%s" (buffer-substring (point-min) (point-max))))
       ;; Fix $SUB specific problem
       (goto-char (point-min))
       (when (re-search-forward "SUBROUTINES=kind" nil t)
-        (replace-match "SUBROUTINES=[DP,LIBRARY]")
-        )
+        (replace-match "SUBROUTINES=[DP,LIBRARY]"))
       ;; Fix $INCLUDE specific problem
       (goto-char (point-min))
       (while (re-search-forward "\\<NM-?TRAN\\>" nil t)
@@ -582,16 +542,12 @@
         (delete-region (point)
                        (progn
                          (when (search-forward "(See Displayed PRED-Defined Items)." nil t)
-                           (end-of-line)
-                           )
-                         (point)
-                         ))
-        )
+                           (end-of-line))
+                         (point))))
       (goto-char (point-min))
       (when (search-forward "They must be specified for each table to which they apply" nil t)
         (end-of-line)
-        (delete-region (point-min) (point))
-        )
+        (delete-region (point-min) (point)))
       ;; Fix $EST specific problems
       (goto-char (point-min))
       (when (re-search-forward "^ METHOD=kind.*$" nil t)
@@ -603,30 +559,24 @@
             (setq p1 (point))
             (when (search-forward "(See model_specification_file)." nil t)
               (replace-match "")
-              (delete-region p1 (point))
-              )
-            )
-          )
+              (delete-region p1 (point)))))
         (setq p1 (point))
         (when (re-search-forward "^ [A-Z]" nil t)
           (save-restriction
             (narrow-to-region p1 (point))
             (goto-char (point-min))
             (while (re-search-forward "\\<\\([A-Z0-9]*\\) or \\([A-Z0-9]*\\)\\>" nil t)
-              (replace-match "[\\1,\\2]")
-              )
+              (replace-match "[\\1,\\2]"))
             (goto-char (point-min))
             (while (re-search-forward "^\\(      \\)\\([A-Z]\\{3,\\}\\)\\( .*\\)" nil t)
               (replace-match (format "\\1\\2\n\\1%s\\3" (make-string (length (match-string 2)) ? )))
               (skip-chars-backward " \t|")
               (if (re-search-backward "\n\\=" nil t)
                   (when (looking-at "\n[ \t|]*")
-                    (replace-match "")))
-              )
+                    (replace-match ""))))
             (goto-char (point-min))
             (while (re-search-forward "^      \\(\\[?[A-Z,0-9]+\\]?\\)[ \t]*$" nil t)
-              (replace-match " METHOD=\\1"))
-            )
+              (replace-match " METHOD=\\1")))
           ;; Drop Descriptions of Estimation types FOCE, FOCEI, etc.
           (goto-char (point-min))
           (while (re-search-forward "^ METH=COND [A-Z]+.*" nil t)
@@ -635,11 +585,7 @@
           (goto-char (point-min))
           (while (re-search-forward "\\<NO\\(THETA\\|OMEGA\\|SIGMA\\)BOUNDTEST\\>" nil t)
             (setq tmp (substring (match-string 1) 0 1))
-            (insert (format ",NO%sBT,NO%sBOUNDTEST" tmp tmp ))
-            )
-          )
-        )
-      )
+            (insert (format ",NO%sBT,NO%sBOUNDTEST" tmp tmp ))))))
     ;; Now get Options!
     (goto-char (point-min))
     (while (re-search-forward "^ \\(-?[A-Z0-9][A-Z][A-Z0-9]*.*\\|(format)\\|filename\\|list[0-9]+\\|format[0-9]+\\)" nil t)
@@ -680,9 +626,7 @@
             (unless (save-match-data
                       (save-excursion 
                         (backward-char (length (match-string 0)))
-                        (re-search-backward "[*][ \t]*\\=" nil t)
-                        )
-                      )
+                        (re-search-backward "[*][ \t]*\\=" nil t)))
               (setq tmp (match-string 1))
               (replace-match "")
               (when (looking-at "g[.]\\([^.;]*?\\)[;.]")
@@ -695,11 +639,9 @@
                                                    "strings"
                                                    "e"
                                                    ) 'words) tmp)
-                  (setq tmp (replace-match "" nil nil tmp))
-                  )
-                (when (string-match "e[ \t]*$" tmp)
                   (setq tmp (replace-match "" nil nil tmp)))
-                )
+                (when (string-match "e[ \t]*$" tmp)
+                  (setq tmp (replace-match "" nil nil tmp))))
               (goto-char (point-min))
               (while (string-match " or " tmp)
                 (setq tmp (replace-match "," 't 't tmp)))
@@ -816,10 +758,10 @@
     ;;      Refers to general (non-data) warning messages.  May also be coded
     ;;      WARNMAXIMUM and  shorter  substrings,  e.g.,  WMAX,   WARN.   May
     ;;      appear more than once, with cumulative effect.
-
+    
     ;;      WARNINGMAXIMUM=NONE
-
-
+    
+    
     ;; The  positions of the values correspond to the positions of data items
     ;; in the $INPUT record in a 1-to-1 manner.  Each value is one of:
     ;;   DOSE (Use the value from the dose record.)
@@ -837,25 +779,16 @@
                        (point-max)
                      (beginning-of-line)
                      (skip-chars-backward "\t\n \f")
-                     (point))
-                   )
-              )
+                     (point))))
         (delete-region p1 (point))
-        (setq ret (list opt val cnt))
-        )
-
-      )
-    )
-  )
+        (setq ret (list opt val cnt))))))
 
 (defun esn-gen-data-vars ()
   "* Get reserved DATA variables used in $INPUT record"
   (interactive)
-  (let (
-        (dat-files (file-expand-wildcards (concat esn-nm-cookie-dir "/*.dat")))
+  (let ((dat-files (file-expand-wildcards (concat esn-nm-cookie-dir "/*.dat")))
         (dat-lst '())
-        abbrev
-        )
+        abbrev)
     (mapc
      (lambda(x)
        (with-temp-buffer
@@ -1591,14 +1524,8 @@
                       )
                     (setq tmp (esn-gen-cookies-quote tmp))
                     (setq ret (concat ret tmp))
-                    (setq ret (concat ret "\")"))
-                    )
-                  )
-                )
-              )
-            )
-          records
-          )
+                    (setq ret (concat ret "\")")))))))
+          records)
     (setq ret (concat ret ")\n\"* Regular expressions for Options by Record OR next record for NONMEM " esn-nm-cookie-ver "\")\n"))
     (setq tmp-lst '())
     (mapc (lambda(x)

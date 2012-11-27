@@ -146,10 +146,8 @@ file-name associated with the second element of the match.  When partial is sele
 
 (defun esn-gen-cookies-quote (txt)
   (when txt
-    (let (
-          (ret txt)
-          (case-fold-search nil)
-          )
+    (let ((ret txt)
+          (case-fold-search nil))
       (with-temp-buffer
         (insert ret)
         (goto-char (point-min))
