@@ -1881,7 +1881,7 @@ Parameters Estimate near its boundary."
   :type 'boolean
   :group 'esn-psn-execute)
 
-(defcustom esn-mode-psn-drop-dropped 't
+(defcustom esn-mode-psn-drop-dropped nil
   "PsN dropps the columns that are drop for INTERNAL PsN usage."
   :type 'boolean
   :group 'esn-psn-execute)
