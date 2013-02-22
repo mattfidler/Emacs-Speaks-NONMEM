@@ -572,8 +572,6 @@ $OMEGA 1.84  ;C ETA(1) - eIC50
     (save-excursion
       (set-buffer (find-file-noselect f))
       (delete-region (point-min) (point-max)))
-    
-    
     (save-excursion
       (setq buf (find-file-noselect f))
       (set-buffer buf)

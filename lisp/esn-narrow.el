@@ -122,6 +122,28 @@
            (= (point-max) esn-get-current-record-eof)
            (>= (point) esn-get-current-record-start)
            (<= (point) esn-get-current-record-stop)))
+
+;;;###autoload
+(defun esn-last-rec (&optional limit)
+  "Goto last record"
+  (interactive)
+  (save-match-data
+    (let* ((rec-reg (esn-reg-records 't))
+           (ret (re-search-backward rec-reg limit t)))
+      (while (esn-in-comment-p)
+        (setq ret (re-search-backward rec-reg limit t)))
+      (symbol-value 'ret))))
+
+(defun esn-next-rec (&optional limit)
+  "Goto next record"
+  (interactive)
+  (save-match-data
+    (let* ((rec-reg (esn-reg-records 't))
+           (ret (re-search-forward rec-reg limit t)))
+      (while (esn-in-comment-p)
+        (setq ret (re-search-forward rec-reg limit t)))
+      (symbol-value 'ret))))
+
 ;;;###autoload
 (defun esn-get-current-rec (&optional force-recalc)
   "Returns the current record, otherwise returns \"\".
@@ -132,15 +154,13 @@ For $AES0 and $AESINITIAL return AES0
 
 "
   (interactive)
-  (let ( 
-        (case-fold-search 't)
+  (let ((case-fold-search 't)
         (ret "")
         begin
         oend
         end
         len
         tmp
-        (rec-reg (esn-reg-records 't))
         (pt (point)))
     (if (and (not force-recalc) esn-get-current-record-start
              esn-get-current-record-stop
@@ -151,34 +171,41 @@ For $AES0 and $AESINITIAL return AES0
              (= (point-max) esn-get-current-record-eof)
              (>= (point) esn-get-current-record-start)
              (cond
-               ( (<= (point) esn-get-current-record-stop)
-                 (setq ret esn-get-current-record-val)
-                 't)
-               ( (<= (point) esn-get-current-record-stop2)
-                 (setq ret "")
-                 't)
-               ( 't
-                 nil)))
-        (symbol-value 'ret)
+              ( (<= (point) esn-get-current-record-stop)
+                (setq ret esn-get-current-record-val)
+                (unless ret
+                  (setq ret ""))
+                't)
+              ( (<= (point) esn-get-current-record-stop2)
+                (setq ret "")
+                't)
+              ( 't
+                nil)))
+        (progn
+          (when (interactive-p)
+            (message "Current Record: %s" ret))
+          (symbol-value 'ret))
       (save-excursion
         (save-match-data
-          (if (not (re-search-backward rec-reg nil t))
+          (if (not (esn-last-rec nil))
               (progn
                 (setq ret "")
                 ;; need to set begin and end and oend
                 (setq begin (point-min))
                 (setq end begin)
-                (if (not (re-search-forward rec-reg nil t))
+                (if (not (esn-next-rec nil))
                     (progn ;; No records found.  Begin=end=beginning of buffer; oend=end of buffer
                       (setq oend (point-max)))
                   ;; Found another record set oend to the beginning of that record.
                   (setq oend (match-beginning 0))))
             ;; Check for next 
             (setq ret (match-string 0))
-            (setq len (length (match-string 0)))
+            (unless ret
+              (setq ret ""))
+            (setq len (length ret))
             (setq begin (point))
             (forward-char len)
-            (if (not (re-search-forward rec-reg nil t))
+            (if (not (esn-next-rec nil))
                 (setq end (point-max))
               (backward-char (length (match-string 0)))
               (looking-at ".*")
@@ -220,6 +247,8 @@ For $AES0 and $AESINITIAL return AES0
             (message "Warning: `esn-current-abbrev-records-regexp' is undefined.  Somethings wrong with either the cookies OR `esn-switch-variables'")))
         (when esn-current-abbrev-records-regexp
           (setq esn-get-current-record-abbrev (string-match esn-current-abbrev-records-regexp (concat "$" ret)))))
+      (when (interactive-p)
+        (message "Current Record: %s" ret))
       (symbol-value 'ret))))
 
 ;;;###autoload

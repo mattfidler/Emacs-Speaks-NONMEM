@@ -2011,16 +2011,16 @@ If an absolute path is smaller, use it."
     (goto-char (point-min))
     (while (re-search-forward
             (format "^.\\{%s,\\}" (+ 0 esn-character-limit)) nil t)
-      (save-excursion
-        (if (save-match-data (string-match "^\\(TAB\\|INP\\|BIN\\)"
-                                           (esn-get-current-record)))
-            (progn
-              (esn-align-tab-hook))
-          (unless (save-match-data
-                    (string-match
-                     (format "^%s$" (regexp-opt esn-records-not-wrapped 't))
-                     (esn-get-current-record)))
-            (esn-magic-wrap nil nil 't)))))))
+      (let ((rec (esn-get-current-record)))
+        (save-excursion
+          (if (save-match-data (string-match "^\\(TAB\\|INP\\|BIN\\)" rec))
+              (progn
+                (esn-align-tab-hook))
+            (unless (save-match-data
+                      (string-match
+                       (format "^%s$" (regexp-opt esn-records-not-wrapped 't)) rec))
+              (unless (esn-in-comment-p)
+                (esn-magic-wrap nil nil 't)))))))))
 
 (defun esn-update-essentials ()
   "Update header essentials."
