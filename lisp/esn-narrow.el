@@ -132,6 +132,7 @@
         (rec-reg (esn-reg-records 't)))
     (save-match-data
       (setq ret (re-search-backward rec-reg limit t))
+      (setq md (match-data))
       (while (esn-in-comment-p)
         (setq ret (re-search-backward rec-reg limit t))
         (setq md (match-data))))
@@ -148,6 +149,7 @@
         (rec-reg (esn-reg-records 't)))
     (save-match-data
       (setq ret (re-search-forward rec-reg limit t))
+      (setq md (match-data))
       (while (esn-in-comment-p)
         (setq ret (re-search-forward rec-reg limit t))
         (setq md (match-data))))
