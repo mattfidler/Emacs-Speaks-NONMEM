@@ -127,22 +127,33 @@
 (defun esn-last-rec (&optional limit)
   "Goto last record"
   (interactive)
-  (save-match-data
-    (let* ((rec-reg (esn-reg-records 't))
-           (ret (re-search-backward rec-reg limit t)))
+  (let ((md (match-data))
+        (ret nil)
+        (rec-reg (esn-reg-records 't)))
+    (save-match-data
+      (setq ret (re-search-backward rec-reg limit t))
       (while (esn-in-comment-p)
-        (setq ret (re-search-backward rec-reg limit t)))
-      (symbol-value 'ret))))
+        (setq ret (re-search-backward rec-reg limit t))
+        (setq md (match-data))))
+    (when ret
+      (set-match-data md))
+    (symbol-value 'ret)))
 
+;;;###autoload
 (defun esn-next-rec (&optional limit)
   "Goto next record"
   (interactive)
-  (save-match-data
-    (let* ((rec-reg (esn-reg-records 't))
-           (ret (re-search-forward rec-reg limit t)))
+  (let ((md (match-data))
+        (ret nil)
+        (rec-reg (esn-reg-records 't)))
+    (save-match-data
+      (setq ret (re-search-forward rec-reg limit t))
       (while (esn-in-comment-p)
-        (setq ret (re-search-forward rec-reg limit t)))
-      (symbol-value 'ret))))
+        (setq ret (re-search-forward rec-reg limit t))
+        (setq md (match-data))))
+    (when ret
+      (set-match-data md))
+    (symbol-value 'ret)))
 
 ;;;###autoload
 (defun esn-get-current-rec (&optional force-recalc)
