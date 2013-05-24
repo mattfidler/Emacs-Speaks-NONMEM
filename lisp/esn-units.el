@@ -58,10 +58,8 @@
 ;;;###autoload
 (defun esn-get-time-units (&optional prompt)
   "Gets the time or prompts for a time variable."
-  (let (
-	(time nil)
-	(cfs case-fold-search)
-	)
+  (let ((time nil)
+	(cfs case-fold-search))
     (setq case-fold-search nil)
     (save-excursion
       (goto-char (point-min))
@@ -69,40 +67,30 @@
 	   (re-search-forward (concat "[/(]\\(" esn-time-regexp "\\)\\(?:[)/]\\|[ \t]*$\\)") nil 't)
 	   (re-search-forward (concat "[/(]\\(" esn-prefix-regexp "?" esn-time-regexp "\\)\\(?:[)/]\\>\\|[ \t]*$\\)") nil 't)
 	   )
-	  (setq time (cadr (assoc (match-string 1) esn-time-units)))
-	)
-      )
+	  (setq time (cadr (assoc (match-string 1) esn-time-units)))))
     (setq case-fold-search cfs)
-    (symbol-value 'time)
-    )
-  )
+    (symbol-value 'time)))
 
 (defun esn-get-cmt ()
   "Gets the compartment that the scale factor is referring to."
   (interactive)
   (save-excursion
-    (let (
-	  (advan nil)
+    (let ((advan nil)
 	  (sc nil)
 	  (v nil)
 	  (vn nil)
 	  (lst nil)
-	  (case-fold-search 't)
-	  )
+	  (case-fold-search 't))
       (save-excursion
 	(beginning-of-line)
 	(when (looking-at " *S\\([0-9CO]\\)\\>")
-	  (setq sc (match-string 1))
-	  )
-	)
+	  (setq sc (match-string 1))))
       (when sc
 	(save-excursion
 	  (goto-char (point-min))
 	  (re-search-forward "\\<\\$SUB" nil t)
 	  (if (re-search-forward "\\<ADVAN\\([0-9]+\\)\\>" nil t)
-	      (setq advan (match-string 1))
-	    )
-	  )
+	      (setq advan (match-string 1))))
 	(setq v (upcase sc))
 	(mapc (lambda (x)
 		(let (
@@ -110,53 +98,35 @@
 		      (with (nth 1 x))
 		      )
 		  (when (string-match what sc)
-		    (setq sc (replace-match with nil nil sc)))
-		  )
-		)
-	      (nth 1 (assoc advan esn-mode-scale-translations))
-              )
+		    (setq sc (replace-match with nil nil sc)))))
+	      (nth 1 (assoc advan esn-mode-scale-translations)))
 	(if (string-match "^[0-9]+$" sc)
 	    (setq sc (concat "Compartment #" sc))
-	  (setq sc (concat sc " Compartment"))
-	  )
+	  (setq sc (concat sc " Compartment")))
 	(when (string= v "C")
 	  (mapc (lambda (x)
-		  (let (
-			(what (nth 0 x))
-			(with (nth 1 x))
-			)
+		  (let ((what (nth 0 x))
+			(with (nth 1 x)))
 		    (when (and (string= with "Central")
 			       (string-match "^[1-9][0-9]*$" what))
-		      (setq v what)
-		      )
-		    )
-		  )
-		(nth 1 (assoc advan esn-mode-scale-translations))
-                )
-	  )
+		      (setq v what))))
+		(nth 1 (assoc advan esn-mode-scale-translations))))
 	(when (or (string= v "O") (string= v "0"))
 	  (mapc (lambda (x)
 		  (let (
 			(what (nth 0 x))
-			(with (nth 1 x))
-			)
+			(with (nth 1 x)))
 		    (when (and (string= with "Output")
 			       (string-match "^[1-9][0-9]*$" what)))
-		    (setq v what)
-		    )
-		  )
-                (nth 1 (assoc advan esn-mode-scale-translations))
-                )
-          )
+		    (setq v what)))
+                (nth 1 (assoc advan esn-mode-scale-translations))))
 	(setq vn v)
 	(setq v (concat "V" v))
 	(save-excursion
 	  (goto-char (point-min))
 	  (unless (re-search-forward (format "\\<%s\\> *=" v) nil t)
 	    (when (re-search-forward "\\<V\\> *=" nil t)
-	      (setq v "V")
-	      )
-	    )
+	      (setq v "V")))
 	  (goto-char (point-min))
 	  (unless (re-search-forward (format "\\<%s\\> *=" v) nil t)
 	    (when (re-search-forward "\\<CL\\> *=" nil t)
@@ -166,43 +136,23 @@
 		(if (re-search-forward (format "\\<K%s0\\> *=" vn) nil t)
 		    (setq v (format "CL/K%s0" vn))
 		  (if (re-search-forward "\\<KE\\> *=" nil t)
-		      (setq v "CL/KE")
-		    )
-		  )
-		)
-	      )
-	    )
-	  )
+		      (setq v "CL/KE")))))))
 	(save-excursion
 	  (unless (re-search-backward "= *\\=" nil t)
 	    (if (re-search-backward (format "= *%s *\\=" (regexp-quote v)) nil t)
 		(setq v "")
 	      (if (re-search-backward "=.*?\\=" nil t)
-		  (setq v "*")
-		)
-	      )
-	    )
-	  )
-	(setq sc (list sc v))
-	)
-      (symbol-value 'sc)
-      )
-    )
-  )
+		  (setq v "*")))))
+	(setq sc (list sc v)))
+      (symbol-value 'sc))))
+
 (defun esn-get-dose-units (&optional ignoreScale)
-  (let (
-	(dose "")
-	(case-fold-search nil)
-	)
+  (let ((dose "")
+	(case-fold-search nil))
     (unless ignoreScale
-      (let (
-	    (pk (esn-rec "PK" 't))
-	    )
+      (let ((pk (esn-rec "PK" 't)))
 	(when (string-match "^[ \t]*[Ss][0-9]+[ \t]*=.*?;.*?[Dd][Oo][Ss][Ee][ \t]*:[ \t]*\\([^;]*\\).*" pk)
-	  (setq dose (match-string 1 pk))
-	  )
-	)
-      )
+	  (setq dose (match-string 1 pk)))))
     (when (string= dose "")
       (save-excursion
 	(goto-char (point-min))
@@ -215,26 +165,15 @@
 				    "?\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)?\\)\\>.*$")
 				   ) nil t)
 
-	  (setq dose (match-string 1))
-	  )
-	)
-      )
-    (symbol-value 'dose)
-    )
-  )
+	  (setq dose (match-string 1)))))
+    (symbol-value 'dose)))
+
 (defun esn-get-volume-units (&optional ignoreScale)
-  (let (
-	(volume "")
-	)
+  (let ((volume ""))
     (unless ignoreScale
-      (let (
-	    (pk (esn-rec "PK" 't))
-	    )
+      (let ((pk (esn-rec "PK" 't)))
 	(when (string-match "^[ \t]*[Ss][0-9]+[ \t]*=.*?;.*?[Vv][Oo][Ll][A-Za-z]*[ \t]*:[ \t]*\\([^;]*\\).*" pk)
-	  (setq volume (match-string 1 pk))
-	  )
-	)
-      )
+	  (setq volume (match-string 1 pk)))))
     (when (string= volume "")
       ;; Get Volume
       (save-excursion
@@ -243,9 +182,7 @@
 				  "^[ \t]*\\<\\(?:[Tt][Vv]\\)?[Vv][0-9]+[ \t]*=.*?;.*?\\<\\("
 				  esn-prefix-regexp
 				  "?[lL]\\(?: *\\(?:\\\\\\||\\|/\\) *\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)?\\)\\>") nil t)
-	  (setq volume (match-string 1))
-	  )
-	)
+	  (setq volume (match-string 1))))
       (when (string= volume "")
 	(save-excursion
 	  (goto-char (point-min))
@@ -255,10 +192,7 @@
 				    "?[lL]\\) *\\(?:\\\\\\||\\|/\\) *"
 				    esn-time-regexp
 				    " *\\( *\\(?:\\\\\\||\\|/\\) *\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)\\>") nil t)
-	    (setq volume (concat (match-string 1) (match-string 2)))
-	    )
-	  )
-	)
+	    (setq volume (concat (match-string 1) (match-string 2))))))
       (when (string= volume "")
 	(save-excursion
 	  (goto-char (point-min))
@@ -267,21 +201,15 @@
 				    esn-prefix-regexp
 				    "?[lL]\\) *\\(?:\\\\\\||\\|/\\) *"
 				    esn-time-regexp "\\>") nil t)
-	    (setq volume (match-string 1))
-	    )
-	  )
-	)
+	    (setq volume (match-string 1)))))
       (when (string= volume "")
-	(let (
-	      (theta (esn-rec "THE" 't))
-	      )
+	(let ((theta (esn-rec "THE" 't)))
 	  (when (string-match
 		 (concat
 		  ";.*?\\<[Vv]\\(?:[CcpP]\\|[0-9]+\\|[Oo][Ll][A-Za-z.]*\\).*?\\<\\("
 		  esn-prefix-regexp
 		  "?[lL]\\(?: *\\(?:\\\\\\||\\|/\\) *\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)?\\)\\>") theta)
-	    (setq volume (match-string 1 theta))
-	    )
+	    (setq volume (match-string 1 theta)))
 	  (when (string= volume "")
 	    (when (string-match
 		   (concat
@@ -294,9 +222,7 @@
 		    "\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)"
 		    "\\)"
 		    ) theta)
-	      (setq volume (concat (match-string 1 theta) (match-string 2 theta)))
-	      )
-	    )
+	      (setq volume (concat (match-string 1 theta) (match-string 2 theta)))))
 	  (when (string= volume "")
 	    (when (string-match
 		   (concat
@@ -306,30 +232,21 @@
 		    " *\\(?:\\\\\\||\\|/\\) *"
 		    esn-time-regexp
 		    ) theta)
-	      (setq volume (match-string 1 theta))
-	      )
-	    )
-	  )
-	)
-      )
-    (symbol-value 'volume)
-    )
-  )
+	      (setq volume (match-string 1 theta)))))))
+    (symbol-value 'volume)))
+
 (defun esn-units-tmp-fn (x conc)
   "* Temporary units function"
   (when (and (not (string= "" x)) (string= conc ""))
-    (let (
-          (reg x)
-          (i 0)
-          )
+    (let ((reg x)
+          (i 0))
       (while (< i (length reg))
         (setq reg (concat
                    (substring reg 0 i)
                    "[" (downcase (substring reg i (+ i 1)))
                    (upcase (substring reg i (+ i 1))) "]"
                    (substring reg (+ i 1))))
-        (setq i (+ i 4))
-        )
+        (setq i (+ i 4)))
       (setq reg (concat "^;|? *" reg " *: *.*?\\<\\(\\("
                         esn-prefix-regexp
                         "?g\\) *\\(?:\\\\\\||\\|/\\) *\\("
@@ -339,26 +256,16 @@
       (save-excursion
         (goto-char (point-min))
         (when (re-search-forward reg nil t)
-          (setq conc (match-string 1))
-          )
-        )
-      )
-    )
-  )
+          (setq conc (match-string 1)))))))
 (defun esn-get-concentration-units (&optional ignoreScale)
-  (let (
-	(tlst '())
-	(conc "")
-	)
+  (let ((tlst '())
+	(conc ""))
     (unless ignoreScale
       (let (
 	    (pk (esn-rec "PK" 't))
 	    )
 	(when (string-match "^[ \t]*[Ss][0-9]+[ \t]*=.*?;.*?[Cc]\\(?:[pP]\\|[Oo][Nn][Cc][A-Za-z]*\\)[ \t]*:[ \t]*\\([^;]*\\).*" pk)
-	  (setq conc (match-string 1 pk))
-	  )
-	)
-      )
+	  (setq conc (match-string 1 pk)))))
     (when (string= conc "")
       ;; Get Concentration
       (let (
@@ -380,30 +287,26 @@
       )
     (while (string-match "[ \t\n]+" conc)
       (setq conc (replace-match "" nil nil conc)))
-    (symbol-value 'conc)
-    )
-  )
+    (symbol-value 'conc)))
 ;;;###autoload
 (defun esn-scale (&optional no-insert)
   "* Gets scale factor from control stream"
   (interactive)
-  (let (
-	(case-fold-search nil)
+  (let ((case-fold-search nil)
 	(cmt (esn-get-cmt))
 	(scale "")
 	(tmp1 "")
 	(tmp2 "")
 	(has-eq nil)
 	(inp-reg (esn-xpose-get-input-line 't))
-        (ret "")
-	)
+        (ret ""))
     (if (string= "*" (nth 1 cmt))
 	(progn
 	  ;(esn-magic-tab 't) ;; Skip scale check.
 	  )
     (when cmt
-      (let (
-	    (dose (esn-get-dose-units 't))
+      (let ((dose (esn-get-dose-units 't))
+            (dose-volume nil)
 	    (conc (esn-get-concentration-units 't))
 	    (volume (esn-get-volume-units 't))
             (volume-dose nil)
@@ -413,15 +316,20 @@
 	    (wtv "")
 	    (dn nil)
 	    (vn nil)
-	    (tlst '());
-	    )
+	    (tlst '()))
 	;; Now prompt
 	(setq dose (esn-prompt (format "%s Dose Units: " (nth 0 cmt))
 			       (concat "^[ \t]*\\([%]\\|\\(" esn-prefix-regexp "?\\(?:mol\\|g\\)\\(?: *\\(?:\\\\\\||\\|/\\) *" esn-prefix-regexp "?\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)?\\)\\)[ \t]*$")
 			       "Invalid Dose Units, please re-enter dose units (e.g. %, mg, mmol, mg/kg, or mg/m^2): "
 			       nil
-			       dose
-			       ))
+			       dose))
+        (when (string-match "^[ \t]*[%][ \t]*$" dose)
+          (setq volume-dose
+                (esn-prompt
+                 (format "%s Volume Dosed (eg 30 uL or VOL uL): " (nth 0 cmt))
+                 (concat "^[ \t]*[^ \t]+[ \t]+\\(" esn-prefix-regexp
+                         "?[lL]\\)[ \t]*$")
+                 "Invalid Volume dosed, please re-enter volume dosed: ")))
 
 	(setq conc (esn-prompt (format "%s Concentration Units (e.g. g/L or nM): " (nth 0 cmt))
 			       (concat
@@ -452,47 +360,32 @@
 				      "?[lL]\\)\\(?: *\\(?:\\\\\\||\\|/\\) *" esn-prefix-regexp "?m\\(?:\\^\\|\\*\\*\\)?2\\)?[ \t]*$")
 			      "Invalid Compartment Volume Units, please re-enter volume units (L or L/m^2): "
 			      nil
-			      volume
-			      )
-		  )
+			      volume))
 	    (setq volume
 		  (esn-prompt (format "Desired %s Volume Units: " (nth 0 cmt))
 			      (concat "^[ \t]*\\(" esn-prefix-regexp
 				      "?[lL]\\)\\(?: *\\(?:\\\\\\||\\|/\\) *" esn-prefix-regexp "?g\\)?[ \t]*$")
 			      "Invalid Compartment Volume Units, please re-enter volume units (L or L/kg): "
 			      nil
-			      volume
-			      )
-		  )
-	    )
-	  )
+			      volume))))
 	(when (string-match (concat " *\\(?:\\\\\\||\\|/\\) *\\("
 				    esn-prefix-regexp
 				    "?\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)[ \t]*$") dose)
 	  (setq bw (match-string 1 dose))
 	  (setq dose (replace-match "" nil nil dose))
 	  (mapc (lambda(x)
-		  (let (
-			(case-fold-search 't)
-			)
+		  (let ((case-fold-search 't))
 		    (when (string-match (format "^%s$" inp-reg) x)
-		      (setq wtv (concat "/" (upcase x)))
-		      )
-		    )
-		  )
+		      (setq wtv (concat "/" (upcase x))))))
 		(if (string-match "2$" bw)
 		    esn-xpose-bsa-variables
-		  esn-xpose-weight-variables
-		 )
-		)
+		  esn-xpose-weight-variables))
 	  (when (string-match (concat " *\\(?:\\\\\\||\\|/\\) *\\(" esn-prefix-regexp "?\\(?:g\\|m\\(?:\\^\\|\\*\\*\\)?2\\)\\)[ \t]*$") volume)
 	    (setq  vbw (match-string 1 volume))
 	    (setq volume (replace-match "" nil nil volume))
 	    (setq wtv "")
 	    (setq dn bw)
-	    (setq vn vbw)
-	    )
-	  )
+	    (setq vn vbw)))
 	(if (and (string-match "M$" conc) (string-match "mol$" dose))
 	    (progn
 	      ;; Same as if converting g, convert concentration and string to match
@@ -500,8 +393,7 @@
 		(setq tmp1 (replace-match "g/L" nil nil conc)))
 	      (when (string-match "mol$" dose)
 		(setq tmp2 (replace-match "g" nil nil dose)))
-	      (setq scale (esn-get-scale-factor dn vn tmp2 volume tmp1))
-	      )
+	      (setq scale (esn-get-scale-factor dn vn tmp2 volume tmp1 nil nil volume-dose)))
 	  (if (or (string-match "M$" conc) (string-match "mol$" dose))
 	      (progn
 		;; One of the units is in terms of moles, but the other is not.
@@ -510,21 +402,15 @@
 				     "^[0-9.]"))
 		(when (string-match "M$" conc)
 		  (setq tmp1 (replace-match "g/L" nil nil conc))
-		  (setq scale (esn-get-scale-factor dn vn dose volume tmp1 nil mw))
-		  (setq conc (concat conc "; MW: " mw))
-		  )
+		  (setq scale (esn-get-scale-factor dn vn dose volume tmp1 nil mw volume-dose))
+		  (setq conc (concat conc "; MW: " mw)))
 		(when (string-match "mol$" dose)
 		  (setq tmp1 (replace-match "g" nil nil dose))
-		  (setq scale (esn-get-scale-factor dn vn tmp1 volume conc mw))
-		  (setq dose (concat dose "; MW: " mw))
-		  )
-		)
-	    (setq scale (esn-get-scale-factor dn vn dose volume conc))
-	    )
-	  )
+		  (setq scale (esn-get-scale-factor dn vn tmp1 volume conc mw volume-dose))
+		  (setq dose (concat dose "; MW: " mw))))
+	    (setq scale (esn-get-scale-factor dn vn dose volume conc nil nil volume-dose))))
 	(save-excursion
-	  (setq has-eq (re-search-backward "=.*?\\=" nil t))
-	  )
+	  (setq has-eq (re-search-backward "=.*?\\=" nil t)))
         (with-temp-buffer
           (unless has-eq
             (insert "="))
@@ -533,25 +419,19 @@
           (insert scale)
           (insert (concat "; Dose: " dose))
           (when bw
-            (insert (concat "/" bw))
-            )
+            (insert (concat "/" bw)))
+          (when volume-dose
+            (insert (concat " (" volume-dose ")")))
           (insert (concat "; Volume: " volume))
           (when vbw
-            (insert (concat "/" vbw))
-            )
+            (insert (concat "/" vbw)))
           (insert (concat "; Conc: " conc))
-          (setq ret (buffer-substring (point-min) (point-max)))
-          )
+          (setq ret (buffer-substring (point-min) (point-max))))
         (unless no-insert
-          (insert ret)
-          )
-        (symbol-value 'ret)
-	)
-      )
-    ))
-  )
+          (insert ret))
+        (symbol-value 'ret))))))
 
-(defun esn-get-scale-factor (dn vn dose volume conc &optional times div)
+(defun esn-get-scale-factor (dn vn dose volume conc &optional times div volume-dose)
   "This function returns the scale factor when the dose is given in units of ``dose'', volume has units of ``volume'' and the concentration measurments are in ``conc'' units.
 Dose should be
 mg or dg or some other prefix defined by esn-prefix-units and g.
@@ -572,27 +452,26 @@ The divide sign can be any of the following characters ``\|/''.
 	(z 0)
 	(scale1 "")
 	(scale2 "")
-	(scale "")
-	)
-    (if (not (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)g[ \t]*$" dose))
+	(scale ""))
+    (if (not (or (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)g[ \t]*$" dose)
+                 (string-match "^[ \t]*\\([%]\\)[ \t]*$" dose)))
 	(esn-error "Dose is not in the proper units should be in some multiple of g like mg or ng.")
       (setq dp (match-string 1 dose))
+      (when (string= dp "%")
+        ;; Percentage converts to cg/mL
+        (setq dp "c"))
       (if (not (string= dp ""))
 	  (if (not (assoc dp esn-prefix-units))
 	      (esn-error "Dose unit unrecognized (%sg)." dp)
-	    (setq x (- (cadr (assoc dp esn-prefix-units))))
-	    )
-	)
-      )
+	    (setq x (- (cadr (assoc dp esn-prefix-units)))))))
     (if (not (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)?[lL][ \t]*$" volume))
 	(esn-error "Volume should be in terms of l like ml or nl.")
       (setq vp (match-string 1 volume))
       (if (not (string= vp ""))
 	  (if (not (assoc vp esn-prefix-units))
 	      (esn-error "Volume unit unrecognized (%sg)." vp)
-	    (setq y (- (cadr (assoc vp esn-prefix-units)))))
-	)
-      )
+	    (setq y (- (cadr (assoc vp esn-prefix-units)))))))
+    
     (if (not (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)g[ \t]*[\\|/][ \t]*\\([A-Za-z]\\{0,2\\}\\)?[lL][ \t]*$" conc))
 	(esn-error "Concentration should be in terms of g/l like ng/L or  mg/mL.")
       (setq cv (match-string 1 conc))
@@ -600,20 +479,31 @@ The divide sign can be any of the following characters ``\|/''.
       (if (not (string= cv ""))
 	  (if (not (assoc cv esn-prefix-units))
 	      (esn-error "Concentration unit not recognized (%sg/%sl)" cv cu)
-	    (setq v (- (cadr (assoc cv esn-prefix-units))))
-	    )
-	)
+	    (setq v (- (cadr (assoc cv esn-prefix-units))))))
+      
       (if (not (string= cu ""))
 	  (if (not (assoc cu esn-prefix-units))
 	      (esn-error "Concentration unit not recognized (%sg/%sl)" cv cu)
-	    (setq u (- (cadr (assoc cu esn-prefix-units))))
-	    )
-	)
-      )
+	    (setq u (- (cadr (assoc cu esn-prefix-units)))))))
     ;;
     ;; Ok. Now figure out the result.
     ;;
     (setq z (- (- x y) (- v u)))
+    (when volume-dose
+      (when (string-match
+             (concat "\\("
+                     esn-prefix-regexp
+                     "\\)?[Ll][ \t]*$")
+             volume-dose)
+        ;; Should convert volume dosed to mL
+        (setq u (+ 3 (cadr (assoc (match-string 1 volume-dose) esn-prefix-units))))
+        ;; Add to scale factor.
+        (setq z (- z u))
+        (when (string-match "^[ \t]*\\([^ \t]+\\)[ \t]+" volume-dose)
+          (setq u (match-string 1 volume-dose))
+          (if div
+              (setq div (format "(%s*%s)" div u))
+            (setq div u)))))
     (when (and dn vn)
       (if (not (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)g[ \t]*$" dn))
 	  (if (not (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)m\\(?:\\^\\|\\*\\*\\)2[ \t]*$" dn))
@@ -621,8 +511,7 @@ The divide sign can be any of the following characters ``\|/''.
 	    (setq dn (match-string 1 dn))
 	    (if (not (string-match "^[ \t]*\\([A-Za-z]\\{0,2\\}\\)m\\(?:\\^\\|\\*\\*\\)2[ \t]*$" vn))
 		(esn-error "Volume normization is not in the proper units should be in some multiple of m^2 like mm^2.")
-	      (setq vn (match-string 1 vn))
-	      )
+	      (setq vn (match-string 1 vn)))
 	    (if (not (assoc vn esn-prefix-units))
 		(esn-error "Volume normalization unit not recognized %sm^2" vn)
 	      (setq v (cadr (assoc vn esn-prefix-units))))
@@ -643,17 +532,12 @@ The divide sign can be any of the following characters ``\|/''.
 	    (setq v (cadr (assoc vn esn-prefix-units))))
 	  (if (not (assoc dn esn-prefix-units))
 	      (esn-error "Dose normalization unit not recognized %sg" dn)
-	    (setq u (cadr (assoc dn esn-prefix-units)))
-	    )
-	  )
-	)
-      (setq z (+ z (- v u)))
-      )
+	    (setq u (cadr (assoc dn esn-prefix-units))))))
+      (setq z (+ z (- v u))))
     (if (>= z 0)
 	(setq scale "*")
       (setq scale "/")
-      (setq z (- z))
-      )
+      (setq z (- z)))
     (when (and times (not div))
       (if (string= "*" scale)
 	  (progn
@@ -661,30 +545,21 @@ The divide sign can be any of the following characters ``\|/''.
 	    (setq scale2 (concat scale "(" times "*10**" (number-to-string z) ")"))
 	    )
 	(setq scale1 (concat "*" times scale "1" (make-string z ?0)))
-	(setq scale2 (concat "*" times scale "(10**" (number-to-string z) ")"))
-	)
-      )
+	(setq scale2 (concat "*" times scale "(10**" (number-to-string z) ")"))))
     (when (and div (not times))
       (if (string= "*" scale)
 	  (progn
 	    (setq scale1 (concat scale "1" (make-string z ?0) "/" div))
-	    (setq scale2 (concat scale "10**" (number-to-string z) ")/" div))
-	    )
+	    (setq scale2 (concat scale "10**" (number-to-string z) ")/" div)))
 	(setq scale1 (concat scale "(" div (make-string z ?0) ")"))
-	(setq scale2 (concat scale "(" div "*10**" (number-to-string z ) ")"))
-	)
-      )
+	(setq scale2 (concat scale "(" div "*10**" (number-to-string z ) ")"))))
     (unless (or times div)
       (setq scale1 (concat scale "1" (make-string z ?0)))
-      (setq scale2 (concat scale "(10**" (number-to-string z) ")"))
-      )
+      (setq scale2 (concat scale "(10**" (number-to-string z) ")")))
     (if (>= 3 z)
 	(setq scale scale1)
-      (setq scale scale2)
-      )
-    (symbol-value 'scale)
-    )
-  )
+      (setq scale scale2))
+    (symbol-value 'scale)))
 
 
 (provide 'esn-units)
