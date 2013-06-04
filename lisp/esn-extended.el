@@ -77,7 +77,7 @@
         (svar (or sig (esn-get-variable-names "SIG")))
         (dups '())
         (there "")
-        (case-fold-search 't))
+        (case-fold-search t))
     (mapc (lambda(x)
             (if (string-match (format "\\<%s\\>" x) there)
                 (add-to-list 'dups (downcase x))

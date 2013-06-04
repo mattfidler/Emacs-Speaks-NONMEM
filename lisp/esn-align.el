@@ -570,118 +570,119 @@ If is-bind is true, produces $BIND records"
 (defun esn-align-equals-fun-actual ()
   "Defines alignment function for PK.  Should not cause buffer modification."
   (interactive)
-  (when (or (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
-    (save-restriction
-      (if (and esn-align-at-equals 
-               (string-match esn-current-abbrev-records-regexp
-                             (concat "$" (esn-get-current-record))))
-          (save-excursion
-            (let
-                ((pm (point-min)) 
-                 (buf-mod (buffer-modified-p)))
-              (esn-narrow-rec)
-              (unless (= pm (point-min))
-                (goto-char (point-min))
-                (let (
-                      (align-to-tab-stop nil)
-                      (space-num '()))
+  (unless mark-active 
+    (when (or (not (or (fboundp 'yas--snippets-at-point)
+                       (fboundp 'yas/snippets-at-point)))
+              (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+                  (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+              (and (or yas/minor-mode yas-minor-mode)
+                   (let ((yap (if (fboundp 'yas/snippets-at-point)
+                                  (yas/snippets-at-point 'all-snippets)
+                                (yas--snippets-at-point 'all-snippets))))
+                     (or (not yap) (and yap (= 0 (length yap)))))))
+      (save-restriction
+        (if (and esn-align-at-equals 
+                 (string-match esn-current-abbrev-records-regexp
+                               (concat "$" (esn-get-current-record))))
+            (save-excursion
+              (let
+                  ((pm (point-min)) 
+                   (buf-mod (buffer-modified-p)))
+                (esn-narrow-rec)
+                (unless (= pm (point-min))
+                  (goto-char (point-min))
+                  (let (
+                        (align-to-tab-stop nil)
+                        (space-num '()))
+                    (goto-char (point-min))
+                    (while (search-forward ";" nil t)
+                      (insert " "))
+                    ;; Switch out NONMEM 7 operators as follows:
+                    ;; ==  -> ^^
+                    ;; /=  -> /^
+                    ;; >=  -> >^
+                    ;; <=  -> <^
+                    (goto-char (point-min))              
+                    (while (re-search-forward "\\([=/><]\\)=" nil t)
+                      (cond
+                       ( (string= "==" (match-string 0))
+                         (replace-match "^^"))
+                       ( 't
+                         (replace-match "\\1^"))))
+                    (goto-char (point-min))
+                    (while (re-search-forward "^\\( +\\)" nil t)
+                      (add-to-list 'space-num (length (match-string 1))))
+                    ;; Align different alignments to different spaces.
+                    (mapc (lambda(space)
+                            (let (
+                                  (sp (make-string space ? )))
+                              (align-regexp (point-min) (point-max)
+                                            (format "^%s[^=\n \t()]*\\(?:([0-9.]+\\(?: *, *[0-9.]+\\)?)\\)?\\([ \t]*\\)[=]" sp)
+                                            1 1 t)
+                              (align-regexp (point-min) (point-max)
+                                            (format "^%sIF *([^)]*) *[^=\n \t]*\\([ \t]*\\)[=]" sp)
+                                            1 1 t)))
+                          space-num
+                          )
+                    (esn-align-matrix-comment))
+                  (untabify (point-min) (point-max))
                   (goto-char (point-min))
                   (while (search-forward ";" nil t)
+                    (delete-char 1))
+                  (goto-char (point-max))
+                  (while (re-search-backward "=\\([^ ]\\)" nil t)
+                    (forward-char 1)
                     (insert " "))
-                  ;; Switch out NONMEM 7 operators as follows:
-                  ;; ==  -> ^^
-                  ;; /=  -> /^
-                  ;; >=  -> >^
-                  ;; <=  -> <^
+                  (when (and nil (string= "DES" (esn-get-current-record)))
+                    (let (
+                          (mxa (esn-max-a))
+                          (i 1)
+                          (align-to-tab-stop nil))
+                      (goto-char (point-min))
+                      (while (re-search-forward "=" nil t)
+                        (skip-chars-forward " \t")
+                        (unless (looking-at "[-+]")
+                          (insert "+")))
+                      (goto-char (point-min))
+                      (while (re-search-forward "=" nil t)
+                        (setq i 1)
+                        (while (<= i mxa)
+                          (unless (re-search-forward
+                                   (format "\\=[ \t]*[+-].*?[Aa](%s)[^ \t\n]*" i)
+                                   nil t)
+                            (and (looking-at "[ \t]*[+-]\\([^ \t\n]*\\)")
+                                 (not (string-match "A([0-9.]+)" (match-string 1)))
+                                 (re-search-forward "\\=[ \t]*[+-]\\([^ \t\n]*\\)" nil t))
+                            (insert (format "+~A(%s)" i)))
+                          (setq i (+ i 1))))
+                      (align-regexp (point-min) (point-max)
+                                    "\\([ \t]*\\)[+-].*?A([0-9.]+)[^ \t\n]*"
+                                    1 1 't)
+                      (untabify (point-min) (point-max))
+                      (goto-char (point-min))
+                      (while (re-search-forward "\\+~A([0-9.]+)" nil t)
+                        (unless (esn-in-comment-p (length (match-string 0)))
+                          (replace-match (make-string (length (match-string 0)) ? ))))
+                      (goto-char (point-min))
+                      (while (re-search-forward "  +\\(;.*$\\|$\\)" nil t)
+                        (backward-char (length (match-string 1)))
+                        (just-one-space))))
+                  ;; Switch back NONMEM 7 operators as follows:
+                  ;; ==  <- ^^
+                  ;; /=  <- /^
+                  ;; >=  <- >^
+                  ;; <=  <- <^
                   (goto-char (point-min))              
-                  (while (re-search-forward "\\([=/><]\\)=" nil t)
+                  (while (re-search-forward "\\([/><]\\|\\^\\)\\^" nil t)
                     (cond
-                     ( (string= "==" (match-string 0))
-                       (replace-match "^^"))
+                     ( (string= "^^" (match-string 0))
+                       (replace-match "=="))
                      ( 't
-                       (replace-match "\\1^"))))
-                  (goto-char (point-min))
-                  (while (re-search-forward "^\\( +\\)" nil t)
-                    (add-to-list 'space-num (length (match-string 1))))
-                  ;; Align different alignments to different spaces.
-                  (mapc (lambda(space)
-                          (let (
-                                (sp (make-string space ? )))
-                            (align-regexp (point-min) (point-max)
-                                          (format "^%s[^=\n \t()]*\\(?:([0-9.]+\\(?: *, *[0-9.]+\\)?)\\)?\\([ \t]*\\)[=]" sp)
-                                          1 1 t)
-                            (align-regexp (point-min) (point-max)
-                                          (format "^%sIF *([^)]*) *[^=\n \t]*\\([ \t]*\\)[=]" sp)
-                                          1 1 t)))
-                        space-num
-                        )
-                  (esn-align-matrix-comment))
-                (untabify (point-min) (point-max))
-                (goto-char (point-min))
-                (while (search-forward ";" nil t)
-                  (delete-char 1))
-                (goto-char (point-max))
-                (while (re-search-backward "=\\([^ ]\\)" nil t)
-                  (forward-char 1)
-                  (insert " "))
-                (when (and nil (string= "DES" (esn-get-current-record)))
-                  (let (
-                        (mxa (esn-max-a))
-                        (i 1)
-                        (align-to-tab-stop nil))
-                    (goto-char (point-min))
-                    (while (re-search-forward "=" nil t)
-                      (skip-chars-forward " \t")
-                      (unless (looking-at "[-+]")
-                        (insert "+")))
-                    (goto-char (point-min))
-                    (while (re-search-forward "=" nil t)
-                      (setq i 1)
-                      (while (<= i mxa)
-                        (unless (re-search-forward
-                                 (format "\\=[ \t]*[+-].*?[Aa](%s)[^ \t\n]*" i)
-                                 nil t)
-                          (and (looking-at "[ \t]*[+-]\\([^ \t\n]*\\)")
-                               (not (string-match "A([0-9.]+)" (match-string 1)))
-                               (re-search-forward "\\=[ \t]*[+-]\\([^ \t\n]*\\)" nil t))
-                          (insert (format "+~A(%s)" i)))
-                        (setq i (+ i 1))))
-                    (align-regexp (point-min) (point-max)
-                                  "\\([ \t]*\\)[+-].*?A([0-9.]+)[^ \t\n]*"
-                                  1 1 't)
-                    (untabify (point-min) (point-max))
-                    (goto-char (point-min))
-                    (while (re-search-forward "\\+~A([0-9.]+)" nil t)
-                      (unless (esn-in-comment-p (length (match-string 0)))
-                        (replace-match (make-string (length (match-string 0)) ? ))))
-                    (goto-char (point-min))
-                    (while (re-search-forward "  +\\(;.*$\\|$\\)" nil t)
-                      (backward-char (length (match-string 1)))
-                      (just-one-space))))
-                ;; Switch back NONMEM 7 operators as follows:
-                ;; ==  <- ^^
-                ;; /=  <- /^
-                ;; >=  <- >^
-                ;; <=  <- <^
-                (goto-char (point-min))              
-                (while (re-search-forward "\\([/><]\\|\\^\\)\\^" nil t)
-                  (cond
-                   ( (string= "^^" (match-string 0))
-                     (replace-match "=="))
-                   ( 't
-                     (replace-match "\\1="))))
-                (goto-char (point-max)))
-              (widen)
-              (unless buf-mod
-                (set-buffer-modified-p nil))))))))
+                       (replace-match "\\1="))))
+                  (goto-char (point-max)))
+                (widen)
+                (unless buf-mod
+                  (set-buffer-modified-p nil)))))))))
 
 (defun esn-align-matrix-comment ()
   "Aligns the matrix comment for point-min and point-max"
@@ -771,124 +772,125 @@ If is-bind is true, produces $BIND records"
 (defun esn-align-matrix-actual-1 ()
   "Align matricies and comments.  Should not cause buffer to be modified"
   (interactive)
-  (when (or (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
-    (save-restriction
-      (let ((rec (esn-get-current-record)))
-        (when (string-match "\\(THE\\|THT\\|OME\\|SIG\\)" rec)
-          (when esn-align-matrices
-            (save-excursion
+  (unless mark-active
+    (when (or (not (or (fboundp 'yas--snippets-at-point)
+                       (fboundp 'yas/snippets-at-point)))
+              (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+                  (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+              (and (or yas/minor-mode yas-minor-mode)
+                   (let ((yap (if (fboundp 'yas/snippets-at-point)
+                                  (yas/snippets-at-point 'all-snippets)
+                                (yas--snippets-at-point 'all-snippets))))
+                     (or (not yap) (and yap (= 0 (length yap)))))))
+      (save-restriction
+        (let ((rec (esn-get-current-record)))
+          (when (string-match "\\(THE\\|THT\\|OME\\|SIG\\)" rec)
+            (when esn-align-matrices
               (save-excursion
-                (re-search-backward "\\<\\$" nil t)
-                (end-of-line)
-                (esn-narrow-rec))
-              (let ((align-to-tab-stop nil)
-                    (case-fold-search 't)
-                    (add-it nil)
-                    (pmx (point-max))
-                    (blk nil)
-                    (len 0)
-                    (per "?")
-                    (in-com nil)
-                    (pt (point))
-                    (esn-tmp-goto-pt nil)
-                    (same nil)
-                    (buf-mod (buffer-modified-p)))
-                ;; Update point.
-                (goto-char (point-min))
-                (when (re-search-forward "\\<BLOCK *\\(( *[0-9]+ *)\\)?" nil t)
+                (save-excursion
+                  (re-search-backward "\\<\\$" nil t)
+                  (end-of-line)
+                  (esn-narrow-rec))
+                (let ((align-to-tab-stop nil)
+                      (case-fold-search 't)
+                      (add-it nil)
+                      (pmx (point-max))
+                      (blk nil)
+                      (len 0)
+                      (per "?")
+                      (in-com nil)
+                      (pt (point))
+                      (esn-tmp-goto-pt nil)
+                      (same nil)
+                      (buf-mod (buffer-modified-p)))
+                  ;; Update point.
+                  (goto-char (point-min))
+                  (when (re-search-forward "\\<BLOCK *\\(( *[0-9]+ *)\\)?" nil t)
+                    (widen)
+                    (setq blk 't)
+                    (narrow-to-region (point) pmx))
+                  (when (and blk (re-search-forward "\\<SAME?\\>" nil t))
+                    (setq blk nil)
+                    (setq same nil))
+                  (unless blk
+                    (unless same
+                      ;; Standard align.
+                      (when (and esn-align-add-comma
+                                 (or (string= rec "THE") (string= rec "THT")))
+                        ;;
+                        (esn-theta-add-comma))
+                      (esn-align-matrix-comment)))
+                  (when blk
+                    (goto-char pt)
+                    (save-excursion
+                      ;; Step one, put periods in where they are needed.
+                      (goto-char (point-min))
+                      (while (re-search-forward "-?[0-9]+\\>" nil t)
+                        (setq add-it 't)
+                        (save-excursion
+                          (when (re-search-backward "\\.[0-9]+\\=" nil t)
+                            (setq add-it nil))
+                          (when (re-search-backward ";.*\\=" nil t)
+                            (setq add-it nil)))
+                        (if add-it
+                            (if (looking-at " ")
+                                (replace-match "!")
+                              (insert "!"))))
+                      ;; Step two, take out periods and ! in comments.
+                      (goto-char (point-min))
+                      (while (re-search-forward "[.!]" nil t)
+                        (save-match-data
+                          (setq in-com (re-search-backward ";.*\\=" nil t)))
+                        (when in-com
+                          (if (string= (match-string 0)  ".")
+                              (replace-match "~~,~~")
+                            (replace-match "~,~"))))
+                      ;; Step three, take out double spaces unless currently in the double
+                      ;; spaced area.
+                      )
+                    (skip-chars-backward " \t")
+                    (setq pt (point))
+                    (goto-char (point-max))
+                    (while (re-search-backward "[^ ]  +" nil t)
+                      (unless (= pt (point))
+                        (forward-char 2)
+                        (looking-at " *")
+                        (replace-match "")))
+                    ;; Step four, put in ~ spacers for numbers and periods like " ."
+                    (goto-char (point-min))
+                    (while (re-search-forward " \\." nil t)
+                      (unless (esn-in-comment-p)
+                        (backward-char 2)
+                        (insert "~")
+                        (delete-char 1)
+                        (forward-char 1)))
+                    (align-regexp (point-min) (point-max)
+                                  "\\([ \t]*\\)[.!]" 1 0 t)
+                    (goto-char (point-min))
+                    (while (re-search-forward "~~,~~" nil t)
+                      (replace-match "."))
+                    (goto-char (point-min))
+                    (while (re-search-forward "~,~" nil t)
+                      (replace-match "!"))
+                    (untabify (point-min) (point-max))
+                    (goto-char (point-min))
+                    (while (re-search-forward "\\(-?[0-9]+\\)\\( *\\)\\([.!]\\)" nil t)
+                      (setq per (match-string 3))
+                      (backward-char (length (match-string 0)))
+                      (insert (make-string (length (match-string 2)) ? ))
+                      (forward-char (length (match-string 1)))
+                      (delete-region (point) (+ (point) (length (match-string 2))))
+                      (when (looking-at "!")
+                        (replace-match " ")))
+                    ;; Now take out ~.
+                    (goto-char (point-min))
+                    (while (re-search-forward "~" nil t)
+                      (unless (esn-in-comment-p)
+                        (replace-match " ")))
+                    (esn-align-matrix-comment))
                   (widen)
-                  (setq blk 't)
-                  (narrow-to-region (point) pmx))
-                (when (and blk (re-search-forward "\\<SAME?\\>" nil t))
-                  (setq blk nil)
-                  (setq same nil))
-                (unless blk
-                  (unless same
-                    ;; Standard align.
-                    (when (and esn-align-add-comma
-                               (or (string= rec "THE") (string= rec "THT")))
-                      ;;
-                      (esn-theta-add-comma))
-                    (esn-align-matrix-comment)))
-                (when blk
-                  (goto-char pt)
-                  (save-excursion
-                    ;; Step one, put periods in where they are needed.
-                    (goto-char (point-min))
-                    (while (re-search-forward "-?[0-9]+\\>" nil t)
-                      (setq add-it 't)
-                      (save-excursion
-                        (when (re-search-backward "\\.[0-9]+\\=" nil t)
-                          (setq add-it nil))
-                        (when (re-search-backward ";.*\\=" nil t)
-                          (setq add-it nil)))
-                      (if add-it
-                          (if (looking-at " ")
-                              (replace-match "!")
-                            (insert "!"))))
-                    ;; Step two, take out periods and ! in comments.
-                    (goto-char (point-min))
-                    (while (re-search-forward "[.!]" nil t)
-                      (save-match-data
-                        (setq in-com (re-search-backward ";.*\\=" nil t)))
-                      (when in-com
-                        (if (string= (match-string 0)  ".")
-                            (replace-match "~~,~~")
-                          (replace-match "~,~"))))
-                    ;; Step three, take out double spaces unless currently in the double
-                    ;; spaced area.
-                    )
-                  (skip-chars-backward " \t")
-                  (setq pt (point))
-                  (goto-char (point-max))
-                  (while (re-search-backward "[^ ]  +" nil t)
-                    (unless (= pt (point))
-                      (forward-char 2)
-                      (looking-at " *")
-                      (replace-match "")))
-                  ;; Step four, put in ~ spacers for numbers and periods like " ."
-                  (goto-char (point-min))
-                  (while (re-search-forward " \\." nil t)
-                    (unless (esn-in-comment-p)
-                      (backward-char 2)
-                      (insert "~")
-                      (delete-char 1)
-                      (forward-char 1)))
-                  (align-regexp (point-min) (point-max)
-                                "\\([ \t]*\\)[.!]" 1 0 t)
-                  (goto-char (point-min))
-                  (while (re-search-forward "~~,~~" nil t)
-                    (replace-match "."))
-                  (goto-char (point-min))
-                  (while (re-search-forward "~,~" nil t)
-                    (replace-match "!"))
-                  (untabify (point-min) (point-max))
-                  (goto-char (point-min))
-                  (while (re-search-forward "\\(-?[0-9]+\\)\\( *\\)\\([.!]\\)" nil t)
-                    (setq per (match-string 3))
-                    (backward-char (length (match-string 0)))
-                    (insert (make-string (length (match-string 2)) ? ))
-                    (forward-char (length (match-string 1)))
-                    (delete-region (point) (+ (point) (length (match-string 2))))
-                    (when (looking-at "!")
-                      (replace-match " ")))
-                  ;; Now take out ~.
-                  (goto-char (point-min))
-                  (while (re-search-forward "~" nil t)
-                    (unless (esn-in-comment-p)
-                      (replace-match " ")))
-                  (esn-align-matrix-comment))
-                (widen)
-                (unless buf-mod
-                  (set-buffer-modified-p nil))))))))))
+                  (unless buf-mod
+                    (set-buffer-modified-p nil)))))))))))
 
 
 (defun esn-number-theta-hook ()

@@ -198,6 +198,7 @@
 (defun esn-before-change-functions-hook (beg end)
   "Called when in EsN mode on change of buffer."
   (when (and (eq major-mode 'esn-mode)
+             (not mark-active)
              (or (not (or (fboundp 'yas--snippets-at-point)
                           (fboundp 'yas/snippets-at-point)))
                  (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
@@ -241,7 +242,9 @@
   "Define a timer to run the esn-post-command-hook so that it doesn't incessantly redraw if not needed."
   (interactive)
   ;;  (message "Last Command: %s" last-command)
-  (when (or (not (or (fboundp 'yas--snippets-at-point)
+  (when (or
+         (not mark-active)
+         (not (or (fboundp 'yas--snippets-at-point)
                      (fboundp 'yas/snippets-at-point)))
             (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
                 (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
@@ -372,15 +375,17 @@
 
 (defun esn-pre-command-hook ()
   "Esn's pre command hook"
-  (when (or (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
+  (when (or
+         (not mark-active)
+         (not (or (fboundp 'yas--snippets-at-point)
+                  (fboundp 'yas/snippets-at-point)))
+         (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+             (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+         (and (or yas/minor-mode yas-minor-mode)
+              (let ((yap (if (fboundp 'yas/snippets-at-point)
+                             (yas/snippets-at-point 'all-snippets)
+                           (yas--snippets-at-point 'all-snippets))))
+                (or (not yap) (and yap (= 0 (length yap)))))))
     (unless esn-run-save-fn
       (setq esn-last-file-name (buffer-file-name))
       
@@ -1035,15 +1040,17 @@
 (defun esn-magic-wrap-actual (&optional char rec force)
   "*Wrapping function called on spaces, returns, tabs and characters."
   (interactive)
-  (when (or (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
+  (when (or
+         (not mark-active)
+         (not (or (fboundp 'yas--snippets-at-point)
+                  (fboundp 'yas/snippets-at-point)))
+         (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+             (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+         (and (or yas/minor-mode yas-minor-mode)
+              (let ((yap (if (fboundp 'yas/snippets-at-point)
+                             (yas/snippets-at-point 'all-snippets)
+                           (yas--snippets-at-point 'all-snippets))))
+                (or (not yap) (and yap (= 0 (length yap)))))))
     (unless esn-skip-wrap
       (when (eq major-mode 'esn-mode)
         (if (or (string= (esn-current-rec) "TAB")

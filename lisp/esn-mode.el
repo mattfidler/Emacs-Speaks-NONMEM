@@ -453,8 +453,6 @@
       (setq i (+ i 1))))
   (eval-buffer))
 
-
-(setq magic-mode-alist (cons '("[ \t\n]*\\$[Pp][Rr][Oo][A-Za-z]*[ \t]*" . esn-mode) magic-mode-alist))
 (provide 'esn-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; esn-mode.el ends here

@@ -92,10 +92,15 @@
               (setq ret nil)
             (forward-line -1)
             (beginning-of-line)))))
+    (when (and (buffer-file-name)
+               (string-match
+                (format "[.]%s$" (regexp-opt esn-nonmem-output-extension t))
+                (buffer-file-name)))
+      (setq ret nil))
     (symbol-value 'ret)))
 
 (add-to-list 'magic-mode-alist
-             '( esn-turn-on-when-find-problem . esn-mode))
+             '(esn-turn-on-when-find-problem . esn-mode))
 
 (defcustom esn-default-extension
   '(".mod"
@@ -108,10 +113,11 @@
           (string :tag "Extension for NONMEM model"))
   :group 'esn-mode)
 
-(defcustom esn-nonmem-output-extension '(".lst"
-                                         ".rpt"
-                                         ".out"
-                                         ".res")
+(defcustom esn-nonmem-output-extension
+  '(".lst"
+    ".rpt"
+    ".out"
+    ".res")
   "* Default extension for NONMEM reports."
   :type '(repeat
           (string :tag "Extension for NONMEM report"))
