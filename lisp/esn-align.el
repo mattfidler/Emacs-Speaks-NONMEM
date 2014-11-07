@@ -751,8 +751,9 @@ If is-bind is true, produces $BIND records"
     (cancel-timer esn-align-matrix-timer))
   (when (eq major-mode 'esn-mode)
     (let ((rec (esn-get-current-rec)))
-      (when (or (string= rec "THE") (string= rec "OME")
-                (string= rec "THT") (string= rec "SIG"))
+      (when (or (string= rec "THE") ;; (string= rec "OME")
+                (string= rec "THT") ;; (string= rec "SIG")
+                )
         (esn-align-matrix-actual-1))))
   ;; Remove hook.
   (remove-hook 'esn-exit-record-hook 'esn-align-matrix-hook 't))
