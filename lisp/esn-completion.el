@@ -362,13 +362,13 @@ The estimate (0, 1, FIXED) becomes (1, FIXED) and (0, 1, 3, FIXED) becomes (1, F
 
 
 (defun esn-completion-off ()
-  "Turns off completion in EsN buffer"
+  "Turn off completion in EsN buffer."
   (interactive)
-  (when (and (fboundp 'company-mode) company-mode)
+  (when (and (fboundp 'company-mode) (bound-and-true-p company-mode))
     (company-mode -1))
-  (when (and (fboundp 'auto-complete-mode) auto-complete-mode)
+  (when (and (fboundp 'auto-complete-mode) (bound-and-true-p auto-complete-mode))
     (auto-complete-mode -1))
-  (when (and (fboundp 'auto-completion-mode) auto-completion-mode)
+  (when (and (fboundp 'auto-completion-mode) (bound-and-true-p auto-completion-mode))
     (auto-completion-mode -1)))
 
 
