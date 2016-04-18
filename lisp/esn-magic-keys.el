@@ -375,7 +375,7 @@
   "Last file name of command")
 
 (defun esn-pre-command-hook ()
-  "Esn's pre command hook"
+  "Esn's pre command hook."
   (esn-save-buffer-state
    (when (or
 	  (not mark-active)

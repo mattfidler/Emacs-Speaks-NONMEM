@@ -133,7 +133,9 @@
         (symbol-value 'fn)))))
 
 (defun esn-xpose-run-number (&optional file)
-  "Return the run number."
+  "Return the run number.
+When FILE is non-nil, use the FILE to get the run number,
+otherwise use the function `buffer-file-name'."
   (let ((case-fold-search 't)
   	(fn (or file (buffer-file-name)))
 	(run nil)
@@ -158,7 +160,7 @@
     (symbol-value 'run)))
 
 (defun esn-xpose-get-all-variables ()
-  "* Gets every variable."
+  "Get every variable in control stream."
   (let ((varlst '("DV" "PRED" "WRES" "RES" "MDV"))
         (ret "")
         (case-fold-search 't)
@@ -218,7 +220,7 @@
 
 ;;;###autoload
 (defun esn-xpose-get-input-line (&optional current no-reg)
-  "* Gets a regular expression denoting all the acceptable input
+  "Gets a regular expression denoting all the acceptable input
 line parameters.  This is done for each problem.  If no input
 line is present, then return \"\"
 
