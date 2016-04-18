@@ -617,7 +617,7 @@ that match the supplied regular expression.
         (while (string-match "[ \t]*\\([A-Za-z_][^ \t]*\\)[ \t]*=\\([^=]*\\)$" predpk start)
           (setq var (upcase (match-string 1 predpk)))
           (setq val (match-string 2 predpk))
-r          (setq predpk (replace-match "" nil nil predpk))
+          (setq predpk (replace-match "" nil nil predpk))
           (setq start (match-beginning 0))
           (with-syntax-table esn-mode-syntax-table
             (cond
