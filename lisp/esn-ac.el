@@ -70,6 +70,7 @@
   "Starts auto-completion through auto-complete-mode"
   (interactive)
   (when (fboundp 'auto-complete-mode)
+    (auto-complete-mode 1)
     (esn-completion-off)
     (when (boundp 'ac-modes)
       (make-local-variable 'ac-modes)
