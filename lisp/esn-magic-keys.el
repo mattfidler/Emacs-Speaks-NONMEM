@@ -242,120 +242,121 @@
   "Define a timer to run the esn-post-command-hook so that it doesn't incessantly redraw if not needed."
   (interactive)
   ;;  (message "Last Command: %s" last-command)
-  (when (or
-         (not mark-active)
-         (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
-    (let ((inhibit-read-only 't)
-          (inhibit-point-motion-hooks 't)
-          (mark-active mark-active))
-      (when (and (eq major-mode 'esn-mode)
-                 (not esn-run-save-fn)
-                 (not (memq last-command '(tabbar-select-tab-callback
-                                           ignore
+  (esn-save-buffer-state
+   (when (or
+	  (not mark-active)
+	  (not (or (fboundp 'yas--snippets-at-point)
+		   (fboundp 'yas/snippets-at-point)))
+	  (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+	      (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+	  (and (or yas/minor-mode yas-minor-mode)
+	       (let ((yap (if (fboundp 'yas/snippets-at-point)
+			      (yas/snippets-at-point 'all-snippets)
+			    (yas--snippets-at-point 'all-snippets))))
+		 (or (not yap) (and yap (= 0 (length yap)))))))
+     (let ((inhibit-read-only 't)
+	   (inhibit-point-motion-hooks 't)
+	   (mark-active mark-active))
+       (when (and (eq major-mode 'esn-mode)
+		  (not esn-run-save-fn)
+		  (not (memq last-command '(tabbar-select-tab-callback
+					    ignore
                                         ;mouse-drag-region
-                                           ))))
-        (setq esn-var-names '())
-        (when esn-is-modified-p
-          (let* ((rec (esn-get-current-record))
-                 (mark-active mark-active)
-                 (rec-hook (concat "esn-" (downcase rec) "-post-modification-hook"))
-                 (hook (intern-soft rec-hook)))
-            (when hook
-              (condition-case error
-                  (run-hooks hook)
-                (error
-                 (message "Error running `%s': %s" rec-hook (error-message-string error))))))
-          (setq esn-is-modified-p nil))
-        (let ((exit-hook esn-exit-record-hook) (enter-hook esn-enter-record-hook))
-          (condition-case error
-              (progn
-                (esn-get-current-rec)
-                (when (or
-                       (string= (esn-get-current-rec) "")
-                       (and esn-last-record-start (not esn-get-current-record-start))
-                       (and (not esn-last-record-start) esn-get-current-record-start)
-                       (and esn-last-record-start esn-get-current-record-start
-                            (not (= esn-last-record-start esn-get-current-record-start))))
-                  ;; Run Exit record hook first.
-                  (condition-case error
-                      (progn
-                        (when (and esn-last-record-start
-                                   esn-last-record-name
-                                   (or (not (string= (esn-current-rec) esn-last-record-name))
-                                       (not (= esn-last-record-start esn-get-current-record-start))))
-                          (save-excursion
-                            (let (p1
-                                  p2
-                                  no-match)
-                              (goto-char esn-last-record-start)
-                              (when (re-search-backward (esn-reg-record-exp esn-last-record-name) nil 't)
-                                (setq p1 (match-end 0)))
-                              (goto-char esn-last-record-start)
-                              (when (re-search-forward (esn-reg-record-exp esn-last-record-name) nil 't)
-                                (setq p2 (match-end 0)))
-                              (cond
-                               ( (and p1 p2 (> (- p2 esn-last-record-start) (- esn-last-record-start p1)))
-                                 ;; Distance between p2 and last record location is greater than
-                                 ;; the distance between p1 and last record location.  p1 is the best point.
-                                 (goto-char p1))
-                               ( (and p1 p2)
-                                 (goto-char p2))
-                               ( p1
-                                 (goto-char p1))
-                               ( p2
-                                 (goto-char p2))
-                               ( 't
-                                 (setq no-match 't)))
-                              (unless no-match
-                                (skip-chars-backward " \t\n")
-                                (run-hooks 'esn-exit-record-hook))))))
-                    (error
-                     (message "ESN: Exit Record Hook Error: %s; Hooks: %s" (error-message-string error) exit-hook)))
-                  (unless (string= "" (esn-get-current-rec))
-                    (run-hooks 'esn-enter-record-hook))))
-            (cverror
-             (message "ESN: Enter Record Hook Error: %s; Hooks: %s" (error-message-string error) enter-hook))))
-        (condition-case err
-            (save-excursion
-              (when esn-was-at-indent-keyword
-                (goto-char esn-was-at-indent-keyword)
-                (unless (or 
-                         (looking-at esn-mode-deindent-keyword-regexp)
-                         (looking-at esn-mode-deindent-indent-keyword-regexp)
-                         (looking-at esn-mode-indent-keyword-regexp))
-                  (esn-indent-line))))
-          (error (message "Error while fixing indentation, post: %s" (error-message-string err))))
-        (let* ((rec (esn-get-current-record))
-               (rec-hook (concat "esn-" (downcase rec) "-post-command-hook"))
-               (hook (intern-soft rec-hook)))
-          (if hook
-              (condition-case error
-                  (progn
-                    (run-hooks hook))
-                (error
-                 (message "Error running `%s': %s" rec-hook (error-message-string error))))))
-        (condition-case error
-            (progn
-              (run-hooks 'esn-always-post-command-hook))
-          (error
-           (message "Error running persistent post-command hooks: %s" (error-message-string error))))
-        (condition-case err
-            (cond
-             ( (and last-command-event (memq last-command-event (list ?\t 'tab)))
-               ;; Finish tabs.
-               (when (and esn-pre-command-point (= esn-pre-command-point (point)))
-                 (when (looking-back "\\<[$]?[A-Za-z0-9_]*[ \t=]*")
-                   (esn-after-completion (match-string 0))))))
-          (error
-           (message "Post Tab/Return Error: %s" (error-message-string err))))))))
+					    ))))
+	 (setq esn-var-names '())
+	 (when esn-is-modified-p
+	   (let* ((rec (esn-get-current-record))
+		  (mark-active mark-active)
+		  (rec-hook (concat "esn-" (downcase rec) "-post-modification-hook"))
+		  (hook (intern-soft rec-hook)))
+	     (when hook
+	       (condition-case error
+		   (run-hooks hook)
+		 (error
+		  (message "Error running `%s': %s" rec-hook (error-message-string error))))))
+	   (setq esn-is-modified-p nil))
+	 (let ((exit-hook esn-exit-record-hook) (enter-hook esn-enter-record-hook))
+	   (condition-case error
+	       (progn
+		 (esn-get-current-rec)
+		 (when (or
+			(string= (esn-get-current-rec) "")
+			(and esn-last-record-start (not esn-get-current-record-start))
+			(and (not esn-last-record-start) esn-get-current-record-start)
+			(and esn-last-record-start esn-get-current-record-start
+			     (not (= esn-last-record-start esn-get-current-record-start))))
+		   ;; Run Exit record hook first.
+		   (condition-case error
+		       (progn
+			 (when (and esn-last-record-start
+				    esn-last-record-name
+				    (or (not (string= (esn-current-rec) esn-last-record-name))
+					(not (= esn-last-record-start esn-get-current-record-start))))
+			   (save-excursion
+			     (let (p1
+				   p2
+				   no-match)
+			       (goto-char esn-last-record-start)
+			       (when (re-search-backward (esn-reg-record-exp esn-last-record-name) nil 't)
+				 (setq p1 (match-end 0)))
+			       (goto-char esn-last-record-start)
+			       (when (re-search-forward (esn-reg-record-exp esn-last-record-name) nil 't)
+				 (setq p2 (match-end 0)))
+			       (cond
+				( (and p1 p2 (> (- p2 esn-last-record-start) (- esn-last-record-start p1)))
+				  ;; Distance between p2 and last record location is greater than
+				  ;; the distance between p1 and last record location.  p1 is the best point.
+				  (goto-char p1))
+				( (and p1 p2)
+				  (goto-char p2))
+				( p1
+				  (goto-char p1))
+				( p2
+				  (goto-char p2))
+				( 't
+				  (setq no-match 't)))
+			       (unless no-match
+				 (skip-chars-backward " \t\n")
+				 (run-hooks 'esn-exit-record-hook))))))
+		     (error
+		      (message "ESN: Exit Record Hook Error: %s; Hooks: %s" (error-message-string error) exit-hook)))
+		   (unless (string= "" (esn-get-current-rec))
+		     (run-hooks 'esn-enter-record-hook))))
+	     (cverror
+	      (message "ESN: Enter Record Hook Error: %s; Hooks: %s" (error-message-string error) enter-hook))))
+	 (condition-case err
+	     (save-excursion
+	       (when esn-was-at-indent-keyword
+		 (goto-char esn-was-at-indent-keyword)
+		 (unless (or 
+			  (looking-at esn-mode-deindent-keyword-regexp)
+			  (looking-at esn-mode-deindent-indent-keyword-regexp)
+			  (looking-at esn-mode-indent-keyword-regexp))
+		   (esn-indent-line))))
+	   (error (message "Error while fixing indentation, post: %s" (error-message-string err))))
+	 (let* ((rec (esn-get-current-record))
+		(rec-hook (concat "esn-" (downcase rec) "-post-command-hook"))
+		(hook (intern-soft rec-hook)))
+	   (if hook
+	       (condition-case error
+		   (progn
+		     (run-hooks hook))
+		 (error
+		  (message "Error running `%s': %s" rec-hook (error-message-string error))))))
+	 (condition-case error
+	     (progn
+	       (run-hooks 'esn-always-post-command-hook))
+	   (error
+	    (message "Error running persistent post-command hooks: %s" (error-message-string error))))
+	 (condition-case err
+	     (cond
+	      ( (and last-command-event (memq last-command-event (list ?\t 'tab)))
+		;; Finish tabs.
+		(when (and esn-pre-command-point (= esn-pre-command-point (point)))
+		  (when (looking-back "\\<[$]?[A-Za-z0-9_]*[ \t=]*")
+		    (esn-after-completion (match-string 0))))))
+	   (error
+	    (message "Post Tab/Return Error: %s" (error-message-string err)))))))))
 
 ;;
 ;;(if esn-use-hyperlinks
@@ -375,24 +376,25 @@
 
 (defun esn-pre-command-hook ()
   "Esn's pre command hook"
-  (when (or
-         (not mark-active)
-         (not (or (fboundp 'yas--snippets-at-point)
-                  (fboundp 'yas/snippets-at-point)))
-         (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-             (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-         (and (or yas/minor-mode yas-minor-mode)
-              (let ((yap (if (fboundp 'yas/snippets-at-point)
-                             (yas/snippets-at-point 'all-snippets)
-                           (yas--snippets-at-point 'all-snippets))))
-                (or (not yap) (and yap (= 0 (length yap)))))))
-    (unless esn-run-save-fn
-      (setq esn-last-file-name (buffer-file-name))
-      
-      (setq esn-last-record-name (esn-get-current-rec))
-      (setq esn-last-record-start esn-get-current-record-start)
-      (setq esn-pre-command-point (point))
-      (esn-pre-command-hook-run))))
+  (esn-save-buffer-state
+   (when (or
+	  (not mark-active)
+	  (not (or (fboundp 'yas--snippets-at-point)
+		   (fboundp 'yas/snippets-at-point)))
+	  (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+	      (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+	  (and (or yas/minor-mode yas-minor-mode)
+	       (let ((yap (if (fboundp 'yas/snippets-at-point)
+			      (yas/snippets-at-point 'all-snippets)
+			    (yas--snippets-at-point 'all-snippets))))
+		 (or (not yap) (and yap (= 0 (length yap)))))))
+     (unless esn-run-save-fn
+       (setq esn-last-file-name (buffer-file-name))
+       
+       (setq esn-last-record-name (esn-get-current-rec))
+       (setq esn-last-record-start esn-get-current-record-start)
+       (setq esn-pre-command-point (point))
+       (esn-pre-command-hook-run)))))
 
 (defun esn-pre-command-hook-run ()
   "* Wrapped around an error handler"
