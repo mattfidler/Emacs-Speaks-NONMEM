@@ -614,10 +614,10 @@ that match the supplied regular expression.
             (setq predpk (replace-match "" nil nil predpk))
             (setq added 't))))
         (setq start 0)
-        (while (string-match "^[ \t]*\\([A-Za-z_][^ \t]*\\)[ \t]*=\\([^=]*\\)$" predpk start)
-          (setq var (match-string 1 predpk))
+        (while (string-match "[ \t]*\\([A-Za-z_][^ \t]*\\)[ \t]*=\\([^=]*\\)$" predpk start)
+          (setq var (upcase (match-string 1 predpk)))
           (setq val (match-string 2 predpk))
-          (setq predpk (replace-match "" nil nil predpk))
+r          (setq predpk (replace-match "" nil nil predpk))
           (setq start (match-beginning 0))
           (with-syntax-table esn-mode-syntax-table
             (cond
@@ -630,8 +630,10 @@ that match the supplied regular expression.
               (while (string-match "\\<ETA(\\([0-9]+\\))" val start2)
                 (setq start2 (match-end 0))
                 (add-to-list 'iov-etas (format "ETA%s" (match-string 1 val)))))
-             ((string-match "PRED$" var)
+             ((string-match-p "PRE?D$" var)
               (add-to-list 'prd (format "%s" var)))
+	     ((string-match-p "PRTR$" var)
+	      (add-to-list 'prd (format "%s" var)))
              ((string-match "RES$" var)
               (add-to-list 'rs (format "%s" var)))
              ;; Order should be EPS then ETA and then THETA to prefer ERROR, then INdividual then Population.
