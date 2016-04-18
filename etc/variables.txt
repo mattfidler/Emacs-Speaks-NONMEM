@@ -109,7 +109,11 @@ IIDX						1
 INDR1						1																					
 INDR2						1																					
 IOV#																	1										
+IPRD	Individual Predicted																						1	1			
+IPRDTR	Transformed IPRED																						1	1			
+IPRED	Individual Predicted																						1	1			
 IPROB						1																					
+IPRTR	Transformed IPRED																						1	1			
 IREP						1																					
 ISFINL						1																					
 ISSMOD						1																					
@@ -174,7 +178,9 @@ PCMT	Prediction Compartment																	1
 PR						1																					
 PR_CT						1																					
 PR_Y						1																					
+PRD	Predicted (from control stream)																						1	1			
 PRDFL						1																					
+PRDTR	Transformed Pred																						1	1			
 PRED	Predicted																						1	1			
 PRED_						1																					
 PREDI	"Non-conditional estimation, eta-epislon interaction prediction"																					1	1	1			
