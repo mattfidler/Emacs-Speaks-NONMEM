@@ -133,7 +133,7 @@
         (symbol-value 'fn)))))
 
 (defun esn-xpose-run-number (&optional file)
-  "* Returns the run number."
+  "Return the run number."
   (let ((case-fold-search 't)
   	(fn (or file (buffer-file-name)))
 	(run nil)
@@ -141,7 +141,7 @@
                      esn-pdx-choose-file-name-padding)))
     (if (not fn)
         (setq run nil)
-      (if (string-match (format "[/\\\\]\\(?:run\\)?\\([0-9]+\\)%s"
+      (if (string-match (format "[/\\\\]\\(?:run\\|mod\\)?\\([0-9]+\\)%s"
                                 (regexp-quote
                                  (if (esn-use-pdx-p)
                                      ".ctl"
