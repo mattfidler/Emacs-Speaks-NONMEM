@@ -68,67 +68,64 @@
 (defun esn-indent-line ()
   "* Indents a line in EsN"
   (interactive)
-  (when esn-mode-auto-indent
-    (let ((case-fold-search 't)
-          (curi 0)
-          (deindent nil)
-          p1 )
-      (unless (save-excursion ;; indentation 0 for records & comments starting at the zero column.
-                (goto-char (point-at-bol))
-                (looking-at "\\([ \t]*[$]\\|;\\)"))
-        (cond 
-         ( (string-match (esn-reg-record-exp esn-mode-auto-indent-force-zero-indent) (esn-get-current-rec))
-           (setq curi 0))
-         ( (save-excursion (skip-chars-backward " \t\n") (esn-is-abbrev-p))
-           ;; Abbreviated records
-           (if (save-excursion
-                 (goto-char (point-at-bol)) 
-                 (skip-chars-forward " \t") 
-                 (or 
-                  (looking-at esn-mode-deindent-keyword-regexp)
-                  (looking-at esn-mode-deindent-indent-keyword-regexp)))
-               (setq deindent 't))
-           (save-excursion
-             (setq p1 (point-at-eol)) 
-             (forward-line -1) 
-             (if (= p1 (point-at-eol)) 
-                 nil
-               (goto-char (point-at-eol))
-               (skip-chars-backward " \t\n")
-               (setq curi (current-indentation))
-               (goto-char (point-at-bol))
-               (skip-chars-forward " \t")
-               (cond
-                ( deindent
-                  ;; Deindent
-                  (setq curi (max 2 (- curi 2))))
-                ( (looking-at "[$]")
-                  ;; First Record item
-                  (setq curi 2))
-                ( (looking-at esn-mode-indent-keyword-regexp)
-                  ;; Indent
-                  (setq curi (+ 2 curi)))
-                ( (looking-at esn-mode-deindent-indent-keyword-regexp)
-                  ;; Indent after a deindent
-                  (setq curi (+ 2 curi)))
-                ( 't
+  (esn-save-buffer-state
+   (when esn-mode-auto-indent
+     (let ((case-fold-search t)
+	   (curi 0)
+	   (deindent nil)
+	   p1)
+       (unless (save-excursion ;; indentation 0 for records & comments starting at the zero column.
+		 (goto-char (point-at-bol))
+		 (looking-at "\\([ \t]*[$]\\|;\\)"))
+	 (cond 
+	  ( (string-match (esn-reg-record-exp esn-mode-auto-indent-force-zero-indent) (esn-get-current-rec))
+	    (setq curi 0))
+	  ( (save-excursion (skip-chars-backward " \t\n") (esn-is-abbrev-p))
+	    ;; Abbreviated records
+	    (if (save-excursion
+		  (goto-char (point-at-bol)) 
+		  (skip-chars-forward " \t") 
+		  (or 
+		   (looking-at esn-mode-deindent-keyword-regexp)
+		   (looking-at esn-mode-deindent-indent-keyword-regexp)))
+		(setq deindent 't))
+	    (save-excursion
+	      (setq p1 (point-at-eol)) 
+	      (forward-line -1) 
+	      (if (= p1 (point-at-eol)) 
+		  nil
+		(goto-char (point-at-eol))
+		(skip-chars-backward " \t\n")
+		(setq curi (current-indentation))
+		(goto-char (point-at-bol))
+		(skip-chars-forward " \t")
+		(cond
+		 ( deindent
+		   ;; Deindent
+		   (setq curi (max 2 (- curi 2))))
+		 ( (looking-at "[$]")
+		   ;; First Record item
+		   (setq curi 2))
+		 ( (looking-at esn-mode-indent-keyword-regexp)
+		   ;; Indent
+		   (setq curi (+ 2 curi)))
+		 ( (looking-at esn-mode-deindent-indent-keyword-regexp)
+		   ;; Indent after a deindent
+		   (setq curi (+ 2 curi)))
+		 ( 't
                                         ; Keep current indentation.
-                  )))))
-         ( 't 
-           ;; All Others, do hanging indent.
-           (save-excursion
-             (forward-line -1)
-             (end-of-line)
-             (unless (string= "" (esn-get-current-rec))
-               (when (re-search-backward (eval-when-compile (esn-reg-records)) nil 't)
-                 (setq curi (+ 1 (length (match-string 0))))))))))
-      (esn-indent-line-to curi)
-      (when (looking-at "[ \t]*$")
-        (goto-char (match-end 0))))))
-
-;; Change log:
-;; 19-Aug-2010    Matthew L. Fidler  
-;;    Tried to standardize record regular expressions.
+		   )))))
+	  ( 't 
+	    ;; All Others, do hanging indent.
+	    (save-excursion
+	      (forward-line -1)
+	      (end-of-line)
+	      (unless (string= "" (esn-get-current-rec))
+		(when (re-search-backward (eval-when-compile (esn-reg-records)) nil 't)
+		  (setq curi (+ 1 (length (match-string 0))))))))))
+       (esn-indent-line-to curi)
+       (when (looking-at "[ \t]*$")
+	 (goto-char (match-end 0)))))))
 
 (defun esn-indent-line-to (w)
   "Insert spaces rather than tabs."

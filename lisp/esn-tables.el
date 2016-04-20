@@ -576,10 +576,14 @@ that match the supplied regular expression.
       (if (esn-get-parameters-cached-p)
           (esn-get-parameters-get-cache)
         (setq predpk (esn-rec (esn-reg-record-exp (append esn-current-abbrev-records '("THE" "OME" "SIG"))) t))
+	
         (with-temp-buffer
           (insert predpk)
           (set-syntax-table esn-mode-syntax-table)
           (esn-fix-numbering)
+	  (goto-char (point-min))
+	  (while (re-search-forward "DADT([0-9]+).*" nil t)
+	    (replace-match ""))
           (setq predpk (esn-rec (esn-reg-record-exp esn-current-abbrev-records) t)))
         (while (string-match ";.*" predpk start)
           (setq predpk (replace-match "" nil nil predpk))

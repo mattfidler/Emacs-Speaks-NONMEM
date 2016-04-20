@@ -83,7 +83,7 @@
 
 
 (defun esn-ac ()
-  "* Calls auto-completion"
+  "Call auto-completion."
   (interactive)
   (auto-complete esn-ac-sources))
 (provide 'esn-ac)
