@@ -907,20 +907,18 @@ Each vector is of length four specifying: 1 - icon; 2 - function to call;
   )
 
 (defvar esn-symbol-non-words
-  '(
-    (".EQ." 61)
+  '((".EQ." 61)
     ("==" 61)
     (".NE." 8800)
     ("/=" 8800)
     (".GT." 62)
-    (".LT." 62)
+    (".LT." 60)
     (".LE." 8804)
     ("<=" 8804)
     (".GE." 8805);
     (">=" 8805)
     ("*" 183))
-  "* EsN non-word symbols"
-  )
+  "* EsN non-word symbols")
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Local Variables
