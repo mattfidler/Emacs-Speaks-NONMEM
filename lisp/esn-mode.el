@@ -480,7 +480,7 @@ This was stole/modified from `c-save-buffer-state'"
 
     (setq esn-use-pirana-saved nil)
     (esn-set-mode-name)
-    (set (make-varaible-buffer-local 'esn-get-inputs-cache)
+    (set (make-variable-buffer-local 'esn-get-inputs-cache)
 	 (make-hash-table :test 'equal))
     
     (message "Opened in ESN-mode (%s)" esn-mode-ver)
