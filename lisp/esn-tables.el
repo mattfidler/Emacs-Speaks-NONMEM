@@ -617,6 +617,7 @@ that match the supplied regular expression.
             (add-to-list 'cw (format "COM(%s)=%s%s1" (match-string 1 predpk) (match-string 2 predpk) (match-string 3 predpk)))
             (setq predpk (replace-match "" nil nil predpk))
             (setq added 't))))
+	(setq start 0)
         (setq start 0)
         (while (string-match "[ \t]*\\([A-Za-z_][^ \t]*\\)[ \t]*=\\([^=]*\\)$" predpk start)
           (setq var (upcase (match-string 1 predpk)))
@@ -657,8 +658,6 @@ that match the supplied regular expression.
                 (add-to-list 'err (match-string 0 val))
                 (add-to-list 'rem-pop (match-string 0 val)))
               (add-to-list 'err (format "%s" var)))
-             ((string-match "\\<ETA([0-9]+)" val)
-              (add-to-list 'ind (format "%s" var)))
              ((string-match "\\<THETA([0-9]+)" val)
               ;; Check for FIXED vs UNFIXED
               (setq est nil)
@@ -717,7 +716,7 @@ that match the supplied regular expression.
              (add-to-list 'pop (format "%s" var))
              t)) misc)
         (delete-if (lambda(var) (member var rem-pop)) pop)
-        (dotimes (i (esn-max-eta t))
+        (dotimes (i (esn-max-eta))
           (unless (member (format "ETA%s" (+ i 1)) iov-etas)
             (add-to-list 'etas (format "ETA%s" (+ i 1)))))
         ;; Save to cache.
