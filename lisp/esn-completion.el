@@ -305,7 +305,8 @@ The estimate (0, 1, FIXED) becomes (1, FIXED) and (0, 1, 3, FIXED) becomes (1, F
 (defun esn-ac-source-available-p (source)
   ;; Stole from auto-completion source.
   (if (and (symbolp source)
-           (get source 'available))
+           (get source 'available)
+	   (fboundp #'ac-source-entity))
       (eq (get source 'available) t)
     (let* ((src (ac-source-entity source))
            (avail-pair (assq 'available src))
