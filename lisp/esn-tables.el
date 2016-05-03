@@ -575,8 +575,8 @@ that match the supplied regular expression.
         (setq ret esn-get-parameters-all)
       (if (esn-get-parameters-cached-p)
           (esn-get-parameters-get-cache)
-        (setq predpk (esn-rec (esn-reg-record-exp (append esn-current-abbrev-records '("THE" "OME" "SIG"))) t))
-	
+        (setq predpk (esn-rec (esn-reg-record-exp (append (delete-if (lambda(x) (string= x "MIX")) esn-current-abbrev-records)
+							  '("THE" "OME" "SIG"))) t))
         (with-temp-buffer
           (insert predpk)
           (set-syntax-table esn-mode-syntax-table)
