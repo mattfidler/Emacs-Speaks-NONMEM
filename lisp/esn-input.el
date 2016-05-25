@@ -292,9 +292,8 @@
           (insert (esn-mode-get-input-comment)))))))
 
 (defun esn-mode-get-input-comment ()
-  "* Gets the input items for an input string."
-  (let (
-        (ret "")
+  "Gets the input items for an input string."
+  (let ((ret "")
         (inp (esn-rec "INP" 't)))
     (with-temp-buffer
       (insert inp)
@@ -333,14 +332,14 @@
   "Format the input line so the columns are upper case and no more than 4 characters."
   ;; TODO:  Add=DROP to unrecognized $INPUT lines.
   (setq esn-mode-input-comments "")
-  (let (
-        (case-fold-search 't)
+  (let ((case-fold-search t)
         (word "")
         (header inp)
         (header2 "")
         (oword "")
         (lst '())
-        (lst2 (split-string inp "[^A-Za-z0-9 _.]" 't)))
+        (lst2 (split-string inp "[^A-Za-z0-9 _.]" t))
+	(words '()))
     (setq header (upcase header))
     (while (string-match "[^A-Z0-9,]" header)
       (setq header (replace-match "" nil nil header)))
@@ -349,8 +348,7 @@
     (setq lst (split-string header "[^A-Za-z0-9]" 't))
     (setq header2 header)
     (when esn-update-input-add-comment
-      (let (
-            (what (nth 0 lst)))
+      (let ((what (nth 0 lst)))
         (while (> (length lst) 0)
           (when what
             (if (assoc (upcase what) esn-variable-labels)
@@ -377,9 +375,26 @@
       (while (and word (< 4 (length word))
                   (string-match "[AEIOU]" word))
         (setq word (replace-match "" nil nil word))
-                                        ;       (message "Chopped Word %s" word))
-        (if (and word (< 4 (length word)))
-            (setq word (substring word 0 4)))
+        (when (and word (< 4 (length word)))
+	  (setq word (substring word 0 4)))
+	(when (member word words)
+	  (while (and word (member word words)
+		      (string-match "[AEIOU]" word))
+	    (setq word (replace-match "" nil nil word)))
+	  (when (member word words)
+	    (cond
+	     ((and word (string-match "^\\([A-Z]+\\)\\([9]+\\)$" word))
+	      (if (= (length (match-string 1 word)) 1)
+		  (setq word (format "%s%s" (match-string 1 word)
+				     (1+ (string-to-number (match-string 2 word)))))
+		(setq word (format "%s%s" (substring (match-string 1 word) 0 -1)
+				   (1+ (string-to-number (match-string 2 word)))))))
+	     ((and word (string-match "^\\([A-Z]+\\)\\([0-9]+\\)$"))
+	      (setq word (format "%s%s" (match-string 1 word)
+				 (1+ (string-to-number (match-string 2 word))))))
+	     (t
+	      (setq word (concat (substring word 0 -1) "1"))))))
+	(push word words)
         (if (string-match "abcde" header)
             (if esn-update-input-add-comment
                 (progn

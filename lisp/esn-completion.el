@@ -304,8 +304,10 @@ The estimate (0, 1, FIXED) becomes (1, FIXED) and (0, 1, 3, FIXED) becomes (1, F
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun esn-ac-source-available-p (source)
   ;; Stole from auto-completion source.
-  (if (and (symbolp source)
-           (get source 'available))
+  (if (and (featurep 'auto-complete)
+	   (symbolp source)
+           (get source 'available)
+	   (fboundp #'ac-source-entity))
       (eq (get source 'available) t)
     (let* ((src (ac-source-entity source))
            (avail-pair (assq 'available src))
@@ -330,14 +332,12 @@ The estimate (0, 1, FIXED) becomes (1, FIXED) and (0, 1, 3, FIXED) becomes (1, F
   (let (ret (debug-on-error t))
     (block searching-prefixes
       (mapc (lambda(source-name)
-              (let* (
-                     (source (symbol-value source-name))
+	      (let* ((source (symbol-value source-name))
                      (prefix (assoc-default 'prefix source))
                      (requires (assoc-default 'requires source))
                      (init (assoc-default 'init source))
                      (cand (assoc-default 'candidates source))
-                     tmp-ret
-                     )
+		     tmp-ret)
                 (when (listp requires)
                   (setq requires (car requires)))
                 (when cand
@@ -362,13 +362,13 @@ The estimate (0, 1, FIXED) becomes (1, FIXED) and (0, 1, 3, FIXED) becomes (1, F
 
 
 (defun esn-completion-off ()
-  "Turns off completion in EsN buffer"
+  "Turn off completion in EsN buffer."
   (interactive)
-  (when (and (fboundp 'company-mode) company-mode)
+  (when (and (fboundp 'company-mode) (bound-and-true-p company-mode))
     (company-mode -1))
-  (when (and (fboundp 'auto-complete-mode) auto-complete-mode)
+  (when (and (fboundp 'auto-complete-mode) (bound-and-true-p auto-complete-mode))
     (auto-complete-mode -1))
-  (when (and (fboundp 'auto-completion-mode) auto-completion-mode)
+  (when (and (fboundp 'auto-completion-mode) (bound-and-true-p auto-completion-mode))
     (auto-completion-mode -1)))
 
 

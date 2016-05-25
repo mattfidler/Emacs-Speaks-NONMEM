@@ -70,6 +70,7 @@
   "Starts auto-completion through auto-complete-mode"
   (interactive)
   (when (fboundp 'auto-complete-mode)
+    (auto-complete-mode 1)
     (esn-completion-off)
     (when (boundp 'ac-modes)
       (make-local-variable 'ac-modes)
@@ -82,7 +83,7 @@
 
 
 (defun esn-ac ()
-  "* Calls auto-completion"
+  "Call auto-completion."
   (interactive)
   (auto-complete esn-ac-sources))
 (provide 'esn-ac)

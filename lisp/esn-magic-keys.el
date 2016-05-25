@@ -165,7 +165,7 @@
 (eval-when-compile
   (require 'esn-which)
   (require 'esn-fun))
-(random 't)
+(random t)
 (require 'esn-rec-hooks)
 (require 'esn-vars)
 (require 'esn-options)
@@ -198,16 +198,7 @@
 (defun esn-before-change-functions-hook (beg end)
   "Called when in EsN mode on change of buffer."
   (when (and (eq major-mode 'esn-mode)
-             (not mark-active)
-             (or (not (or (fboundp 'yas--snippets-at-point)
-                          (fboundp 'yas/snippets-at-point)))
-                 (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                     (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-                 (and (or yas/minor-mode yas-minor-mode)
-                      (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                     (yas/snippets-at-point 'all-snippets)
-                                   (yas--snippets-at-point 'all-snippets))))
-                        (or (not yap) (and yap (= 0 (length yap))))))))
+	     (esn-should-align-p))
     (setq esn-is-modified-p t)
     (unless esn-run-save-fn
       (condition-case error
@@ -242,157 +233,148 @@
   "Define a timer to run the esn-post-command-hook so that it doesn't incessantly redraw if not needed."
   (interactive)
   ;;  (message "Last Command: %s" last-command)
-  (when (or
-         (not mark-active)
-         (not (or (fboundp 'yas--snippets-at-point)
-                     (fboundp 'yas/snippets-at-point)))
-            (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-                (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-            (and (or yas/minor-mode yas-minor-mode)
-                 (let ((yap (if (fboundp 'yas/snippets-at-point)
-                                (yas/snippets-at-point 'all-snippets)
-                              (yas--snippets-at-point 'all-snippets))))
-                   (or (not yap) (and yap (= 0 (length yap)))))))
-    (let ((inhibit-read-only 't)
-          (inhibit-point-motion-hooks 't)
-          (mark-active mark-active))
-      (when (and (eq major-mode 'esn-mode)
-                 (not esn-run-save-fn)
-                 (not (memq last-command '(tabbar-select-tab-callback
-                                           ignore
+  (esn-save-buffer-state
+   (when (esn-should-align-p)
+     (let ((inhibit-read-only t)
+	   (inhibit-point-motion-hooks t))
+       (when (and (eq major-mode 'esn-mode)
+		  (not esn-run-save-fn)
+		  (not (memq last-command '(tabbar-select-tab-callback
+					    ignore
                                         ;mouse-drag-region
-                                           ))))
-        (setq esn-var-names '())
-        (when esn-is-modified-p
-          (let* ((rec (esn-get-current-record))
-                 (mark-active mark-active)
-                 (rec-hook (concat "esn-" (downcase rec) "-post-modification-hook"))
-                 (hook (intern-soft rec-hook)))
-            (when hook
-              (condition-case error
-                  (run-hooks hook)
-                (error
-                 (message "Error running `%s': %s" rec-hook (error-message-string error))))))
-          (setq esn-is-modified-p nil))
-        (let ((exit-hook esn-exit-record-hook) (enter-hook esn-enter-record-hook))
-          (condition-case error
-              (progn
-                (esn-get-current-rec)
-                (when (or
-                       (string= (esn-get-current-rec) "")
-                       (and esn-last-record-start (not esn-get-current-record-start))
-                       (and (not esn-last-record-start) esn-get-current-record-start)
-                       (and esn-last-record-start esn-get-current-record-start
-                            (not (= esn-last-record-start esn-get-current-record-start))))
-                  ;; Run Exit record hook first.
-                  (condition-case error
-                      (progn
-                        (when (and esn-last-record-start
-                                   esn-last-record-name
-                                   (or (not (string= (esn-current-rec) esn-last-record-name))
-                                       (not (= esn-last-record-start esn-get-current-record-start))))
-                          (save-excursion
-                            (let (p1
-                                  p2
-                                  no-match)
-                              (goto-char esn-last-record-start)
-                              (when (re-search-backward (esn-reg-record-exp esn-last-record-name) nil 't)
-                                (setq p1 (match-end 0)))
-                              (goto-char esn-last-record-start)
-                              (when (re-search-forward (esn-reg-record-exp esn-last-record-name) nil 't)
-                                (setq p2 (match-end 0)))
-                              (cond
-                               ( (and p1 p2 (> (- p2 esn-last-record-start) (- esn-last-record-start p1)))
-                                 ;; Distance between p2 and last record location is greater than
-                                 ;; the distance between p1 and last record location.  p1 is the best point.
-                                 (goto-char p1))
-                               ( (and p1 p2)
-                                 (goto-char p2))
-                               ( p1
-                                 (goto-char p1))
-                               ( p2
-                                 (goto-char p2))
-                               ( 't
-                                 (setq no-match 't)))
-                              (unless no-match
-                                (skip-chars-backward " \t\n")
-                                (run-hooks 'esn-exit-record-hook))))))
-                    (error
-                     (message "ESN: Exit Record Hook Error: %s; Hooks: %s" (error-message-string error) exit-hook)))
-                  (unless (string= "" (esn-get-current-rec))
-                    (run-hooks 'esn-enter-record-hook))))
-            (cverror
-             (message "ESN: Enter Record Hook Error: %s; Hooks: %s" (error-message-string error) enter-hook))))
-        (condition-case err
-            (save-excursion
-              (when esn-was-at-indent-keyword
-                (goto-char esn-was-at-indent-keyword)
-                (unless (or 
-                         (looking-at esn-mode-deindent-keyword-regexp)
-                         (looking-at esn-mode-deindent-indent-keyword-regexp)
-                         (looking-at esn-mode-indent-keyword-regexp))
-                  (esn-indent-line))))
-          (error (message "Error while fixing indentation, post: %s" (error-message-string err))))
-        (let* ((rec (esn-get-current-record))
-               (rec-hook (concat "esn-" (downcase rec) "-post-command-hook"))
-               (hook (intern-soft rec-hook)))
-          (if hook
-              (condition-case error
-                  (progn
-                    (run-hooks hook))
-                (error
-                 (message "Error running `%s': %s" rec-hook (error-message-string error))))))
-        (condition-case error
-            (progn
-              (run-hooks 'esn-always-post-command-hook))
-          (error
-           (message "Error running persistent post-command hooks: %s" (error-message-string error))))
-        (condition-case err
-            (cond
-             ( (and last-command-event (memq last-command-event (list ?\t 'tab)))
-               ;; Finish tabs.
-               (when (and esn-pre-command-point (= esn-pre-command-point (point)))
-                 (when (looking-back "\\<[$]?[A-Za-z0-9_]*[ \t=]*")
-                   (esn-after-completion (match-string 0))))))
-          (error
-           (message "Post Tab/Return Error: %s" (error-message-string err))))))))
+					    ))))
+	 (setq esn-var-names '())
+	 (when esn-is-modified-p
+	   (let* ((rec (esn-get-current-record))
+		  (mark-active mark-active)
+		  (rec-hook (concat "esn-" (downcase rec) "-post-modification-hook"))
+		  (hook (intern-soft rec-hook)))
+	     (when hook
+	       (condition-case error
+		   (run-hooks hook)
+		 (error
+		  (message "Error running `%s': %s" rec-hook (error-message-string error))))))
+	   (setq esn-is-modified-p nil))
+	 (let ((exit-hook esn-exit-record-hook) (enter-hook esn-enter-record-hook))
+	   (condition-case error
+	       (progn
+		 (esn-get-current-rec)
+		 (when (or
+			(string= (esn-get-current-rec) "")
+			(and esn-last-record-start (not esn-get-current-record-start))
+			(and (not esn-last-record-start) esn-get-current-record-start)
+			(and esn-last-record-start esn-get-current-record-start
+			     (not (= esn-last-record-start esn-get-current-record-start))))
+		   ;; Run Exit record hook first.
+		   (condition-case error
+		       (progn
+			 (when (and esn-last-record-start
+				    esn-last-record-name
+				    (or (not (string= (esn-current-rec) esn-last-record-name))
+					(not (= esn-last-record-start esn-get-current-record-start))))
+			   (save-excursion
+			     (let (p1
+				   p2
+				   no-match)
+			       (goto-char esn-last-record-start)
+			       (when (re-search-backward (esn-reg-record-exp esn-last-record-name) nil t)
+				 (setq p1 (match-end 0)))
+			       (goto-char esn-last-record-start)
+			       (when (re-search-forward (esn-reg-record-exp esn-last-record-name) nil t)
+				 (setq p2 (match-end 0)))
+			       (cond
+				((and p1 p2 (> (- p2 esn-last-record-start) (- esn-last-record-start p1)))
+				  ;; Distance between p2 and last record location is greater than
+				  ;; the distance between p1 and last record location.  p1 is the best point.
+				  (goto-char p1))
+				((and p1 p2)
+				  (goto-char p2))
+				(p1
+				  (goto-char p1))
+				(p2
+				  (goto-char p2))
+				(t
+				  (setq no-match t)))
+			       (unless no-match
+				 (skip-chars-backward " \t\n")
+				 (run-hooks 'esn-exit-record-hook))))))
+		     (error
+		      (message "ESN: Exit Record Hook Error: %s; Hooks: %s" (error-message-string error) exit-hook)))
+		   (unless (string= "" (esn-get-current-rec))
+		     (run-hooks 'esn-enter-record-hook))))
+	     (cverror
+	      (message "ESN: Enter Record Hook Error: %s; Hooks: %s" (error-message-string error) enter-hook))))
+	 (condition-case err
+	     (save-excursion
+	       (when esn-was-at-indent-keyword
+		 (goto-char esn-was-at-indent-keyword)
+		 (unless (or 
+			  (looking-at esn-mode-deindent-keyword-regexp)
+			  (looking-at esn-mode-deindent-indent-keyword-regexp)
+			  (looking-at esn-mode-indent-keyword-regexp))
+		   (esn-indent-line))))
+	   (error (message "Error while fixing indentation, post: %s" (error-message-string err))))
+	 (let* ((rec (esn-get-current-record))
+		(rec-hook (concat "esn-" (downcase rec) "-post-command-hook"))
+		(hook (intern-soft rec-hook)))
+	   (if hook
+	       (condition-case error
+		   (progn
+		     (run-hooks hook))
+		 (error
+		  (message "Error running `%s': %s" rec-hook (error-message-string error))))))
+	 (condition-case error
+	     (progn
+	       (run-hooks 'esn-always-post-command-hook))
+	   (error
+	    (message "Error running persistent post-command hooks: %s" (error-message-string error))))
+	 (condition-case err
+	     (cond
+	      ((and last-command-event (memq last-command-event (list ?\t 'tab)))
+		;; Finish tabs.
+		(when (and esn-pre-command-point (= esn-pre-command-point (point)))
+		  (when (looking-back "\\<[$]?[A-Za-z0-9_]*[ \t=]*")
+		    (esn-after-completion (match-string 0))))))
+	   (error
+	    (message "Post Tab/Return Error: %s" (error-message-string err)))))))))
 
 ;;
 ;;(if esn-use-hyperlinks
 ;;    (esn-make-link-overlays)
 ;;  (esn-rm-link-overlays))
 (defvar esn-pre-command-point nil
-  "* Defines point for pre-command-hook"
-  )
+  "Define point for `pre-command-hook'.")
 (make-variable-buffer-local 'esn-pre-command-point)
+
 (defvar esn-was-at-indent-keyword nil
-  "* Defines if the line was at a indent keyword."
-  )
+  "Define if the line was at a indent keyword.")
+
 (make-variable-buffer-local 'esn-was-at-indent-keyword)
 
 (defvar esn-last-file-name nil
-  "Last file name of command")
+  "Last file name of command.")
 
 (defun esn-pre-command-hook ()
-  "Esn's pre command hook"
-  (when (or
-         (not mark-active)
-         (not (or (fboundp 'yas--snippets-at-point)
-                  (fboundp 'yas/snippets-at-point)))
-         (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
-             (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
-         (and (or yas/minor-mode yas-minor-mode)
-              (let ((yap (if (fboundp 'yas/snippets-at-point)
-                             (yas/snippets-at-point 'all-snippets)
-                           (yas--snippets-at-point 'all-snippets))))
-                (or (not yap) (and yap (= 0 (length yap)))))))
-    (unless esn-run-save-fn
-      (setq esn-last-file-name (buffer-file-name))
-      
-      (setq esn-last-record-name (esn-get-current-rec))
-      (setq esn-last-record-start esn-get-current-record-start)
-      (setq esn-pre-command-point (point))
-      (esn-pre-command-hook-run))))
+  "Esn's pre command hook."
+  (esn-save-buffer-state
+   (when (or
+	  (not mark-active)
+	  (not (or (fboundp 'yas--snippets-at-point)
+		   (fboundp 'yas/snippets-at-point)))
+	  (or (and (boundp 'yas/minor-mode) (not yas/minor-mode))
+	      (and (boundp 'yas-minor-mode) (not yas-minor-mode)))
+	  (and (or yas/minor-mode yas-minor-mode)
+	       (let ((yap (if (fboundp 'yas/snippets-at-point)
+			      (yas/snippets-at-point 'all-snippets)
+			    (yas--snippets-at-point 'all-snippets))))
+		 (or (not yap) (and yap (= 0 (length yap)))))))
+     (unless esn-run-save-fn
+       (setq esn-last-file-name (buffer-file-name))
+       
+       (setq esn-last-record-name (esn-get-current-rec))
+       (setq esn-last-record-start esn-get-current-record-start)
+       (setq esn-pre-command-point (point))
+       (esn-pre-command-hook-run)))))
 
 (defun esn-pre-command-hook-run ()
   "* Wrapped around an error handler"
@@ -457,11 +439,9 @@
 ;;
 (defun esn-window-scroll-functions (window display-start)
   "update scroll for ESN"
-  (let (
-        (inhibit-read-only 't)
-        (inhibit-point-motion-hooks 't)
-        (buffer-undo-list 't)
-        )
+  (let ((inhibit-read-only t)
+        (inhibit-point-motion-hooks t)
+	(buffer-undo-list t))
     (esn-80-clear)
     (setq esn-80-last-window-start nil)
     (setq esn-80-last-window-height nil)
@@ -472,9 +452,9 @@
 
 (defun esn-window-size-change-functions (frame)
   (let (
-        (inhibit-read-only 't)
-        (inhibit-point-motion-hooks 't)
-        (buffer-undo-list 't)
+        (inhibit-read-only t)
+        (inhibit-point-motion-hooks t)
+        (buffer-undo-list t)
         )
     (esn-80-clear)
     (setq esn-80-last-window-start nil)
@@ -582,12 +562,12 @@
       (if (or (not esn-sim-add-seed)
               (save-excursion
                 (let (
-                      (ret 't)
+                      (ret t)
                       )
                   (when (string= (esn-get-current-record) "SIM")
-                    (re-search-backward (eval-when-compile (esn-reg-record-exp "SIM" 't)) nil t)
-                    (if (re-search-backward (eval-when-compile (esn-reg-record-exp "SIM" 't)) nil t)
-                        (setq double 't)
+                    (re-search-backward (eval-when-compile (esn-reg-record-exp "SIM" t)) nil t)
+                    (if (re-search-backward (eval-when-compile (esn-reg-record-exp "SIM" t)) nil t)
+                        (setq double t)
                       (setq ret nil)
                       )
                     )
@@ -622,7 +602,7 @@
         (save-excursion
           (when (and nil (re-search-backward "^[ \t]*\\=" nil t))
             (replace-match ";")
-            (setq nothing 't)))
+            (setq nothing t)))
         (unless nothing
           (save-excursion
             (esn-narrow-rec)
@@ -751,7 +731,7 @@
   (if (memq last-input-event '(delete \C-d 4 deletechar \M-f) )
       (if (or (and (boundp 'delete-key-deletes-forward) delete-key-deletes-forward)
               (and (boundp 'normal-erase-is-backspace) normal-erase-is-backspace))
-          (esn-magic-bs 't)
+          (esn-magic-bs t)
         (esn-magic-bs)
         )
     (esn-magic-bs)))
@@ -782,7 +762,7 @@
                         (nth 0 x)
                         )
                       (esn-update-editable-regions))
-                     't)))
+                     t)))
       (setq edit-end
             (concat "^\\( *;[;C]* *\\)"
                     (regexp-opt
@@ -794,7 +774,7 @@
                         (nth 1 x)
                         )
                       (esn-update-editable-regions))
-                     't)))
+                     t)))
       (if (not (and (save-excursion
                       (re-search-backward "\n *;[;Cc]* *\\=" nil t)
                       )
@@ -802,7 +782,7 @@
                     (or
                      (esn-is-between edit-begin edit-end)
                      (and any-pro
-                          (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" 't))
+                          (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" t))
                                           (regexp-quote any-pro))))))
           (if (and (featurep 'completion-ui) auto-completion-mode)
               (auto-completion-self-insert (string-to-char "*"))
@@ -820,7 +800,7 @@
 (defun esn-magic-bs (&optional forward)
   "* Magic backspace record that makes sure wrapping is invoked."
   (let (
-        (case-fold-search 't)
+        (case-fold-search t)
         (last nil)
         (pt (point))
         (pt2 nil)
@@ -841,7 +821,7 @@
                       (nth 0 x)
                       )
                     (esn-update-editable-regions))
-                   't)))
+                   t)))
     (setq edit-end
           (concat "^\\( *;[;C]* *\\)"
                   (regexp-opt
@@ -853,7 +833,7 @@
                       (nth 1 x)
                       )
                     (esn-update-editable-regions))
-                   't)))
+                   t)))
     (if (and (not forward)
              (save-excursion
                (re-search-backward "\n *;[;Cc]* *\\=" nil t)
@@ -861,7 +841,7 @@
              (or
               (esn-is-between edit-begin edit-end)
               (and any-pro
-                   (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" 't))
+                   (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" t))
                                    (regexp-quote any-pro)))))
         (save-excursion
           (when (re-search-backward "\n *;[;Cc]* *\\=" nil t)
@@ -871,7 +851,7 @@
                (or
                 (esn-is-between edit-begin edit-end)
                 (and any-pro
-                     (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" 't))
+                     (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" t))
                                      (regexp-quote any-pro)))))
           (save-excursion
             (if (looking-at "\n *;[;Cc]* *\\([^ ]\\)")
@@ -898,7 +878,7 @@
                                            (substring tmp -1) "[")
                                           (looking-at "[ \t]*\\]"))
                                  (replace-match "")))
-                             't)))
+                             t)))
                     ;; Delete ;C or ;; in records.
                     (save-restriction
                       (save-excursion
@@ -907,11 +887,11 @@
                                      (progn
                                        (when (re-search-backward ";[C;]\\=" nil t)
                                          (setq what (match-string 0))
-                                         't))
+                                         t))
                                      (save-excursion
                                        (when (re-search-backward "^[^;]*\\=" nil t)
                                          (setq what (format " \\{%s\\}%s" (length (match-string 0)) what))
-                                         't))
+                                         t))
                                      (esn-narrow-rec))
                             ;; Now Delete
                             (re-search-forward "\\=;[C;]" nil t)
@@ -926,7 +906,7 @@
                               (end-of-line)
                               (skip-chars-forward " \t\n")
                               (beginning-of-line))
-                            't)))))
+                            t)))))
           (if (or (and (not forward) (bobp))
                   (and forward (eobp)))
               (progn
@@ -948,8 +928,8 @@
                 (if (esn-magic-bs-ok (+ (point) (if forward 1 -2)))
                     (progn
                       (let (
-                            (inhibit-point-motion-hooks 't)
-                            (inhibit-read-only 't)
+                            (inhibit-point-motion-hooks t)
+                            (inhibit-read-only t)
                             )
                         (if forward
                             (progn
@@ -1018,7 +998,7 @@
 (defun esn-magic-del ()
   "Magic delete record, where wrapping is invoked."
   (interactive)
-  (esn-magic-bs 't))
+  (esn-magic-bs t))
 
 (defun esn-wrap ()
   (interactive)
@@ -1072,7 +1052,7 @@
                                                    (if (looking-at "[ \t]$") (symbol-value 'end-column-1)
                                                      (end-of-line) (setq end-column-2 (current-column)) (symbol-value 'end-column-2)))))
               (let (
-                    (case-fold-search 't)
+                    (case-fold-search t)
                     (rec (or rec (esn-get-current-record)))
                     (comment nil)
                     (updated nil)
@@ -1099,7 +1079,7 @@
                        (
                         (save-excursion
                           (beginning-of-line)
-                          (looking-at (eval-when-compile (format "^\\([ \t]+\\)%s" (esn-reg-records 't))))
+                          (looking-at (eval-when-compile (format "^\\([ \t]+\\)%s" (esn-reg-records t))))
                           )
                         (if (looking-at "[ \t]+")
                             (replace-match ""))
@@ -1216,11 +1196,11 @@
           (setq i (+ i 1))
           (esn-upcase-char-insert char)))
     (let (
-          (case-fold-search 't)
+          (case-fold-search t)
           lower)
       (cond 
        ( (esn-in-comment-p) ; Lower case possible
-         (setq lower 't))
+         (setq lower t))
        ( (and (boundp 'org-table-comment-editing)
               org-table-comment-editing)
          (setq lower t))
@@ -1229,21 +1209,21 @@
          ;; No file names defined (other than quoted)
          )
        ( (looking-back (eval-when-compile (format "\\<FIL[A-Za-z0-9_]*[ \t=]+%s" esn-reg-filename-partial))) ;; FILE
-         (setq lower 't))
+         (setq lower t))
        ( (and (string= "EST" (esn-current-rec)) ;; MSFO
               (looking-back (eval-when-compile (format "\\<MSF[A-Za-z0-9_]*[ \t=]+%s" esn-reg-filename-partial))))
-         (setq lower 't))
+         (setq lower t))
        ( (and (string= "SUB" (esn-current-rec)) 
               (looking-back esn-upcase-char-insert-sub-reg-insert))
-         (setq lower 't))
+         (setq lower t))
        ( (and (string= "DAT" (esn-current-rec))
               (looking-back "\\<IGN[A-Z0-9_a-z]*[ \t=]+['\"]?"))
-         (setq lower 't))
-       ( (looking-back (eval-when-compile (esn-reg-data-rec '("DAT" "MSF" "INC") 't))) ; File records
-         (setq lower 't))
+         (setq lower t))
+       ( (looking-back (eval-when-compile (esn-reg-data-rec '("DAT" "MSF" "INC") t))) ; File records
+         (setq lower t))
        ( (and (looking-back "\\<FOR[A-Za-z0-9_]*[ \t=]+")
               (string-match "[st]" char))
-         (setq lower 't)))
+         (setq lower t)))
       (if (and (featurep 'completion-ui) auto-completion-mode
                (eq 'auto-completion-self-insert (key-binding "A")))
           (if lower
@@ -1257,7 +1237,7 @@
 (defalias 'esn-upcase-buffer 'esn-change-case-buffer)
 (defun esn-downcase-buffer ()
   (interactive)
-  (esn-change-case-buffer 't))
+  (esn-change-case-buffer t))
 
 (defun esn-change-case-buffer (&optional downcase)
   "* Converts appropriate regions to uppercase."
@@ -1269,7 +1249,7 @@
                (p1 nil)
                (p2 nil)
                (comment-reg "\\(?:;\\|\\<\\$PRO[a-zA-Z]*\\|^[ \t]*C[ \t]+[^=\n \t]\\)")
-               (record-reg (eval-when-compile (esn-reg-record-exp '("DAT" "MSF" "INC") 't)))
+               (record-reg (eval-when-compile (esn-reg-record-exp '("DAT" "MSF" "INC") t)))
                                         ;       (option-reg "\\(FILE?\\|OTH\\(?:ER?\\)?\\|PK\\|ERROR?\\|MODEL?\\|DES\\|AES\\|TOL\\|INFN?\\|MSFO?\\) *[= \t]*")
                                         ;       (option-reg "\\(FILE\\|MSFO?\\)")
                (sub-reg esn-upcase-char-insert-sub-reg-toggle)
@@ -1283,9 +1263,9 @@
                                  ))
                (found "")
                (rec "")
-               (inhibit-read-only 't)
-               (inhibit-point-motion-hooks 't)
-               (case-fold-search 't)
+               (inhibit-read-only t)
+               (inhibit-point-motion-hooks t)
+               (case-fold-search t)
                )
           (save-excursion
             (goto-char (point-min))
@@ -1316,7 +1296,7 @@
                    (message "Found Sub Option: %s" found)
                    (re-search-forward (eval-when-compile (format "\\=[ \t\n=]+%s" esn-reg-filename)) nil t)
                    )
-                  ( 't
+                  ( t
                     (message "Found Option %s" found)
                     (re-search-forward (eval-when-compile (format "\\=[ \t\n=]+%s" esn-reg-filename)) nil t)
                     )
@@ -1325,7 +1305,7 @@
                ( (string-match ignore-reg found)
                  (re-search-forward "\\= *[= \t] *['\"]?.['\"]?" nil t)
                  )
-               ;; Don't fix anything in the the records below, otherwise assume its a file.
+               ;; Dont fix anything in the the records below, otherwise assume its a file.
                ( (not (esn-is-abbrev-p))
                  (re-search-forward "\\=[^ \n]*" nil t)
                  )
@@ -1342,58 +1322,48 @@
 (defun esn-end-of-line ()
   "Goes to the end of line, unless in a boxed comment, then go to end of the comment line."
   (interactive)
-  (end-of-line)
-  )
+  (end-of-line))
+
 (defun esn-magic-backtab ()
   "NONMEM's backtab function"
   (interactive)
-  (let (
-        edit-begin
+  (let (edit-begin
         edit-end
         any-pro
-        (tmp1 "")
-        )
+        (tmp1 ""))
     (setq edit-begin
           (concat "^\\( *;[;C]* *\\)"
                   (regexp-opt
                    (mapcar
                     (lambda(x)
-                      (nth 0 x)
-                      )
+                      (nth 0 x))
                     (esn-update-editable-regions))
-                   't)
-                  )
-          )
+                   t)))
     (setq edit-end
           (concat "^\\( *;[;C]* *\\)"
                   (regexp-opt
                    (mapcar
                     (lambda(x)
                       (if (string= "$PRO" (nth 0 x))
-                          (setq any-pro (nth 1 x))
-                        )
-                      (nth 1 x)
-                      )
+                          (setq any-pro (nth 1 x)))
+                      (nth 1 x))
                     (esn-update-editable-regions))
-                   't)))
+                   t)))
     
     (if (or
          (esn-is-between edit-begin edit-end)
          (and any-pro
-              (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" 't))
+              (esn-is-between (eval-when-compile (esn-reg-record-exp "PRO" t))
                               (regexp-quote any-pro))))
         (if (save-excursion
-              (re-search-backward ";[;C]* *\\* *\\=" nil t)
-              )
+              (re-search-backward ";[;C]* *\\* *\\=" nil t))
             ;;(esn-magic-return)
             (newline-and-indent)
           (save-excursion
             (beginning-of-line)
-            (let (
-                  (cur-comment nil)
+	    (let ((cur-comment nil)
                   (ln 0)
-                  (tmp "")
-                  )
+                  (tmp ""))
               (when (looking-at "[ \t]*;[;C]* *\\*")
                 (setq cur-comment (match-string 0))
                 (save-match-data
@@ -1405,12 +1375,10 @@
                   (setq ln (length tmp))
                   (while (looking-at (format "[ \t]*;[;C]* \\{%s,\\}\\*?" ln))
                     (forward-line -1)
-                    (beginning-of-line)
-                    )
+                    (beginning-of-line))
                   (looking-at "[ \t]*;[;C]* *\\*?")
-                  (setq cur-comment (match-string 0))
-                  )
-                (replace-match cur-comment 't 't))))))))
+                  (setq cur-comment (match-string 0)))
+                (replace-match cur-comment t t))))))))
                                         ;newline-and-indent  -- Return
                                         ;newline -- Return
 (provide 'esn-magic-keys)
