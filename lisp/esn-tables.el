@@ -569,7 +569,7 @@ that match the supplied regular expression.
         (start 0) var val rem-pop
         pop popx ind err iv misc rs
         etas prd est
-        iov-etas ret cw)
+        iov-etas ret cw tmp)
     ;; Take out extended control stream references.
     (if (and all esn-get-parameters-all)
         (setq ret esn-get-parameters-all)
@@ -728,6 +728,11 @@ that match the supplied regular expression.
       (esn-get-parameters-set-ret)
       (when all
         (setq esn-get-parameters-all ret)))
+    (setq tmp ret
+	  ret nil)
+    (dolist (elt tmp)
+      (unless (member elt ret)
+	(push elt ret)))
     ret))
 
 
@@ -916,7 +921,12 @@ Would return the following list:
 
 (defun esn-add-table (name var opt)
   "Adds table NAME  with variables VAR and options OPT to the control stream."
-  (let (tab (new-var var))
+  (let (tab
+	new-var
+	tmp)
+    (dolist (v var)
+      (unless (member (upcase v) new-var)
+	(push (upcase v) new-var)))
     ;; Add/Remove NOAPPEND and DV, PRED, WRES, RES variables.
     (if (and (member "DV" var)
              (member "PRED" var)
