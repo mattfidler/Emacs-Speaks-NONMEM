@@ -947,7 +947,9 @@ Would return the following list:
     (goto-char (point-min))
     (when (and (re-search-forward (format "\\<FILE?\\>.*?%s" (regexp-quote name)) nil t)
                (string= "TAB" (esn-get-current-rec)))
-      (let ((f (match-beginning 0)) o)
+      (let ((f (match-beginning 0))
+	    (case-fold-search t)
+	    o w)
         (save-restriction
           (esn-narrow-rec)
           (when opt
@@ -965,6 +967,13 @@ Would return the following list:
           (when del
             (while (re-search-forward del nil t)
               (replace-match "")))
+	  ;; Replace duplicates
+	  (goto-char (point-min))
+	  (while (re-search-forward "\\([A-Za-z0-9]+\\)[ \n]" nil t)
+            (setq w (regexp-quote (match-string 0)))
+            (save-excursion
+              (while (re-search-forward w nil t)
+                (replace-match ""))))
           (goto-char (point-min))
           (while (re-search-forward "  +" nil t)
             (replace-match " "))
